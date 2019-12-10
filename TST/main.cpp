@@ -7,12 +7,12 @@
 //
 
 #define EIGEN_USE_MKL
-#define OMP_NUM_THREADS 16
+#define OMP_NUM_THREADS 4
 //#define DEBUG_ACTIVE
 //#define EVAL_BY_CMD
 #define EVAL_BY_CSV
-constexpr auto MATRIX_SIZE = 600;
-constexpr auto T_RES = 1000;
+constexpr auto MATRIX_SIZE = 200;
+constexpr auto T_RES = 200;
 
 #include <iostream>
 #include <Eigen/Dense>
@@ -51,21 +51,20 @@ int main()
 	std::cout << "Running " << Eigen::nbThreads() << " Eigen Threads" << std::endl;
 #endif
 	Eigen::MatrixXd All_EigenValues(MATRIX_SIZE, T_RES+1);
-#pragma omp for
-	for (auto k = 0; k <= T_RES; k++){
-		//Build Matrix to be Solved by MKL
-		_1DTopSuperConMatrix M(MATRIX_SIZE, -1 + 1* double(k) / T_RES, 0.1, 0.1);
-		auto m = M.get();
-		///Eigen::MatrixX<std::complex<double>> m = Build_Matrix();
-
-		//Create Solver hand Solver the Matrix
-		Eigen::ComplexEigenSolver<Eigen::MatrixXcd> Solver(MATRIX_SIZE);
-		Solver.compute(m);
-
-		// Fetch  Eigenvalues from Solver and sort them in ascending order
-		Eigen::VectorXd EigenValues = Solver.eigenvalues().col(0).real();
-		std::sort(EigenValues.data(), EigenValues.data() + EigenValues.size());
-		All_EigenValues.col(k) = EigenValues + Eigen::VectorXd::Constant(MATRIX_SIZE,(EigenValues.sum())/2);
+#pragma omp paralel num_threads(OMP_NUM_THREADS) private(k,m,Solver,EigenValues)
+    {
+        //Create Solver
+        Eigen::ComplexEigenSolver<Eigen::MatrixXcd> Solver(MATRIX_SIZE);
+        for (auto k = omp_get_thread_num(); k <= T_RES; k = OMP_NUM_THREADS){
+            //Build Matrix to be Solved by MKL
+            auto m = _1DTopSuperConMatrix(MATRIX_SIZE, -1 + 2* double(k) / T_RES, 0.1, 0.1).get();
+            //Solve the Matrix
+            Solver.compute(m);
+            // Fetch  Eigenvalues from Solver and sort them in ascending order
+            Eigen::VectorXd EigenValues = Solver.eigenvalues().col(0).real();
+            std::sort(EigenValues.data(), EigenValues.data() + EigenValues.size());
+            All_EigenValues.col(k) = EigenValues + Eigen::VectorXd::Constant(MATRIX_SIZE,(EigenValues.sum())/2);
+        }
 	}
 #ifdef DEBUG_ACTIVE
 	auto end = std::chrono::system_clock::now();

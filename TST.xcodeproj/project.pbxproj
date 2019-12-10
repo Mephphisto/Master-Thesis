@@ -8,8 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		81438CCA23994660007411D0 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 81438CC923994660007411D0 /* main.cpp */; };
-		818D6175239AA56B00C889C5 /* libiomp5.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 818D6174239AA56B00C889C5 /* libiomp5.dylib */; };
-		818D6176239AA56B00C889C5 /* libiomp5.dylib in Embed Libraries */ = {isa = PBXBuildFile; fileRef = 818D6174239AA56B00C889C5 /* libiomp5.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXBuildRule section */
@@ -53,7 +51,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				818D6176239AA56B00C889C5 /* libiomp5.dylib in Embed Libraries */,
 			);
 			name = "Embed Libraries";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -63,7 +60,7 @@
 /* Begin PBXFileReference section */
 		81438CC623994660007411D0 /* TST */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = TST; sourceTree = BUILT_PRODUCTS_DIR; };
 		81438CC923994660007411D0 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
-		818D6174239AA56B00C889C5 /* libiomp5.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libiomp5.dylib; path = ../../../../usr/local/lib/libiomp5.dylib; sourceTree = "<group>"; };
+		81D297F6239F18AD00E9E9D2 /* _1DTopSuperConMatrix.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = _1DTopSuperConMatrix.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -71,7 +68,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				818D6175239AA56B00C889C5 /* libiomp5.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -98,6 +94,7 @@
 		81438CC823994660007411D0 /* TST */ = {
 			isa = PBXGroup;
 			children = (
+				81D297F6239F18AD00E9E9D2 /* _1DTopSuperConMatrix.hpp */,
 				81438CC923994660007411D0 /* main.cpp */,
 			);
 			path = TST;
@@ -106,7 +103,6 @@
 		81438CD1239956F1007411D0 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				818D6174239AA56B00C889C5 /* libiomp5.dylib */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -305,17 +301,20 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
+				GCC_VERSION = "com.intel.compilers.icc.update-19.0.281";
 				HEADER_SEARCH_PATHS = (
 					/opt/intel/mkl/include,
 					"/usr/local/include/**",
 				);
+				ICC_GUIDE = default;
 				ICC_LANG_OPENMP = parallel;
 				ICC_OPT_INLINE = "-inline-forceinline";
+				ICC_OPT_PARALLEL = YES;
 				LD_RUNPATH_SEARCH_PATHS = "";
 				"LD_RUNPATH_SEARCH_PATHS[arch=*]" = "";
 				LIBRARY_SEARCH_PATHS = (
 					/opt/intel/mkl/bin,
-					/usr/local/lib/,
+					"/usr/local/lib/**",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -325,16 +324,19 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
+				GCC_VERSION = "com.intel.compilers.icc.update-19.0.281";
 				HEADER_SEARCH_PATHS = (
 					/opt/intel/mkl/include,
 					"/usr/local/include/**",
 				);
+				ICC_GUIDE = default;
 				ICC_LANG_OPENMP = parallel;
 				ICC_OPT_INLINE = "-inline-forceinline";
+				ICC_OPT_PARALLEL = YES;
 				LD_RUNPATH_SEARCH_PATHS = "";
 				LIBRARY_SEARCH_PATHS = (
 					/opt/intel/mkl/bin,
-					/usr/local/lib/,
+					"/usr/local/lib/**",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
