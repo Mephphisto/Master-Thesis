@@ -1,0 +1,114 @@
+//
+//  Hamiltonian_Diagonalizer.hpp
+//  TST
+//
+//  Created by Jakob Teuffel on 10.12.19.
+//  Copyright © 2019 Jakob Teuffel. All rights reserved.
+//
+
+#ifndef Hamiltonian_Diagonalizer_h
+#define Hamiltonian_Diagonalizer_h
+template<class T>
+void Diagonalize_Hamiltonian()
+{
+#ifdef SHOW_MATRIX_AND_QUIT
+        //Build Matrix shom Matrix in CMD and Quit
+        std::cout << T(MATRIX_SIZE, T_START, MU, DELTA).get();
+        std::cin.get();
+        return;
+#endif
+    
+#ifdef DEBUG_ACTIVE
+        // get start time for runtime Calculation
+        auto start = std::chrono::system_clock::now();
+
+        // print number of used threads
+        std::cout << "Running " << Eigen::nbThreads() << " Eigen Threads" << std::endl;
+#endif
+        
+        // Storage for Computed Eigen Values
+        Eigen::MatrixXd All_EigenValues(MATRIX_SIZE, T_RES+1);
+        Eigen::VectorXd t_s(MATRIX_SIZE);
+#pragma omp parallel num_threads(OMP_NUM_THREADS)
+        {
+            // Get Thread ID
+            int tid = omp_get_thread_num();
+            // Create Solver
+            Eigen::ComplexEigenSolver<Eigen::MatrixXcd> Solver(MATRIX_SIZE);
+            for (auto k = tid; k <= T_RES; k += OMP_NUM_THREADS){
+#ifdef DEBUG_ACTIVE
+                //verify accurate stride through sample space
+                {
+                    //Build String first and print then Prevents Race Condition!
+                    std::string msg;
+                    msg = "Thread " + std::to_string(tid) + " k= " + std::to_string(k) + "\n";
+                    std::cout << msg;
+                }
+#endif
+                //Storage for Matrix and Trace
+                Eigen::MatrixXcd m;
+                double tr;
+                {
+                    //Build Matrix to be Solved by MKL
+                    T M = T(MATRIX_SIZE, T_START + (T_END-T_START) * double(k) / T_RES, MU, DELTA);
+                    m = M.get();
+                    tr = M.trace_A();
+                }
+                //Solve the Matrix
+                Solver.compute(m);
+                // Fetch  Eigenvalues from Solver
+                Eigen::VectorXd EigenValues = Solver.eigenvalues().col(0).real();
+                //sort Eigenvalues in ascending order
+                std::sort(EigenValues.data(), EigenValues.data() + EigenValues.size());
+                //Save Eigenvalues and add constant Correction terms
+                All_EigenValues.col(k) = EigenValues + Eigen::VectorXd::Constant(MATRIX_SIZE,(EigenValues.sum()-tr)/2);
+                t_s(k) = T_START + (T_END-T_START) * double(k) / T_RES;
+            }
+        }
+        
+        
+#ifdef DEBUG_ACTIVE
+        // Save End Time
+        auto end = std::chrono::system_clock::now();
+#endif
+
+#ifdef EVAL_BY_CMD
+        //print Eigenvalues to CMD
+        std::cout << "eigenvalues:" << std::endl << EigenValues << std::endl;
+#endif
+
+#ifdef    EVAL_BY_CSV
+        //writes Eigenvalues to CSV - File for
+        std::fstream csv_file("EigenValues_M"+ std::to_string(MATRIX_SIZE)
+                              + "_Tres"+ std::to_string(T_RES)
+                              + "_Mu+" + std::to_string(MU)
+                              +"_D" + std::to_string(DELTA)+".csv",
+                              std::fstream::out);
+        assert(csv_file.is_open());
+        //Write Headder
+        csv_file << "Eigenvalues of " << std::to_string(MATRIX_SIZE) << "x"  << std::to_string(MATRIX_SIZE) << "Matrix, "
+        << "for t = [" << std::to_string(T_START) << "," << std::to_string(T_END) << "] in " << std::to_string(T_RES) << " Steps. With: "
+        << "mu=  " << std::to_string(MU) << "; Delta = " << std::to_string(DELTA)
+        << "using " << std::to_string(OMP_NUM_THREADS)  << " OpenMP Threads" << std::endl;
+        //write Eigenvalues
+        for (auto k = 0; k < MATRIX_SIZE; k++ ){
+            csv_file << t_s(k) << All_EigenValues.col(k);
+        }
+        csv_file.close();
+#endif
+        
+#ifdef DEBUG_ACTIVE
+        //Compute Calculation Time adn print to CMD
+        std::cout << std::endl << std::endl << "Runtime = "
+        << std::chrono::duration_cast<std::chrono::milliseconds>(end- start).count()
+        << "ms" << std::endl;
+#endif
+
+#if defined EVAL_BY_CMD || defined DEBUG_ACTIVE
+        //Wait for ENTER before Closing window
+        std::cout << "FINISHED!" << std::endl;
+        std::cin.get();
+#endif
+}
+
+#endif /* Hamiltonian_Diagonalizer_h */
