@@ -58,6 +58,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		81276331239FE23300153588 /* Hamiltonian_Matrix.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Hamiltonian_Matrix.hpp; sourceTree = "<group>"; };
+		81276332239FE44600153588 /* Hamiltonian_Diagonalizer.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Hamiltonian_Diagonalizer.hpp; sourceTree = "<group>"; };
 		81438CC623994660007411D0 /* TST */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = TST; sourceTree = BUILT_PRODUCTS_DIR; };
 		81438CC923994660007411D0 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		81D297F6239F18AD00E9E9D2 /* _1DTopSuperConMatrix.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = _1DTopSuperConMatrix.hpp; sourceTree = "<group>"; };
@@ -96,6 +98,8 @@
 			children = (
 				81D297F6239F18AD00E9E9D2 /* _1DTopSuperConMatrix.hpp */,
 				81438CC923994660007411D0 /* main.cpp */,
+				81276331239FE23300153588 /* Hamiltonian_Matrix.hpp */,
+				81276332239FE44600153588 /* Hamiltonian_Diagonalizer.hpp */,
 			);
 			path = TST;
 			sourceTree = "<group>";

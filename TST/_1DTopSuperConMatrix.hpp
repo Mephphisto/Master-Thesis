@@ -1,6 +1,8 @@
 #pragma once
+#include "Hamiltonian_Matrix.hpp"
 #include <Eigen/Dense>
-class _1DTopSuperConMatrix
+
+class _1DTopSuperConMatrix :  Hamiltonian_Matrix
 {
 public:
 	_1DTopSuperConMatrix(size_t size_in, double t_in, double mu_in, double Delta_in)
@@ -14,11 +16,11 @@ public:
 		Build_A();
 		//Build_B();
 	}
-	Eigen::MatrixXcd get()
+	Eigen::MatrixXcd get() override
 	{
 		return m;
 	}
-	double trace_A()
+	double trace_A() override
 	{
 		return 2 * Gsize * mu;
 	}
@@ -33,9 +35,9 @@ private:
 			m(i, i) = mu;
 			m(i + Gsize, i + Gsize) = mu;
 			m(i, i+1) = t;
-			m(i+1, i) = t;
+			m(i+1, i) = -t;
 			m(i + Gsize, i + Gsize + 1) = t;
-			m(i + Gsize + 1, i + Gsize ) = t;
+			m(i + Gsize + 1, i + Gsize ) = -t;
 			m(i, i + 1 + Gsize) = Delta;
 			m(i + 1, i + Gsize) = Delta;
 			m(i + Gsize, i + 1) = Delta;
