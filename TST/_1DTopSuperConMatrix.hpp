@@ -9,7 +9,7 @@ public:
 	{
 		this->t = -t_in;
 		this->mu = -mu_in;
-		this->Delta = Delta_in;
+		this->Delta = Delta_in/2;
 		Gsize = size_in / 2;
 		m = Eigen::MatrixXcd(size_in,size_in);
 		m.setZero();
@@ -22,7 +22,7 @@ public:
 	}
 	double trace_A() override
 	{
-		return 2 * Gsize * mu;
+		return 0;
 	}
 private:
 	Eigen::MatrixXcd m;
@@ -33,18 +33,18 @@ private:
 		for (size_t i = 0; i < Gsize - 1; i++)
 		{
 			m(i, i) = mu;
-			m(i + Gsize, i + Gsize) = mu;
 			m(i, i+1) = t;
-			m(i+1, i) = -t;
-			m(i + Gsize, i + Gsize + 1) = t;
+			m(i+1, i) = t;
+			m(i + Gsize, i + Gsize) = -mu;
+			m(i + Gsize, i + Gsize + 1) = -t;
 			m(i + Gsize + 1, i + Gsize ) = -t;
-			m(i, i + 1 + Gsize) = Delta;
+			m(i, i + 1 + Gsize) = -Delta;
 			m(i + 1, i + Gsize) = Delta;
 			m(i + Gsize, i + 1) = Delta;
-			m(i + 1 + Gsize, i) = Delta;
+			m(i + 1 + Gsize, i) = -Delta;
 		}
 		m(Gsize-1, Gsize-1) = mu;
-		m(2*Gsize - 1, 2*Gsize - 1) = mu;
+		m(2*Gsize - 1, 2*Gsize - 1) = -mu;
 	}
 };
 

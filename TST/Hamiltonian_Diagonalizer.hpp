@@ -8,6 +8,13 @@
 
 #ifndef Hamiltonian_Diagonalizer_h
 #define Hamiltonian_Diagonalizer_h
+
+#include <iostream>
+#include <Eigen/Dense>
+#include <omp.h>
+#include <chrono>
+#include <fstream>
+
 template<class T>
 void Diagonalize_Hamiltonian()
 {
@@ -28,7 +35,7 @@ void Diagonalize_Hamiltonian()
         
         // Storage for Computed Eigen Values
         Eigen::MatrixXd All_EigenValues(MATRIX_SIZE, T_RES+1);
-        Eigen::VectorXd t_s(MATRIX_SIZE);
+        Eigen::VectorXd t_s(T_RES+1);
 #pragma omp parallel num_threads(OMP_NUM_THREADS)
         {
             // Get Thread ID
@@ -48,9 +55,10 @@ void Diagonalize_Hamiltonian()
                 //Storage for Matrix and Trace
                 Eigen::MatrixXcd m;
                 double tr;
+                double t = T_START + (T_END - T_START) * (double(k) / double(T_RES));
                 {
                     //Build Matrix to be Solved by MKL
-                    T M = T(MATRIX_SIZE, T_START + (T_END-T_START) * double(k) / T_RES, MU, DELTA);
+                    T M = T(MATRIX_SIZE,t, MU, DELTA);
                     m = M.get();
                     tr = M.trace_A();
                 }
@@ -61,8 +69,8 @@ void Diagonalize_Hamiltonian()
                 //sort Eigenvalues in ascending order
                 std::sort(EigenValues.data(), EigenValues.data() + EigenValues.size());
                 //Save Eigenvalues and add constant Correction terms
-                All_EigenValues.col(k) = EigenValues + Eigen::VectorXd::Constant(MATRIX_SIZE,(EigenValues.sum()-tr)/2);
-                t_s(k) = T_START + (T_END-T_START) * double(k) / T_RES;
+                All_EigenValues.col(k) = EigenValues + Eigen::VectorXd::Constant(MATRIX_SIZE,(tr-EigenValues.sum())/2);
+                t_s(k) = t;
             }
         }
         
@@ -80,9 +88,7 @@ void Diagonalize_Hamiltonian()
 #ifdef    EVAL_BY_CSV
         //writes Eigenvalues to CSV - File for
         std::fstream csv_file("EigenValues_M"+ std::to_string(MATRIX_SIZE)
-                              + "_Tres"+ std::to_string(T_RES)
-                              + "_Mu+" + std::to_string(MU)
-                              +"_D" + std::to_string(DELTA)+".csv",
+                              + "_Tres"+ std::to_string(T_RES)+".csv",
                               std::fstream::out);
         assert(csv_file.is_open());
         //Write Headder
@@ -91,8 +97,8 @@ void Diagonalize_Hamiltonian()
         << "mu=  " << std::to_string(MU) << "; Delta = " << std::to_string(DELTA)
         << "using " << std::to_string(OMP_NUM_THREADS)  << " OpenMP Threads" << std::endl;
         //write Eigenvalues
-        for (auto k = 0; k < MATRIX_SIZE; k++ ){
-            csv_file << t_s(k) << All_EigenValues.col(k);
+        for (auto k = 0; k <= T_RES; k++ ){
+            csv_file << t_s(k)  << " " << All_EigenValues.col(k).transpose() << std::endl;
         }
         csv_file.close();
 #endif

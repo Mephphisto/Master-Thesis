@@ -46,6 +46,8 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Hamiltonian_Diagonalizer.hpp" />
+    <ClInclude Include="Hamiltonian_Matrix.hpp" />
     <ClInclude Include="_1DTopSuperConMatrix.hpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

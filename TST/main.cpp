@@ -11,20 +11,15 @@
 //#define DEBUG_ACTIVE
 //#define EVAL_BY_CMD
 #define EVAL_BY_CSV
-#define SHOW_MATRIX_AND_QUIT
+//#define SHOW_MATRIX_AND_QUIT
 
-constexpr auto MATRIX_SIZE = 10;
-constexpr auto T_RES = 2 * OMP_NUM_THREADS;
-constexpr double T_START = -0.6;
-constexpr double T_END = 0.6;
-constexpr double MU = 0.1;
-constexpr double DELTA = 0.1;
+constexpr auto MATRIX_SIZE = 200;
+constexpr auto T_RES = 95;
+constexpr double T_START = -1;
+constexpr double T_END = 1;
+constexpr double MU = .6;
+constexpr double DELTA = 0.3;
 
-#include <iostream>
-#include <Eigen/Dense>
-#include <omp.h>
-#include <chrono>
-#include <fstream>
 #include "_1DTopSuperConMatrix.hpp"
 #include "Hamiltonian_Diagonalizer.hpp"
 
