@@ -239,7 +239,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release Intel|x64'">
     <ClCompile>
-      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <MultiProcessorCompilation>false</MultiProcessorCompilation>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
@@ -247,16 +247,16 @@
       <LanguageStandard>stdcpp14</LanguageStandard>
       <AdditionalIncludeDirectories>D:\Documents\Codebase\C++ Libarys\eigen\</AdditionalIncludeDirectories>
       <OpenMPSupport>true</OpenMPSupport>
-      <LlvmTransitionalOption>NextGenSingleDiagnostics</LlvmTransitionalOption>
+      <LlvmTransitionalOption>NextGenNone</LlvmTransitionalOption>
       <Optimization>MaxSpeedHighLevel</Optimization>
       <InterproceduralOptimization>MultiFile</InterproceduralOptimization>
       <OptimizeForWindowsApplication>true</OptimizeForWindowsApplication>
       <EnableMatrixMultiplyLibraryCall>Yes</EnableMatrixMultiplyLibraryCall>
       <Parallelization>true</Parallelization>
       <UseIntelOptimizedHeaders>true</UseIntelOptimizedHeaders>
-      <GenerateAlternateCodePaths>None</GenerateAlternateCodePaths>
-      <UseProcessorExtensions>None</UseProcessorExtensions>
-      <Mtune>No</Mtune>
+      <GenerateAlternateCodePaths>COFFEELAKE</GenerateAlternateCodePaths>
+      <UseProcessorExtensions>COFFEELAKE</UseProcessorExtensions>
+      <Mtune>Coffeelake</Mtune>
       <OpenMP>GenerateParallelCode</OpenMP>
       <CCppSupport>Cpp14Support</CCppSupport>
     </ClCompile>

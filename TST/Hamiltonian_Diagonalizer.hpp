@@ -58,7 +58,7 @@ void Diagonalize_Hamiltonian()
                 double t = T_START + (T_END - T_START) * (double(k) / double(T_RES));
                 {
                     //Build Matrix to be Solved by MKL
-                    T M = T(MATRIX_SIZE,t, MU, DELTA);
+                    T M = T(MATRIX_SIZE, DELTA, MU, t);
                     m = M.get();
                     tr = M.trace_A();
                 }
@@ -94,11 +94,16 @@ void Diagonalize_Hamiltonian()
         //Write Headder
         csv_file << "Eigenvalues of " << std::to_string(MATRIX_SIZE) << "x"  << std::to_string(MATRIX_SIZE) << "Matrix, "
         << "for t = [" << std::to_string(T_START) << "," << std::to_string(T_END) << "] in " << std::to_string(T_RES) << " Steps. With: "
-        << "mu=  " << std::to_string(MU) << "; Delta = " << std::to_string(DELTA)
+        << "t=  " << std::to_string(MU) << "; Delta = " << std::to_string(DELTA)
         << "using " << std::to_string(OMP_NUM_THREADS)  << " OpenMP Threads" << std::endl;
+        csv_file << "M" << "," << std::to_string(MATRIX_SIZE) << " Eigenvalues  ... " << std::endl;
         //write Eigenvalues
-        for (auto k = 0; k <= T_RES; k++ ){
-            csv_file << t_s(k)  << " " << All_EigenValues.col(k).transpose() << std::endl;
+        for (auto k = 0; k <= T_RES; k++) {
+            csv_file << t_s(k);
+            for (auto a : All_EigenValues.col(k)){
+	            csv_file << "," << a ;
+	        }
+            csv_file << std::endl;
         }
         csv_file.close();
 #endif
