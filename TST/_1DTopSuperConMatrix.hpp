@@ -1,3 +1,7 @@
+
+
+
+
 #pragma once
 #include "Hamiltonian_Matrix.hpp"
 #include <Eigen/Dense>
@@ -5,7 +9,7 @@
 class _1DTopSuperConMatrix :  Hamiltonian_Matrix
 {
 public:
-	_1DTopSuperConMatrix(size_t size_in, double t_in, double mu_in, double Delta_in)
+	  _1DTopSuperConMatrix(size_t size_in, double t_in, double mu_in, double Delta_in)
 	{
 		this->t = -t_in;
 		this->mu = -mu_in;

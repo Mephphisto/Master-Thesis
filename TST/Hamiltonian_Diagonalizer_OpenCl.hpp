@@ -1,9 +1,5 @@
 //
-//  Hamiltonian_Diagonalizer.hpp
-//  TST
-//
-//  Created by Jakob Teuffel on 10.12.19.
-//  Copyright © 2019 Jakob Teuffel. All rights reserved.
+// Created by Jakob Teuffel on 18.12.19.
 //
 
 #pragma once
@@ -13,38 +9,41 @@
 #include <omp.h>
 #include <chrono>
 #include <fstream>
-
+#include <clBLAS.h>
 
 template<class T>
-void Diagonalize_Hamiltonian()
+void Diagonalize_Hamiltonian_OpenCL()
 {
+
+    clblasSetup();
+    std::cout << clblasStatus();
 #ifdef SHOW_MATRIX_AND_QUIT
-        //Build Matrix shom Matrix in CMD and Quit
+    //Build Matrix shom Matrix in CMD and Quit
         std::cout << T(MATRIX_SIZE, T_START, MU, DELTA).get();
         std::cin.get();
         return;
 #endif
-    
+
 #ifdef DEBUG_ACTIVE
-        // get start time for runtime Calculation
+    // get start time for runtime Calculation
         auto start = std::chrono::system_clock::now();
 
         // print number of used threads
         std::cout << "Running " << Eigen::nbThreads() << " Eigen Threads" << std::endl;
 #endif
-        
-        // Storage for Computed Eigen Values
-        Eigen::MatrixXd All_EigenValues(MATRIX_SIZE, T_RES+1);
-        Eigen::VectorXd t_s(T_RES+1);
+
+    // Storage for Computed Eigen Values
+    Eigen::MatrixXd All_EigenValues(MATRIX_SIZE, T_RES+1);
+    Eigen::VectorXd t_s(T_RES+1);
 #pragma omp parallel num_threads(OMP_NUM_THREADS)
-        {
-            // Get Thread ID
-            int tid = omp_get_thread_num();
-            // Create Solver
-            Eigen::ComplexEigenSolver<Eigen::MatrixXcd> Solver(MATRIX_SIZE);
-            for (auto k = tid; k <= T_RES; k += OMP_NUM_THREADS){
+    {
+        // Get Thread ID
+        int tid = omp_get_thread_num();
+        // Create Solver
+        Eigen::ComplexEigenSolver<Eigen::MatrixXcd> Solver(MATRIX_SIZE);
+        for (auto k = tid; k <= T_RES; k += OMP_NUM_THREADS){
 #ifdef DEBUG_ACTIVE
-                //verify accurate stride through sample space
+            //verify accurate stride through sample space
                 {
                     //Build String first and print then Prevents Race Condition!
                     std::string msg;
@@ -52,41 +51,41 @@ void Diagonalize_Hamiltonian()
                     std::cout << msg;
                 }
 #endif
-                //Storage for Matrix and Trace
-                Eigen::MatrixXcd m;
-                double tr;
-                double t = T_START + (T_END - T_START) * (double(k) / double(T_RES));
-                {
-                    //Build Matrix to be Solved by MKL
-                    T M = T(MATRIX_SIZE, DELTA, MU, t);
-                    m = M.get();
-                    tr = M.trace_A();
-                }
-                //Solve the Matrix
-                Solver.compute(m);
-                // Fetch  Eigenvalues from Solver
-                Eigen::VectorXd EigenValues = Solver.eigenvalues().col(0).real();
-                //sort Eigenvalues in ascending order
-                std::sort(EigenValues.data(), EigenValues.data() + EigenValues.size());
-                //Save Eigenvalues and add constant Correction terms
-                All_EigenValues.col(k) = EigenValues + Eigen::VectorXd::Constant(MATRIX_SIZE,(tr-EigenValues.sum())/2);
-                t_s(k) = t;
+            //Storage for Matrix and Trace
+            Eigen::MatrixXcd m;
+            double tr;
+            double t = T_START + (T_END - T_START) * (double(k) / double(T_RES));
+            {
+                //Build Matrix to be Solved by MKL
+                T M = T(MATRIX_SIZE, DELTA, MU, t);
+                m = M.get();
+                tr = M.trace_A();
             }
+            //Solve the Matrix
+            Solver.compute(m);
+            // Fetch  Eigenvalues from Solver
+            Eigen::VectorXd EigenValues = Solver.eigenvalues().col(0).real();
+            //sort Eigenvalues in ascending order
+            std::sort(EigenValues.data(), EigenValues.data() + EigenValues.size());
+            //Save Eigenvalues and add constant Correction terms
+            All_EigenValues.col(k) = EigenValues + Eigen::VectorXd::Constant(MATRIX_SIZE,(tr-EigenValues.sum())/2);
+            t_s(k) = t;
         }
-        
-        
+    }
+
+
 #ifdef DEBUG_ACTIVE
-        // Save End Time
+    // Save End Time
         auto end = std::chrono::system_clock::now();
 #endif
 
 #ifdef EVAL_BY_CMD
-        //print Eigenvalues to CMD
+    //print Eigenvalues to CMD
         std::cout << "eigenvalues:" << std::endl << All_EigenValues << std::endl;
 #endif
 
 #ifdef    EVAL_BY_CSV
-        //writes Eigenvalues to CSV - File for
+    //writes Eigenvalues to CSV - File for
         std::fstream csv_file("EigenValues_M"+ std::to_string(MATRIX_SIZE)
                               + "_Tres"+ std::to_string(T_RES)+".csv",
                               std::fstream::out);
@@ -107,18 +106,19 @@ void Diagonalize_Hamiltonian()
         }
         csv_file.close();
 #endif
-        
+
 #ifdef DEBUG_ACTIVE
-        //Compute Calculation Time adn print to CMD
+    //Compute Calculation Time adn print to CMD
         std::cout << std::endl << std::endl << "Runtime = "
         << std::chrono::duration_cast<std::chrono::milliseconds>(end- start).count()
         << "ms" << std::endl;
 #endif
 
 #if defined EVAL_BY_CMD || defined DEBUG_ACTIVE
-        //Wait for ENTER before Closing window
+    //Wait for ENTER before Closing window
         std::cout << "FINISHED!" << std::endl;
         std::cin.get();
 #endif
+        clblasTeardown();
 }
 
