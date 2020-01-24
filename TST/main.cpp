@@ -6,7 +6,7 @@
 //  Copyright © 2019 Jakob Teuffel. All rights reserved.
 //
 
-#define OMP_NUM_THREADS 16
+#define OMP_NUM_THREADS 1
 //ICL NEEDS THIS
 #define  _HAS_CONDITIONAL_EXPLICIT 0
 #define DEBUG_ACTIVE
@@ -16,7 +16,7 @@
 //#undef USE_OpenCL
 //#define USE_MAGMA
 //#define EIGEN_USE_LAPACKE
-#define MATRIX_TO_CSV
+//#define MATRIX_TO_CSV
 
 constexpr auto MATRIX_SIZE = 320;//2*20*20;
 constexpr auto T_RES = 64;
@@ -47,7 +47,7 @@ int main(){
 #elif defined USE_OpenCL
     Diagonalize_Hamiltonian_OpenCL<_2DTopSuperConMatrix>();
 #else
-    Diagonalize_Hamiltonian<_1DTopSuperConMatrix>();
+    Diagonalize_Hamiltonian<_2DTopSuperConMatrix>();
 #endif
     return 0;
 }

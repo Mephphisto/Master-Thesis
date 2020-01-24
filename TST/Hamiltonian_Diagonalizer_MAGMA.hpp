@@ -69,6 +69,7 @@ void Diagonalize_Hamiltonian_magma() {
 
     // Storage for Computed Eigen Values
     Eigen::MatrixXd All_EigenValues(MATRIX_SIZE, T_RES);
+    std::vector<Eigen::MatrixXd> All_EigenVectors(T_RES);
     Eigen::VectorXd t_s(T_RES);
     {
         // Create Solver
@@ -97,10 +98,10 @@ void Diagonalize_Hamiltonian_magma() {
             Solver.compute(m);
             // Fetch  Eigenvalues from Solver
             Eigen::VectorXd EigenValues = Solver.eigenvalues().col(0).real();
-            //sort Eigenvalues in ascending order
-            std::sort(EigenValues.data(), EigenValues.data() + EigenValues.size());
+
             //Save Eigenvalues and add constant Correction terms
             All_EigenValues.col(k) = EigenValues + Eigen::VectorXd::Constant(MATRIX_SIZE, (tr - EigenValues.sum()) / 2);
+            All_EigenVectors[k] = EigenVectors;
             t_s(k) = t;
         }
     }
@@ -116,9 +117,10 @@ void Diagonalize_Hamiltonian_magma() {
         std::cout << "eigenvalues:" << std::endl << All_EigenValues << std::endl;
 #endif
 
+
 #ifdef    EVAL_BY_CSV
     //writes Eigenvalues to CSV - File for
-    {
+    try {
         std::fstream csv_file("EigenValues_M" + std::to_string(MATRIX_SIZE)
                               + "_Tres" + std::to_string(T_RES) + ".csv",
                               std::fstream::out);
@@ -127,8 +129,8 @@ void Diagonalize_Hamiltonian_magma() {
         csv_file << "Eigenvalues of " << std::to_string(MATRIX_SIZE) << "x" << std::to_string(MATRIX_SIZE) << "Matrix, "
                  << "for t = [" << std::to_string(T_START) << "," << std::to_string(T_END) << "] in "
                  << std::to_string(T_RES) << " Steps. With: "
-                 << "MU=  " << std::to_string(MU) << "; Delta = " << std::to_string(DELTA)
-                 << "using " << " MAGMA" << std::endl;
+                 << "t=  " << std::to_string(MU) << "; Delta = " << std::to_string(DELTA)
+                 << "using " << std::to_string(OMP_NUM_THREADS) << " OpenMP Threads" << std::endl;
         csv_file << "M" << "," << std::to_string(MATRIX_SIZE) << " Eigenvalues  ... " << std::endl;
         //write Eigenvalues
         for (auto k = 0; k <= T_RES; k++) {
@@ -139,6 +141,32 @@ void Diagonalize_Hamiltonian_magma() {
             csv_file << std::endl;
         }
         csv_file.close();
+    }catch (...){
+        std::cout << "Error writing EigenValues CSV"  << std::endl;
+    }
+    try {
+        std::fstream csv_file("EigenVectors_M" + std::to_string(MATRIX_SIZE)
+                              + "_Tres" + std::to_string(T_RES) + ".csv",
+                              std::fstream::out);
+        assert(csv_file.is_open());
+        //Write Headder
+        csv_file << "Eigenvalues of " << std::to_string(MATRIX_SIZE) << "x" << std::to_string(MATRIX_SIZE) << "Matrix, "
+                 << "for t = [" << std::to_string(T_START) << "," << std::to_string(T_END) << "] in "
+                 << std::to_string(T_RES) << " Steps. With: "
+                 << "t=  " << std::to_string(MU) << "; Delta = " << std::to_string(DELTA)
+                 << "using " << std::to_string(OMP_NUM_THREADS) << " OpenMP Threads" << std::endl;
+        csv_file << "M" << "," << std::to_string(MATRIX_SIZE) << " Eigenvalues  ... " << std::endl;
+        //write Eigenvalues
+        for (auto k = 0; k <= T_RES; k++) {
+            csv_file << t_s(k);
+            for (auto a : All_EigenVectors) {
+                csv_file << "," << a;
+            }
+            csv_file << std::endl;
+        }
+        csv_file.close();
+    }catch (...){
+        std::cout << "Error writing EigenVectors CSV"  << std::endl;
     }
 #endif
 

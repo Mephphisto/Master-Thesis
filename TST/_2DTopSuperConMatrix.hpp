@@ -44,9 +44,9 @@ private:
                     set(k, j, t);
                 } else if ((x_k == x_j - 1) && (y_k == y_j)) {
                     set(k, j, t);
-                } else if ((x_k == x_j) && (y_k = Gsize) && (y_j == 0)) {
+                } else if ((x_k == x_j) && (y_k == Gsize) && (y_j == 0)) {
                     set(k, j, t);
-                } else if ((x_k == x_j) && (y_k = 0) && (y_j == Gsize)) {
+                } else if ((x_k == x_j) && (y_k == 0) && (y_j == Gsize)) {
                     set(k, j, t);
                 } else if ((x_k == Gsize) && (x_j == 0) && (y_k == y_j)) {
                     set(k, j, t);
