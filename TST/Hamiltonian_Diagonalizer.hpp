@@ -8,15 +8,15 @@
 
 #pragma once
 
-#include <iostream>
+
+
+#include <type_traits>
+#include "Hamiltonian_Matrix.hpp"
 #include <Eigen/Dense>
+#include <iostream>
 #include <omp.h>
 #include <chrono>
 #include <fstream>
-#include <type_traits>
-#include "Hamiltonian_Matrix.hpp"
-
-
 template<class T>
 void Diagonalize_Hamiltonian()
 {
@@ -57,8 +57,8 @@ void Diagonalize_Hamiltonian()
         // Get Thread ID
         int tid = omp_get_thread_num();
         // Create Solver
-        Eigen::ComplexEigenSolver<Eigen::MatrixXcd> Solver(MATRIX_SIZE);
-        for (auto k = tid; k <= T_RES; k += OMP_NUM_THREADS){
+        Eigen::SelfAdjointEigenSolver<Eigen::MatrixXcd> Solver(MATRIX_SIZE);
+        for (auto k = tid; k < T_RES; k += OMP_NUM_THREADS){
 #ifdef DEBUG_ACTIVE
             //verify accurate stride through sample space
             {
@@ -74,7 +74,7 @@ void Diagonalize_Hamiltonian()
             double t = T_START + (T_END - T_START) * (double(k) / double(T_RES));
             {
                 //Build Matrix to be Solved by MKL
-                T M = T(MATRIX_SIZE, DELTA, t, MU);
+                T M = T(MATRIX_SIZE, t, MU, DELTA);
                 m = M.get();
                 tr = M.trace_A();
             }

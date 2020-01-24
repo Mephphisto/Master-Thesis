@@ -1,31 +1,38 @@
 cmake_minimum_required(VERSION 3.15)
 project(TST)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -v -lstdc++ -fopenmp")
-set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -v ")
-include_directories("/opt/clBLAS/include/" "/opt/clBLAS/bin/" "/opt/clBLAS/lib/")
-LINK_DIRECTORIES("/opt/clBLAS/include/" "/opt/clBLAS/bin/" "/opt/clBLAS/lib/")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -v -lstdc++ -fopenmp -DNOCHANGE -DMKL_ILP64  -qopt-report -xHost -O3 -Ofast -mkl")
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -liomp5 -lpthread -ldl")
 
-set(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} /opt/clBLAS/lib/)
 
 add_executable(TST main.cpp)
 
-option(EUSE_OCL "Decide weather or not to use OpenCL" ON)
-IF(EUSE_OCL)
-    ADD_DEFINITIONS(-DUSE_OpenCL)
-    find_library( clBLAS REQUIRED)
-    target_link_libraries(TST clBLAS)
-    find_package( OpenCL ${OPENCL_VERSION} )
-    target_link_libraries(TST OpenCL::OpenCL)
-ENDIF(EUSE_OCL)
-find_package (Eigen3 3.3 REQUIRED NO_MODULE)
-target_link_libraries (TST Eigen3::Eigen)
+find_package(Eigen3 3.3 REQUIRED NO_MODULE)
+target_link_libraries(TST Eigen3::Eigen)
 
-option(EUSE_MKL "Decide weather or not to use MKL" OFF)
-IF(EUSE_MKL)
-    find_package(BLAS REQUIRED)
-    ADD_DEFINITIONS(-DEIGEN_USE_MKL)
-ENDIF(EUSE_MKL)
+find_package(CUDA REQUIRED)
+target_include_directories(TST PUBLIC ${CUDA_INCLUDE_DIRS})
+target_link_libraries(TST ${CUDA_LIBRARIES})
+target_link_libraries(TST ${CUDA_cusolver_LIBRARY})
+include_directories(${CUDA_INCLUDE_DIRS})
+link_directories(${CUDA_LIBRARIES_DIRS})
 
+
+find_package(MAGMA REQUIRED)
+include_directories(${MAGMA_INCLUDE_DIRS})
+link_directories(${MAGMA_LIBRARIES_DIRS})
+target_include_directories(TST PUBLIC ${MAGMA_INCLUDE_DIRS})
+target_link_libraries(TST ${MAGMA_LIBRARIES})
+
+find_package(OpenMP REQUIRED)
+target_link_libraries(TST OpenMP::OpenMP_CXX)
+
+
+set(MKL_INCLUDE_DIR "/opt/intel/compilers_and_libraries_2019/linux/mkl/include")
+set(MKL_LIBRARY_DIR "/opt/intel/compilers_and_libraries_2019/linux/mkl/lib")
+find_package(MKL REQUIRED)
+include_directories(${MKL_INCLUDE_DIR})
+link_directories(${MKL_LIBRARY_DIR})
+target_link_libraries(TST ${MKL_LIBRARY})
 
 
 set(CMAKE_CXX_STANDARD 14)

@@ -8,6 +8,7 @@
 
 #ifndef Hamiltonian_Matrix_hpp
 #define Hamiltonian_Matrix_hpp
+#define DBL_EPSILON __DBL_EPSILON__
 
 #include <Eigen/Dense>
 #include <iostream>
