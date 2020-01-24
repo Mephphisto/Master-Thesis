@@ -16,10 +16,11 @@
 //#undef USE_OpenCL
 //#define USE_MAGMA
 //#define EIGEN_USE_LAPACKE
-//#define MATRIX_TO_CSV
+#define MATRIX_TO_CSV
+#define PERIODIC_BOUNDRY
 
 constexpr auto MATRIX_SIZE = 320;//2*20*20;
-constexpr auto T_RES = 64;
+constexpr auto T_RES = 2;
 constexpr double T_START = -1.5;
 constexpr double T_END = 1.5;
 constexpr double MU = 1;

@@ -28,7 +28,7 @@ def colorize(z):
     return c
 
 
-FileName = "Matrix320_Tres64"
+FileName = "EigenVectors_M18_Tres2"
 Path = "/Users/jakobteuffel/CodeBase/TST_MKL_Eigen/TST/cmake-build-debug/"
 a = []
 with open(Path + FileName + '.csv', newline='') as csvfile:

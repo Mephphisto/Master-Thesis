@@ -69,7 +69,7 @@ void Diagonalize_Hamiltonian_magma() {
 
     // Storage for Computed Eigen Values
     Eigen::MatrixXd All_EigenValues(MATRIX_SIZE, T_RES);
-    std::vector<Eigen::MatrixXd> All_EigenVectors(T_RES);
+    std::vector<Eigen::MatrixXcd> All_EigenVectors(T_RES);
     Eigen::VectorXd t_s(T_RES);
     {
         // Create Solver
@@ -158,7 +158,6 @@ void Diagonalize_Hamiltonian_magma() {
         csv_file << "M" << "," << std::to_string(MATRIX_SIZE) << " Eigenvalues  ... " << std::endl;
         //write Eigenvalues
         for (auto k = 0; k <= T_RES; k++) {
-            csv_file << t_s(k);
             for (auto a : All_EigenVectors) {
                 csv_file << "," << a;
             }

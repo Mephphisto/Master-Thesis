@@ -4,6 +4,8 @@
 
 #pragma once
 
+#pragma deprecated
+
 #include <iostream>
 #include <Eigen/Dense>
 #include <omp.h>
@@ -11,6 +13,7 @@
 #include <fstream>
 #include <clBLAS.h>
 
+[[deprecated]]
 template<class T>
 void Diagonalize_Hamiltonian_OpenCL()
 {

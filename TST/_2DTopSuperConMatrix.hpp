@@ -44,6 +44,7 @@ private:
                     set(k, j, t);
                 } else if ((x_k == x_j - 1) && (y_k == y_j)) {
                     set(k, j, t);
+#ifdef PERIODIC_BOUNDRY
                 } else if ((x_k == x_j) && (y_k == Gsize) && (y_j == 0)) {
                     set(k, j, t);
                 } else if ((x_k == x_j) && (y_k == 0) && (y_j == Gsize)) {
@@ -52,6 +53,7 @@ private:
                     set(k, j, t);
                 } else if ((x_k == 0) && (x_j == Gsize) && (y_k == y_j)) {
                     set(k, j, t);
+#endif
                 }else {
                     set(k,j,0);
                     set(k, j + Msize, 0);
@@ -76,6 +78,16 @@ private:
                     set(k, j + Msize, std::complex<double>(1, 0) * Delta);
                 } else if ((x_k == x_j - 1) && (y_k == y_j)) {
                     set(k, j + Msize, std::complex<double>(-1, 0) * Delta);
+#ifdef PERIODIC_BOUNDRY
+                } else if ((x_k == x_j) && (y_k == Gsize) && (y_j == 0)) {
+                    set(k, j + Msize, std::complex<double>(0, -1) * Delta);
+                } else if ((x_k == x_j) && (y_k == 0) && (y_j == Gsize)) {
+                    set(k, j + Msize, std::complex<double>(0, 1) * Delta);
+                } else if ((x_k == Gsize) && (x_j == 0) && (y_k == y_j)) {
+                    set(k, j + Msize, std::complex<double>(-1, 0) * Delta);
+                } else if ((x_k == 0) && (x_j == Gsize) && (y_k == y_j)) {
+                    set(k, j + Msize, std::complex<double>(1, 0) * Delta);
+#endif
                 } else {
                     set(k, j + Msize, 0);
                 }

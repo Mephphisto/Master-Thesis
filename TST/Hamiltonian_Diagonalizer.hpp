@@ -78,9 +78,9 @@ void Diagonalize_Hamiltonian() {
 
     // Storage for Computed Eigen Values
     Eigen::MatrixXd All_EigenValues(MATRIX_SIZE, T_RES + 1);
-    std::vector<Eigen::MatrixXd> All_EigenVectors(T_RES);
+    std::vector<Eigen::MatrixXcd> All_EigenVectors(T_RES);
     Eigen::VectorXd t_s(T_RES + 1);
-#pragma omp parallel num_threads(OMP_NUM_THREADS)
+//#pragma omp parallel num_threads(OMP_NUM_THREADS)
     {
         // Get Thread ID
         int tid = omp_get_thread_num();
@@ -110,11 +110,8 @@ void Diagonalize_Hamiltonian() {
             //Solve the Matrix
             Solver.compute(m);
             // Fetch  Eigenvalues from Solver
-            Eigen::VectorXd EigenValues = Solver.eigenvalues().col(0).real();
-            Eigen::MatrixXcd EigenVectors = Solver.eigenvectors();
-            //Save Eigenvalues and add constant Correction terms
-            All_EigenValues.col(k) = EigenValues + Eigen::VectorXd::Constant(MATRIX_SIZE, (tr - EigenValues.sum()) / 2);
-            All_EigenVectors[k] = EigenVectors;
+            All_EigenValues.col(k) = Solver.eigenvalues().col(0).real();
+            All_EigenVectors[k] = Solver.eigenvectors();
             t_s(k) = t;
         }
     }
@@ -170,7 +167,7 @@ void Diagonalize_Hamiltonian() {
         csv_file << "M" << "," << std::to_string(MATRIX_SIZE) << " Eigenvalues  ... " << std::endl;
         //write Eigenvalues
         for (auto k = 0; k <= T_RES; k++) {
-            csv_file << t_s(k);
+            //csv_file << t_s(k);
             for (auto a : All_EigenVectors) {
                 csv_file << "," << a;
             }
