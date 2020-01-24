@@ -18,7 +18,7 @@ def colorize(z):
     r = np.abs(z)
     arg = np.angle(z)
 
-    h = 180 * arg / pi # (arg + pi) / (2 * pi) + 0.5
+    h = 180 * arg / pi  # (arg + pi) / (2 * pi) + 0.5
     l = 1.0 - 1.0 / (1.0 + r ** 0.3)
     s = 0.8
 
@@ -28,7 +28,7 @@ def colorize(z):
     return c
 
 
-FileName = "EigenVectors_M18_Tres2"
+FileName = "EigenVectors_M800_Tres1"
 Path = "/Users/jakobteuffel/CodeBase/TST_MKL_Eigen/TST/cmake-build-debug/"
 a = []
 with open(Path + FileName + '.csv', newline='') as csvfile:
@@ -44,8 +44,20 @@ with open(Path + FileName + '.csv', newline='') as csvfile:
         else:
             print(row)
 
+b1,b2 = [],[]
+l = len(a)
+l2 = int(len(a)/2)
+for k in range(l):
+    b1.append(a[l2-1][k])
+    b2.append(a[l2][k])
+
+a = []
+for k in range(l2):
+    a.append([b1[k] * b1[int(k + l2)], b2[k] * b2[int(k + l2)]])
+
 # 'nearest' interpolation - faithful but blocky
-plt.imshow(colorize(a), interpolation='nearest')
+#plt.figure(figsize = (len(a), len(a)))
+plt.imshow(colorize(a), interpolation='none', aspect=int(l2/4))
 
 plt.show(dpi=1200)
-# plt.savefig(FileName + ".jpg", quality=100, optimize=True, dpi=600)
+#plt.savefig("KitaevMajoranas" + ".png", quality=100, optimize=True, dpi=600)

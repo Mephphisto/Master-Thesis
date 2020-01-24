@@ -150,8 +150,8 @@ void Diagonalize_Hamiltonian() {
             csv_file << std::endl;
         }
         csv_file.close();
-    }catch (...){
-        std::cout << "Error writing EigenValues CSV"  << std::endl;
+    } catch (...) {
+        std::cout << "Error writing EigenValues CSV" << std::endl;
     }
     try {
         std::fstream csv_file("EigenVectors_M" + std::to_string(MATRIX_SIZE)
@@ -166,16 +166,17 @@ void Diagonalize_Hamiltonian() {
                  << "using " << std::to_string(OMP_NUM_THREADS) << " OpenMP Threads" << std::endl;
         csv_file << "M" << "," << std::to_string(MATRIX_SIZE) << " Eigenvalues  ... " << std::endl;
         //write Eigenvalues
-        for (auto k = 0; k <= T_RES; k++) {
-            //csv_file << t_s(k);
-            for (auto a : All_EigenVectors) {
-                csv_file << "," << a;
+        for (auto M : All_EigenVectors) {
+            for (auto k = 0; k < MATRIX_SIZE; k++) {
+                for (auto a : M.col(k)) {
+                    csv_file << "," << a;
+                }
+                csv_file << std::endl;
             }
-            csv_file << std::endl;
         }
         csv_file.close();
-    }catch (...){
-        std::cout << "Error writing EigenVectors CSV"  << std::endl;
+    } catch (...) {
+        std::cout << "Error writing EigenVectors CSV" << std::endl;
     }
 #endif
 

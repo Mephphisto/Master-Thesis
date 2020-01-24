@@ -28,13 +28,13 @@ private:
                 size_t y_k = index_y(k);
 
                 if ((x_k == x_j) && (y_k == y_j)) {
-                    /*if ((x_k - Gsize / 2 < Gsize / 4) && (y_k - Gsize / 2 < Gsize / 4) && (x_k > 2) && (y_k > 2)) {
+                    if ((x_k - Gsize / 2 < Gsize / 4) && (y_k - Gsize / 2 < Gsize / 4) && (x_k > 2) && (y_k > 2)) {
                         set(k, j, -1-4*t);
                     }else if((x_k-Gsize/2 > 3*Gsize/4)&&(y_k-Gsize/2 > 3*Gsize/4) && (x_k < Gsize-2) && (y_k < Gsize - 2)){
                         set(k, j, -1-4*t);
-                    } else {*/
+                    } else {
                     set(k, j, mu - 4 * t);
-                    //}
+                    }
 
                 } else if ((x_k == x_j) && (y_k == y_j + 1)) {
                     set(k, j, t);
