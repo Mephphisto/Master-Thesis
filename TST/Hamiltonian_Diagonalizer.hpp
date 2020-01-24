@@ -40,7 +40,33 @@ void Diagonalize_Hamiltonian()
     std::cin.get();
     return;
 #endif
-
+#ifdef MATRIX_TO_CSV
+    {
+        try {
+            std::fstream csv_file("Matrix" + std::to_string(MATRIX_SIZE)
+                                  + "_Tres" + std::to_string(T_RES) + ".csv",
+                                  std::fstream::out);
+            assert(csv_file.is_open());
+            //Write Headder
+            csv_file << "Matrix of " << std::to_string(MATRIX_SIZE) << "x" << std::to_string(MATRIX_SIZE) << "Matrix, "
+                     << "for t = " << std::to_string(T_START) << " With: "
+                     << "MU=  " << std::to_string(MU) << "; Delta = " << std::to_string(DELTA)
+                     << std::endl;
+            csv_file << "M" << "," << std::to_string(MATRIX_SIZE) << " Eigenvalues  ... " << std::endl;
+            //write Matrix
+            auto Mat = T(MATRIX_SIZE, T_START, MU, DELTA).get();
+            for (auto k = 0; k < MATRIX_SIZE; k++) {
+                for (auto a : Mat.col(k)) {
+                    csv_file << "," << a;
+                }
+                csv_file << std::endl;
+            }
+            csv_file.close();
+        } catch (...) {
+            std::cout << "Error Closing file" << std::endl;
+        }
+    }
+#endif
 #ifdef DEBUG_ACTIVE
     // get start time for runtime Calculation
     auto start = std::chrono::system_clock::now();

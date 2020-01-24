@@ -14,8 +14,8 @@
 #define EVAL_BY_CSV
 //#define SHOW_MATRIX_AND_QUIT
 //#undef USE_OpenCL
-#define USE_MAGMA
-#define EIGEN_USE_LAPACKE
+//#define USE_MAGMA
+//#define EIGEN_USE_LAPACKE
 #define MATRIX_TO_CSV
 
 constexpr auto MATRIX_SIZE = 320;//2*20*20;

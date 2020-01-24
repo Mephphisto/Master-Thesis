@@ -30,7 +30,7 @@ public:
             for (size_t j = k; j < 2 * Msize; j++)
             {
                 auto diff = abs(m(j, k) - conj(m(k, j)));
-                if ( diff > DBL_EPSILON)
+                if ( diff > __DBL_EPSILON__)
                 {
                     std::cout << "Hermitiity error m( " << k << " , " << j << " ) = " << m(k, j) << " m( " << j << " , " << k << " ) = " << m(j, k) << " diff = " << diff << std::endl;
                     res = true;
@@ -47,7 +47,7 @@ public:
             for (size_t j = 0; j < Msize; j++)
             {
                 auto diff = abs(m(j, k) + conj(m(j + Msize, k + Msize)));
-                if (diff > DBL_EPSILON)
+                if (diff > __DBL_EPSILON__)
                 {
                     std::cout << "A Matrix error  m( " << j << " , " << k << " ) = " << m(j, k) << " m( " << j + Msize << " , " << k + Msize << " ) = " << m(j + Msize, k + Msize) << " diff = " << diff << std::endl;
                     res = true;
@@ -64,7 +64,7 @@ public:
             for (size_t j = 0; j < Msize; j++)
             {
                 auto diff = abs(m(j, k) + conj(m(j + Msize, k - Msize)));
-                if (diff > DBL_EPSILON)
+                if (diff > __DBL_EPSILON__)
                 {
                     std::cout << "B Matrix error m( " << j << " , " << k << " ) = " << m(j, k) << "; m( " << j + Msize << " , " << k - Msize << " ) = " << m(j + Msize, k - Msize) << " diff = " << diff << std::endl;
                     res = true;
