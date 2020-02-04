@@ -77,10 +77,10 @@ void Diagonalize_Hamiltonian() {
 #endif
 
     // Storage for Computed Eigen Values
-    Eigen::MatrixXd All_EigenValues(MATRIX_SIZE, T_RES + 1);
+    Eigen::MatrixXd All_EigenValues(MATRIX_SIZE, T_RES);
     std::vector<Eigen::MatrixXcd> All_EigenVectors(T_RES);
     Eigen::VectorXd t_s(T_RES + 1);
-//#pragma omp parallel num_threads(OMP_NUM_THREADS)
+#pragma omp parallel num_threads(OMP_NUM_THREADS)
     {
         // Get Thread ID
         int tid = omp_get_thread_num();
@@ -100,7 +100,7 @@ void Diagonalize_Hamiltonian() {
             //Storage for Matrix and Trace
             Eigen::MatrixXcd m;
             double tr;
-            double t = T_START + (T_END - T_START) * (double(k) / double(T_RES));
+            double t = T_START + (T_END - T_START) * (double(k) / double(T_RES ));
             {
                 //Build Matrix to be Solved by MKL
                 T M = T(MATRIX_SIZE, t, MU, DELTA);
@@ -127,7 +127,7 @@ void Diagonalize_Hamiltonian() {
     std::cout << "eigenvalues:" << std::endl << All_EigenValues << std::endl;
 #endif
 
-#ifdef    EVAL_BY_CSV
+#ifdef EVAL_BY_CSV
     //writes Eigenvalues to CSV - File for
     try {
         std::fstream csv_file("EigenValues_M" + std::to_string(MATRIX_SIZE)
@@ -142,7 +142,7 @@ void Diagonalize_Hamiltonian() {
                  << "using " << std::to_string(OMP_NUM_THREADS) << " OpenMP Threads" << std::endl;
         csv_file << "M" << "," << std::to_string(MATRIX_SIZE) << " Eigenvalues  ... " << std::endl;
         //write Eigenvalues
-        for (auto k = 0; k <= T_RES; k++) {
+        for (auto k = 0; k < T_RES; k++) {
             csv_file << t_s(k);
             for (auto a : All_EigenValues.col(k)) {
                 csv_file << "," << a;

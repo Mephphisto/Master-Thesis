@@ -9,7 +9,7 @@
 
 class _2DTopSuperConMatrix : public Hamiltonian_Matrix {
 private:
-    double t, mu;
+    double t, mu, Gsize_d;
     std::complex<double> Delta;
     size_t Gsize;
 
@@ -28,12 +28,12 @@ private:
                 size_t y_k = index_y(k);
 
                 if ((x_k == x_j) && (y_k == y_j)) {
-                    if ((x_k - Gsize / 2 < Gsize / 4) && (y_k - Gsize / 2 < Gsize / 4) && (x_k > 2) && (y_k > 2)) {
-                        set(k, j, -1-4*t);
-                    }else if((x_k-Gsize/2 > 3*Gsize/4)&&(y_k-Gsize/2 > 3*Gsize/4) && (x_k < Gsize-2) && (y_k < Gsize - 2)){
-                        set(k, j, -1-4*t);
+                    if (sqrt(pow(x_j - (Gsize_d-1) / 4, 2) + pow(y_j - (Gsize_d-1) / 4, 2)) < .4 * Gsize_d / 4) {
+                        set(k, j, 1);
+                    } else if (sqrt(pow(x_j - 3 * (Gsize_d-1) / 4, 2) + pow(y_j - 3 * (Gsize_d-1) / 4, 2)) < .4 * Gsize_d / 4) {
+                        set(k, j, 1);
                     } else {
-                    set(k, j, mu - 4 * t);
+                        set(k, j, -1-4*t);
                     }
 
                 } else if ((x_k == x_j) && (y_k == y_j + 1)) {
@@ -45,17 +45,17 @@ private:
                 } else if ((x_k == x_j - 1) && (y_k == y_j)) {
                     set(k, j, t);
 #ifdef PERIODIC_BOUNDRY
-                } else if ((x_k == x_j) && (y_k == Gsize) && (y_j == 0)) {
+                } else if ((x_k == x_j) && (y_k == Gsize - 1) && (y_j == 0)) {
                     set(k, j, t);
-                } else if ((x_k == x_j) && (y_k == 0) && (y_j == Gsize)) {
+                } else if ((x_k == x_j) && (y_k == 0) && (y_j == Gsize - 1)) {
                     set(k, j, t);
-                } else if ((x_k == Gsize) && (x_j == 0) && (y_k == y_j)) {
+                } else if ((x_k == Gsize - 1) && (x_j == 0) && (y_k == y_j)) {
                     set(k, j, t);
-                } else if ((x_k == 0) && (x_j == Gsize) && (y_k == y_j)) {
+                } else if ((x_k == 0) && (x_j == Gsize - 1) && (y_k == y_j)) {
                     set(k, j, t);
 #endif
-                }else {
-                    set(k,j,0);
+                } else {
+                    set(k, j, 0);
                     set(k, j + Msize, 0);
                 }
             }
@@ -70,23 +70,31 @@ private:
                 size_t x_k = index_x(k);
                 size_t y_k = index_y(k);
 
+                std::complex<double> phase;
+#ifdef PHASE
+                phase = std::complex<double>(static_cast<double>(x_j + x_k) / 2 - Gsize_d / 2,
+                                             static_cast<double >(y_j + y_k) / 2 - Gsize_d / 2);
+                phase = phase / abs(phase);
+#else
+                phase = std::complex<double>(1,0);
+#endif
                 if ((x_k == x_j) && (y_k == y_j + 1)) {
-                    set(k, j + Msize, std::complex<double>(0, 1) * Delta);
+                    set(k, j + Msize, std::complex<double>(0, 1) * Delta * phase);
                 } else if ((x_k == x_j) && (y_k == y_j - 1)) {
-                    set(k, j + Msize, std::complex<double>(0, -1) * Delta);
+                    set(k, j + Msize, std::complex<double>(0, -1) * Delta * phase);
                 } else if ((x_k == x_j + 1) && (y_k == y_j)) {
-                    set(k, j + Msize, std::complex<double>(1, 0) * Delta);
+                    set(k, j + Msize, std::complex<double>(1, 0) * Delta * phase);
                 } else if ((x_k == x_j - 1) && (y_k == y_j)) {
-                    set(k, j + Msize, std::complex<double>(-1, 0) * Delta);
+                    set(k, j + Msize, std::complex<double>(-1, 0) * Delta * phase);
 #ifdef PERIODIC_BOUNDRY
-                } else if ((x_k == x_j) && (y_k == Gsize) && (y_j == 0)) {
-                    set(k, j + Msize, std::complex<double>(0, -1) * Delta);
-                } else if ((x_k == x_j) && (y_k == 0) && (y_j == Gsize)) {
-                    set(k, j + Msize, std::complex<double>(0, 1) * Delta);
-                } else if ((x_k == Gsize) && (x_j == 0) && (y_k == y_j)) {
-                    set(k, j + Msize, std::complex<double>(-1, 0) * Delta);
-                } else if ((x_k == 0) && (x_j == Gsize) && (y_k == y_j)) {
-                    set(k, j + Msize, std::complex<double>(1, 0) * Delta);
+                } else if ((x_k == x_j) && (y_k == Gsize - 1) && (y_j == 0)) {
+                    set(k, j + Msize, std::complex<double>(0, -1) * Delta * phase);
+                } else if ((x_k == x_j) && (y_k == 0) && (y_j == Gsize - 1)) {
+                    set(k, j + Msize, std::complex<double>(0, 1) * Delta * phase);
+                } else if ((x_k == Gsize - 1) && (x_j == 0) && (y_k == y_j)) {
+                    set(k, j + Msize, std::complex<double>(-1, 0) * Delta * phase);
+                } else if ((x_k == 0) && (x_j == Gsize - 1) && (y_k == y_j)) {
+                    set(k, j + Msize, std::complex<double>(1, 0) * Delta * phase);
 #endif
                 } else {
                     set(k, j + Msize, 0);
@@ -108,13 +116,17 @@ private:
     }
 
 public:
-    _2DTopSuperConMatrix(size_t size_in, double t_in, double mu_in, double Delta_in) {
+    _2DTopSuperConMatrix(size_t
+                         size_in,
+                         double t_in,
+                         double mu_in,
+                         double Delta_in) {
         this->t = t_in;
         this->mu = mu_in;
         this->Delta = static_cast<std::complex<double>>(Delta_in / 2);
         this->Msize = size_in / 2;
         this->Gsize = sqrt(Msize);
-
+        this->Gsize_d = static_cast<double>(Gsize);
         m = Eigen::MatrixXcd(size_in, size_in);
         Build_A();
         Build_B();

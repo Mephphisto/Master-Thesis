@@ -9,6 +9,7 @@
 #include <fstream>
 #include "TST_Magma_Solver.hpp"
 #include <magma_lapack.h>
+#include <vector>
 #include <chrono>
 
 template<class T>
@@ -32,7 +33,7 @@ void Diagonalize_Hamiltonian_magma() {
     return;
 #endif
 #ifdef MATRIX_TO_CSV
-    {
+
         try {
             std::fstream csv_file("Matrix" + std::to_string(MATRIX_SIZE)
                                   + "_Tres" + std::to_string(T_RES) + ".csv",
@@ -56,7 +57,7 @@ void Diagonalize_Hamiltonian_magma() {
         } catch (...) {
             std::cout << "Error Closing file" << std::endl;
         }
-    }
+    return;
 #endif
 
 #ifdef DEBUG_ACTIVE
@@ -73,7 +74,11 @@ void Diagonalize_Hamiltonian_magma() {
     Eigen::VectorXd t_s(T_RES);
     {
         // Create Solver
+#ifdef USE_GPU
         magma::SelfAdjointEigenSolver<Eigen::MatrixXcd> Solver(MATRIX_SIZE);
+#else
+        Eigen::SelfAdjointEigenSolver<Eigen::MatrixXcd> Solver(MATRIX_SIZE);
+#endif
         for (auto k = 0; k < T_RES; k++) {
 #ifdef DEBUG_ACTIVE
             //verify accurate stride through sample space
@@ -87,7 +92,7 @@ void Diagonalize_Hamiltonian_magma() {
             //Storage for Matrix and Trace
             Eigen::MatrixXcd m;
             double tr;
-            double t = T_START + (T_END - T_START) * (double(k) / double(T_RES - 1));
+            double t = T_START + (T_END - T_START) * (double(k) / double(T_RES));
             {
                 //Build Matrix to be Solved by MKL
                 T M = T(MATRIX_SIZE, t, MU, DELTA);
@@ -97,11 +102,11 @@ void Diagonalize_Hamiltonian_magma() {
             //Solve the Matrix
             Solver.compute(m);
             // Fetch  Eigenvalues from Solver
-            Eigen::VectorXd EigenValues = Solver.eigenvalues().col(0).real();
 
-            //Save Eigenvalues and add constant Correction terms
-            All_EigenValues.col(k) = EigenValues + Eigen::VectorXd::Constant(MATRIX_SIZE, (tr - EigenValues.sum()) / 2);
-            All_EigenVectors[k] = EigenVectors;
+            All_EigenValues.col(k) = Solver.eigenvalues().col(0).real() +
+                                     Eigen::VectorXd::Constant(MATRIX_SIZE, (tr - Solver.eigenvalues().col(
+                                             0).real().sum()) / 2);
+            All_EigenVectors[k] = Solver.eigenvectors();
             t_s(k) = t;
         }
     }
@@ -118,7 +123,7 @@ void Diagonalize_Hamiltonian_magma() {
 #endif
 
 
-#ifdef    EVAL_BY_CSV
+#ifdef EVAL_EVAL_BY_CSV
     //writes Eigenvalues to CSV - File for
     try {
         std::fstream csv_file("EigenValues_M" + std::to_string(MATRIX_SIZE)
@@ -133,7 +138,7 @@ void Diagonalize_Hamiltonian_magma() {
                  << "using " << std::to_string(OMP_NUM_THREADS) << " OpenMP Threads" << std::endl;
         csv_file << "M" << "," << std::to_string(MATRIX_SIZE) << " Eigenvalues  ... " << std::endl;
         //write Eigenvalues
-        for (auto k = 0; k <= T_RES; k++) {
+        for (auto k = 0; k < T_RES; k++) {
             csv_file << t_s(k);
             for (auto a : All_EigenValues.col(k)) {
                 csv_file << "," << a;
@@ -144,6 +149,8 @@ void Diagonalize_Hamiltonian_magma() {
     }catch (...){
         std::cout << "Error writing EigenValues CSV"  << std::endl;
     }
+#endif
+#ifdef EVAL_EVEC_BY_CSV
     try {
         std::fstream csv_file("EigenVectors_M" + std::to_string(MATRIX_SIZE)
                               + "_Tres" + std::to_string(T_RES) + ".csv",
@@ -157,11 +164,13 @@ void Diagonalize_Hamiltonian_magma() {
                  << "using " << std::to_string(OMP_NUM_THREADS) << " OpenMP Threads" << std::endl;
         csv_file << "M" << "," << std::to_string(MATRIX_SIZE) << " Eigenvalues  ... " << std::endl;
         //write Eigenvalues
-        for (auto k = 0; k <= T_RES; k++) {
-            for (auto a : All_EigenVectors) {
-                csv_file << "," << a;
+        for (auto M : All_EigenVectors) {
+            for (auto k = MATRIX_SIZE/2-3; k < MATRIX_SIZE/2+3; k++) {
+                for (auto a : M.col(k)) {
+                    csv_file << "," << a;
+                }
+                csv_file << std::endl;
             }
-            csv_file << std::endl;
         }
         csv_file.close();
     }catch (...){
