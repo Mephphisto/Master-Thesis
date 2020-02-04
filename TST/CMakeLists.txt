@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.15)
+cmake_minimum_required(VERSION 3.10)
 project(TST)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -v -lstdc++ -fopenmp -DNOCHANGE -DMKL_ILP64 -inline-force -qopt-report -xHost -O3 -Ofast -mkl")
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -liomp5 -lpthread -ldl")

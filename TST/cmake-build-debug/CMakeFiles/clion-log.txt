@@ -1,4 +1,21 @@
-/Applications/CLion.app/Contents/bin/cmake/mac/bin/cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_COMPILER=/usr/local/Cellar/gcc/9.2.0_2/bin/gcc-9 -DCMAKE_CXX_COMPILER=/usr/local/Cellar/gcc/9.2.0_2/bin/gcc-9 -G "CodeBlocks - Unix Makefiles" /Users/jakobteuffel/CodeBase/TST_MKL_Eigen/TST
--- Configuring done
--- Generating done
--- Build files have been written to: /Users/jakobteuffel/CodeBase/TST_MKL_Eigen/TST/cmake-build-debug
+/snap/clion/100/bin/cmake/linux/bin/cmake -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" /home/jakob/Downloads/TST_MKL_Eigen/TST
+-- Checking whether C compiler has -isysroot
+-- Checking whether C compiler has -isysroot - yes
+-- Checking whether C compiler supports OSX deployment target flag
+-- Checking whether C compiler supports OSX deployment target flag - no
+-- Checking whether CXX compiler has -isysroot
+-- Checking whether CXX compiler has -isysroot - yes
+-- Checking whether CXX compiler supports OSX deployment target flag
+-- Checking whether CXX compiler supports OSX deployment target flag - no
+-- Found OpenMP_C: -fopenmp (found version "4.5") 
+CMake Error at /snap/clion/100/bin/cmake/linux/share/cmake-3.15/Modules/FindPackageHandleStandardArgs.cmake:137 (message):
+  Could NOT find OpenMP_CXX (missing: OpenMP_CXX_FLAGS OpenMP_CXX_LIB_NAMES)
+Call Stack (most recent call first):
+  /snap/clion/100/bin/cmake/linux/share/cmake-3.15/Modules/FindPackageHandleStandardArgs.cmake:378 (_FPHSA_FAILURE_MESSAGE)
+  /snap/clion/100/bin/cmake/linux/share/cmake-3.15/Modules/FindOpenMP.cmake:477 (find_package_handle_standard_args)
+  CMakeLists.txt:26 (find_package)
+
+
+-- Configuring incomplete, errors occurred!
+See also "/home/jakob/Downloads/TST_MKL_Eigen/TST/cmake-build-debug/CMakeFiles/CMakeOutput.log".
+See also "/home/jakob/Downloads/TST_MKL_Eigen/TST/cmake-build-debug/CMakeFiles/CMakeError.log".
