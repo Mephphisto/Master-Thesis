@@ -395,3 +395,14 @@ MigrationBackup/
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
 /TST/VTune Amplifier Results/TST
+/TST/cmake-build-release-intel-2019/
+/TST/.idea/
+/TST/build/
+/TST/build_teerm/
+/TST/cmake-build-debug/
+/TST/cmake-build-debug-intel-2019/
+/TST/cmake-build-release/
+/TST/.idea/
+/TST/build/
+/TST/build_teerm/
+/TST/cmake-build-debug/
