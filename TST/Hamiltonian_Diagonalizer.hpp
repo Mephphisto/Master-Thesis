@@ -24,7 +24,7 @@ void Diagonalize_Hamiltonian() {
     assert(right_T);
 #ifdef SHOW_MATRIX_AND_QUIT
     //Build Matrix shom Matrix in CMD and Quit
-    T M = T(MATRIX_SIZE, T_START, MU, DELTA);
+    T M = T(MATRIX_SIZE,T_COUPLE, T_START, MU, DELTA);
     bool Mat_Error = false;
     Mat_Error = M.verify_hermitiity() || Mat_Error;
     Mat_Error = M.verify_AMatrices() || Mat_Error;
@@ -54,7 +54,7 @@ void Diagonalize_Hamiltonian() {
                  << std::endl;
         csv_file << "M" << "," << std::to_string(MATRIX_SIZE) << " Eigenvalues  ... " << std::endl;
         //write Matrix
-        auto Mat = T(MATRIX_SIZE, T_START, MU, DELTA).get();
+        auto Mat = T(MATRIX_SIZE,T_COUPLE, T_START, MU, DELTA).get();
         for (auto k = 0; k < MATRIX_SIZE; k++) {
             for (auto a : Mat.col(k)) {
                 csv_file << "," << a;
@@ -103,7 +103,7 @@ void Diagonalize_Hamiltonian() {
             double t = T_START + (T_END - T_START) * (double(k) / double(T_RES ));
             {
                 //Build Matrix to be Solved by MKL
-                T M = T(MATRIX_SIZE, t, MU, DELTA);
+                T M = T(MATRIX_SIZE,T_COUPLE, t, MU, DELTA);
                 m = M.get();
                 tr = M.trace_A();
             }

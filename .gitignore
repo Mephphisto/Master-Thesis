@@ -406,3 +406,5 @@ MigrationBackup/
 /TST/build/
 /TST/build_teerm/
 /TST/cmake-build-debug/
+/Eval/py/Majoranas/
+/Eval/py/Majoranas2D/

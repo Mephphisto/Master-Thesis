@@ -27,7 +27,7 @@ def colorize(z):
     return c
 
 
-FileName = "Matrix1922_Tres1"
+FileName = "Matrix1922_Tres32"
 Path = "/home/jakob/Downloads/TST_MKL_Eigen/TST/cmake-build-release-intel-2019/"
 a = []
 with open(Path + FileName + '.csv', newline='') as csvfile:

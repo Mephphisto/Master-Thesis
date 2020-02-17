@@ -16,7 +16,7 @@ template<class T>
 void Diagonalize_Hamiltonian_magma() {
 #ifdef SHOW_MATRIX_AND_QUIT
     //Build Matrix shom Matrix in CMD and Quit
-    T M = T(MATRIX_SIZE, T_START, MU, DELTA);
+    T M = T(MATRIX_SIZE, T_COUPLE ,T_START, MU, DELTA);
     bool Mat_Error = false;
     Mat_Error = M.verify_hermitiity() || Mat_Error;
     Mat_Error = M.verify_AMatrices() || Mat_Error;
@@ -34,30 +34,88 @@ void Diagonalize_Hamiltonian_magma() {
 #endif
 #ifdef MATRIX_TO_CSV
 
-        try {
-            std::fstream csv_file("Matrix" + std::to_string(MATRIX_SIZE)
-                                  + "_Tres" + std::to_string(T_RES) + ".csv",
-                                  std::fstream::out);
-            assert(csv_file.is_open());
-            //Write Headder
-            csv_file << "Matrix of " << std::to_string(MATRIX_SIZE) << "x" << std::to_string(MATRIX_SIZE) << "Matrix, "
-                     << "for t = " << std::to_string(T_START) << " With: "
-                     << "MU=  " << std::to_string(MU) << "; Delta = " << std::to_string(DELTA)
-                     << std::endl;
-            csv_file << "M" << "," << std::to_string(MATRIX_SIZE) << " Eigenvalues  ... " << std::endl;
-            //write Matrix
-            auto Mat = T(MATRIX_SIZE, T_START, MU, DELTA).get();
-            for (auto k = 0; k < MATRIX_SIZE; k++) {
-                for (auto a : Mat.col(k)) {
-                    csv_file << "," << a;
-                }
-                csv_file << std::endl;
+    try {
+        std::fstream csv_file("Matrix" + std::to_string(MATRIX_SIZE)
+                              + "_Tres" + std::to_string(T_RES) + ".csv",
+                              std::fstream::out);
+        assert(csv_file.is_open());
+        //Write Headder
+        csv_file << "Matrix of " << std::to_string(MATRIX_SIZE) << "x" << std::to_string(MATRIX_SIZE) << "Matrix, "
+                 << "for t = " << std::to_string(T_START) << " With: "
+                 << "MU=  " << std::to_string(MU) << "; Delta = " << std::to_string(DELTA)
+                 << std::endl;
+        csv_file << "M" << "," << std::to_string(MATRIX_SIZE) << " Eigenvalues  ... " << std::endl;
+        //write Matrix
+        auto Mat = T(MATRIX_SIZE, T_COUPLE , T_START, MU, DELTA).get();
+        for (auto k = 0; k < MATRIX_SIZE; k++) {
+            for (auto a : Mat.col(k)) {
+                csv_file << "," << a;
             }
-            csv_file.close();
-        } catch (...) {
-            std::cout << "Error Closing file" << std::endl;
+            csv_file << std::endl;
         }
-    return;
+        csv_file.close();
+    } catch (...) {
+        std::cout << "Error Closing file" << std::endl;
+    }
+return;
+#endif
+
+#ifdef MU_TO_CSV
+    try {
+        std::fstream csv_file("MU_M" + std::to_string(MATRIX_SIZE)
+                              + "_Tres" + std::to_string(T_RES) + ".csv",
+                              std::fstream::out);
+        assert(csv_file.is_open());
+        //Write Headder
+        csv_file << "Eigenvalues of " << std::to_string(MATRIX_SIZE) << "x" << std::to_string(MATRIX_SIZE) << "Matrix, "
+                 << "for t = [" << std::to_string(T_START) << "," << std::to_string(T_END) << "] in "
+                 << std::to_string(T_RES) << " Steps. With: "
+                 << "t=  " << std::to_string(MU) << "; Delta = " << std::to_string(DELTA)
+                 << "using " << std::to_string(OMP_NUM_THREADS) << " OpenMP Threads" << std::endl;
+        csv_file << "M" << "," << std::to_string(MATRIX_SIZE) << " Eigenvalues  ... " << std::endl;
+        //write Eigenvalues
+        Eigen::MatrixXcd M = T(MATRIX_SIZE, T_COUPLE, T_START, MU, DELTA).get();
+        for (auto a : M.diagonal()) {
+            csv_file << "," << a;
+        }
+        csv_file << std::endl;
+
+
+        csv_file.close();
+    } catch (...) {
+        std::cout << "Error writing MU CSV" << std::endl;
+    }
+#endif
+#ifdef DELTA_TO_CSV
+    try {
+        std::fstream csv_file("DELTA_M" + std::to_string(MATRIX_SIZE)
+                              + "_Tres" + std::to_string(T_RES) + ".csv",
+                              std::fstream::out);
+        assert(csv_file.is_open());
+        //Write Headder
+        csv_file << "Eigenvalues of " << std::to_string(MATRIX_SIZE) << "x" << std::to_string(MATRIX_SIZE) << "Matrix, "
+                 << "for t = [" << std::to_string(T_START) << "," << std::to_string(T_END) << "] in "
+                 << std::to_string(T_RES) << " Steps. With: "
+                 << "t=  " << std::to_string(MU) << "; Delta = " << std::to_string(DELTA)
+                 << "using " << std::to_string(OMP_NUM_THREADS) << " OpenMP Threads" << std::endl;
+        csv_file << "M" << "," << std::to_string(MATRIX_SIZE) << " Eigenvalues  ... " << std::endl;
+        //write Eigenvalues
+        Eigen::MatrixXcd M = T(MATRIX_SIZE, T_COUPLE, T_START, MU, DELTA).get();
+        for (auto a : M.diagonal<MATRIX_SIZE / 2 + 1>()) {
+            csv_file << "," << a;
+        }
+        for (auto a : M.diagonal<MATRIX_SIZE / 2 - 1>()) {
+            csv_file << "," << a;
+        }
+        std::cout << "MATRIX_SIZE = " << MATRIX_SIZE << " Delta size " << M.diagonal<MATRIX_SIZE / 2 - 1>().size() +
+                                                                            M.diagonal<MATRIX_SIZE / 2 + 1>().size() << std::endl;
+        csv_file << std::endl;
+
+
+        csv_file.close();
+    } catch (...) {
+        std::cout << "Error writing MU CSV" << std::endl;
+    }
 #endif
 
 #ifdef DEBUG_ACTIVE
@@ -70,7 +128,7 @@ void Diagonalize_Hamiltonian_magma() {
 
     // Storage for Computed Eigen Values
     Eigen::MatrixXd All_EigenValues(MATRIX_SIZE, T_RES);
-    std::vector<Eigen::MatrixXcd> All_EigenVectors(T_RES);
+    std::vector<Eigen::VectorXcd> All_EigenVectors;
     Eigen::VectorXd t_s(T_RES);
     {
         // Create Solver
@@ -95,7 +153,7 @@ void Diagonalize_Hamiltonian_magma() {
             double t = T_START + (T_END - T_START) * (double(k) / double(T_RES));
             {
                 //Build Matrix to be Solved by MKL
-                T M = T(MATRIX_SIZE, t, MU, DELTA);
+                T M = T(MATRIX_SIZE, T_COUPLE, t, MU, DELTA);
                 m = M.get();
                 tr = M.trace_A();
             }
@@ -106,7 +164,20 @@ void Diagonalize_Hamiltonian_magma() {
             All_EigenValues.col(k) = Solver.eigenvalues().col(0).real() +
                                      Eigen::VectorXd::Constant(MATRIX_SIZE, (tr - Solver.eigenvalues().col(
                                              0).real().sum()) / 2);
-            All_EigenVectors[k] = Solver.eigenvectors();
+            size_t majoranas[2] = {0, 0};
+            for (size_t t = 0; t < All_EigenValues.col(k).size(); t++) {
+                if (abs(All_EigenValues.col(k)[t]) < abs(All_EigenValues.col(k)[majoranas[0]])) {
+                    majoranas[1] = majoranas[0];
+                    majoranas[0] = t;
+                } else if (abs(All_EigenValues.col(k)[t]) < abs(All_EigenValues.col(k)[majoranas[1]])) {
+                    majoranas[1] = t;
+                }
+            }
+            for (auto l : majoranas) {
+                std::cout << " EiVal[" << l << "] = " << All_EigenValues.col(k)[l];
+                All_EigenVectors.push_back(Solver.eigenvectors().col(l));
+            }
+            std::cout << std::endl;
             t_s(k) = t;
         }
     }
@@ -146,8 +217,8 @@ void Diagonalize_Hamiltonian_magma() {
             csv_file << std::endl;
         }
         csv_file.close();
-    }catch (...){
-        std::cout << "Error writing EigenValues CSV"  << std::endl;
+    } catch (...) {
+        std::cout << "Error writing EigenValues CSV" << std::endl;
     }
 #endif
 #ifdef EVAL_EVEC_BY_CSV
@@ -164,30 +235,38 @@ void Diagonalize_Hamiltonian_magma() {
                  << "using " << std::to_string(OMP_NUM_THREADS) << " OpenMP Threads" << std::endl;
         csv_file << "M" << "," << std::to_string(MATRIX_SIZE) << " Eigenvalues  ... " << std::endl;
         //write Eigenvalues
-        for (auto M : All_EigenVectors) {
-            for (auto k = MATRIX_SIZE/2-3; k < MATRIX_SIZE/2+3; k++) {
-                for (auto a : M.col(k)) {
-                    csv_file << "," << a;
-                }
-                csv_file << std::endl;
+        std::cout << "Min Eval " << All_EigenValues.minCoeff() << std::endl;
+        for (auto V : All_EigenVectors) {
+            for (auto a : V) {
+                csv_file << "," << a;
             }
+            csv_file << std::endl;
         }
+
         csv_file.close();
-    }catch (...){
-        std::cout << "Error writing EigenVectors CSV"  << std::endl;
+    } catch (...) {
+        std::cout << "Error writing EigenVectors CSV" << std::endl;
     }
+
 #endif
 
 #ifdef DEBUG_ACTIVE
     //Compute Calculation Time adn print to CMD
     std::cout << std::endl << std::endl << "Runtime = "
-              << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count()
-              << "ms" << std::endl;
+              <<
+              std::chrono::duration_cast<std::chrono::milliseconds>(end
+                                                                    - start).
+
+                      count()
+
+              << "ms" <<
+              std::endl;
 #endif
 
 #if defined EVAL_BY_CMD || defined DEBUG_ACTIVE
     //Wait for ENTER before Closing window
-    std::cout << "FINISHED!" << std::endl;
+    std::cout << "FINISHED!" <<
+              std::endl;
 #endif
 }
 

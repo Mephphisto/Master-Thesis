@@ -10,7 +10,7 @@
 //ICL NEEDS THIS
 #define  _HAS_CONDITIONAL_EXPLICIT 0
 #define DEBUG_ACTIVE
-//#define EVAL_BY_CSV
+#define EVAL_BY_CSV
 //#define EVAL_EVAL_BY_CSV
 #define EVAL_EVEC_BY_CSV
 //#define SHOW_MATRIX_AND_QUIT
@@ -21,18 +21,23 @@
 //#define MATRIX_TO_CSV
 //#define PERIODIC_BOUNDRY
 #define PHASE
+//#define MU_TO_CSV
+//#define DELTA_TO_CSV
 
-constexpr auto MATRIX_SIZE = 2 * 100 * 100;
-constexpr auto T_RES = 1;
-constexpr double T_START = 1;
-constexpr double T_END = 1;
-constexpr double MU = -1;
+#include <math.h>
 
+constexpr auto MATRIX_SIZE = 2 * 85 * 85;
+constexpr auto T_RES = 32;
+constexpr double T_START = 0.01;
+constexpr double T_END = ((double)T_RES+1)/T_RES * M_PI;
+constexpr double T_COUPLE = 1;
+constexpr double MU = 2;
 constexpr double DELTA = 2;
 
 
 #include "_1DTopSuperConMatrix.hpp"
 #include "_2DTopSuperConMatrix.hpp"
+
 
 #ifdef USE_MAGMA
 #include "Hamiltonian_Diagonalizer_MAGMA.hpp"
