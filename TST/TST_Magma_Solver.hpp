@@ -13,12 +13,14 @@ namespace magma {
     template<typename _MatrixType>
     class SelfAdjointEigenSolver {
         typedef _MatrixType MatrixType;
+
         enum {
             Size = MatrixType::RowsAtCompileTime,
             ColsAtCompileTime = MatrixType::ColsAtCompileTime,
             Options = MatrixType::Options,
             MaxColsAtCompileTime = MatrixType::MaxColsAtCompileTime
         };
+
         typedef Eigen::Index Index;
         typedef typename MatrixType::Scalar Scalar;
         typedef typename Eigen::NumTraits<Scalar>::Real RealScalar;
@@ -26,16 +28,17 @@ namespace magma {
         typedef Eigen::Tridiagonalization<MatrixType> TridiagonalizationType;
         typedef typename TridiagonalizationType::SubDiagonalType SubDiagonalType;
         typedef Eigen::Matrix<Scalar, Size, Size, Eigen::ColMajor, MaxColsAtCompileTime, MaxColsAtCompileTime> EigenvectorsType;
+
     private:
         magma_queue_t queue = NULL;
         magma_int_t dev = 0;
         magma_int_t n, n2;
-        magmaDoubleComplex *d_r;                         // nxn  matrix  on the  device
+        magmaDoubleComplex *d_r;                          // nxn  matrix  on the  device
         magmaDoubleComplex *h_work;
-        double *rwork; //  workspace
-        magma_int_t lrwork, lwork;                                  //  h_work  size
-        magma_int_t *iwork;                                  //  workspace
-        magma_int_t liwork;                                 // iwork  size
+        double *rwork;                                    //  workspace
+        magma_int_t lrwork, lwork;                        //  h_work  size
+        magma_int_t *iwork;                               //  workspace
+        magma_int_t liwork;                               // iwork  size
 
     protected:
         EigenvectorsType m_eivec;
@@ -51,7 +54,7 @@ namespace magma {
             magma_queue_create(dev, &queue);
             n = static_cast<magma_int_t>(size);
             n2 = n * n;
-            magma_zmalloc(&d_r, n2);                //  device  memory  for d_r
+            magma_zmalloc(&d_r, n2);                       //  device  memory  for d_r
             //  Query  for  workspace  sizes
             magmaDoubleComplex aux_work[1];
             double aux_rwork[1];
@@ -83,7 +86,7 @@ namespace magma {
 
             bool computeEigenvectors = true;
             magma_int_t n = Eigen::internal::convert_index<magma_int_t>(M.cols());
-            m_eivalues.resize(n, 1);
+            m_eivalues.resize(n, n);
             m_subdiag.resize(n - 1);
             m_eivec = M;
 
@@ -95,12 +98,10 @@ namespace magma {
                 m_eigenvectorsOk = computeEigenvectors;
                 return;
             }
+            magma_zsetmatrix(n, n, (magmaDoubleComplex *) M.data(), n, d_r, n, queue);
 
-            lapackf77_zlacpy(MagmaFullStr, &n, &n, (magmaDoubleComplex *) m_eivec.data(), &n,
-                             (magmaDoubleComplex *) m_eivec.data(), &n);
-            magma_zsetmatrix(n, n, (magmaDoubleComplex *) m_eivec.data(), n, d_r, n, queue);
-
-            //  compute  the  eigenvalues   and  eigenvectors  for a symmetric ,// real  nxn  matrix; Magma  version
+            //  compute  the  eigenvalues   and  eigenvectors  for a symmetric.,
+            //  real  nxn  matrix; Magma  version
             magma_zheevd_gpu(
                     MagmaVec, MagmaLower,
                     n, d_r, n,
@@ -127,9 +128,9 @@ namespace magma {
         }
 
         ~SelfAdjointEigenSolver() {
-            free(h_work);                                  // free  host  memory
+            free(h_work);                               // free  host  memory
             magma_free(d_r);                            // free  device  memory
-            magma_queue_destroy(queue);                     //  destroy  queue
+            magma_queue_destroy(queue);                 //  destroy  queue
             magma_finalize();
         }
     };

@@ -3,11 +3,12 @@
 
 #pragma once
 
-#include "Hamiltonian_Matrix.hpp"
+#include "Hamiltonian_MatrixSparse.hpp"
 #include <complex>
-#include <Eigen/Dense>
+#include <omp.h>
+#include <Eigen/Sparse>
 
-class _2DTopSuperConMatrix : public Hamiltonian_Matrix {
+class _2DTopSuperConMatrixSparse : public Hamiltonian_MatrixSparse {
 private:
     double t, mu, Gsize_d, Vort_x , Vort_y  ;
     std::complex<double> Delta;
@@ -15,8 +16,8 @@ private:
 
     inline void set(size_t k, size_t j, std::complex<double> val) {
         auto MS = 2 * Msize;
-        m(k, j) = val;
-        m((k + Msize) % MS, (j + Msize) % MS) = -std::conj(val);
+        m.insert(k, j) = val;
+        m.insert((k + Msize) % MS, (j + Msize) % MS) = -std::conj(val);
     }
 
     void Build_A() {
@@ -31,9 +32,9 @@ private:
 
                 if ((x_k == x_j) && (y_k == y_j)) {
                     double Ex = exp(-r * (pow(x_j - Gsize_d / 2 - Vort_x, 2)
-                                       +  pow(y_j - Gsize_d / 2 - Vort_y, 2)))
-                               + exp(-r * (pow(x_j - Gsize_d / 2 + Vort_x, 2)
-                                       +  pow(y_j - Gsize_d / 2 + Vort_y, 2)));
+                                          +  pow(y_j - Gsize_d / 2 - Vort_y, 2)))
+                                + exp(-r * (pow(x_j - Gsize_d / 2 + Vort_x, 2)
+                                            +  pow(y_j - Gsize_d / 2 + Vort_y, 2)));
                     set(k, j, mu - 2 * mu * Ex);
                     // Alternative Code with Hard Edge
                     /*if
@@ -64,9 +65,6 @@ private:
                     } else if ((x_k == 0) && (x_j == Gsize - 1) && (y_k == y_j)) {
                         set(k, j, t);
 #endif
-                } else {
-                    set(k, j, 0);
-                    set(k, j + Msize, 0);
                 }
             }
         }
@@ -110,8 +108,6 @@ private:
                     } else if ((x_k == 0) && (x_j == Gsize - 1) && (y_k == y_j)) {
                         set(k, j + Msize, std::complex<double>(1, 0) * Delta * phase);
 #endif
-                } else {
-                    set(k, j + Msize, 0);
                 }
             }
         }
@@ -130,8 +126,7 @@ private:
     }
 
 public:
-    _2DTopSuperConMatrix(size_t
-                         size_in,
+    _2DTopSuperConMatrixSparse(size_t size_in,
                          double t_in,
                          double phi_in,
                          double mu_in,
@@ -151,12 +146,13 @@ public:
                               " at (" + std::to_string(Vort_x) + " , " + std::to_string(Vort_y) + " ) \n";
             std::cout << msg ;
         }
-        m = Eigen::MatrixXcd(size_in, size_in);
+        m.resize(size_in, size_in);
+        m.reserve(size_in * 9);
         Build_A();
         Build_B();
     }
 
-    Eigen::MatrixXcd get() override {
+    Eigen::SparseMatrix<std::complex<double>> get() override {
         return m;
     }
 

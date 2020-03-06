@@ -19,17 +19,17 @@ def colorize(z):
     r = np.abs(z)
     arg = np.angle(z)
 
-    h = (arg + pi)  / (2 * pi) + 0.5
-    l = 1.0 - 1.0/(1.0 + r**0.3)
+    h = (arg + pi) / (2 * pi) + 0.5
+    l = 1.0 - 1.0 / (1.0 + r ** 0.3)
     s = 0.8
 
-    c = np.vectorize(hls_to_rgb) (h,l,s) # --> tuple
+    c = np.vectorize(hls_to_rgb)(h, l, s)  # --> tuple
     c = np.array(c)  # -->  array of (3,n,m) shape, but need (n,m,3)
-    c = c.swapaxes(0,2)
+    c = c.swapaxes(0, 2)
     return c
 
 
-FileName = "DELTA_M1922_Tres32"
+FileName = "EigenVectors_M14450_Tres1"
 Path = "/home/jakob/Downloads/TST_MKL_Eigen/TST/cmake-build-release-intel-2019/"
 a = []
 with open(Path + FileName + '.csv', newline='') as csvfile:
@@ -50,65 +50,158 @@ l2 = int(len(a[0]) / 2)
 gsize = int(math.sqrt(l2))
 l4 = int(len(a[0]) / 4)
 
-plt.figure(figsize=(gsize, gsize))
+plt.figure(figsize=(gsize / 10, gsize / 10))
 
 majoranas = range(len(a))
-
+b = np.empty(l, complex)
 for i in majoranas:
     print(i)
-    b1 = []
-    for k in range(l):
-        b1.append(a[i][k])
+    b1, b2 = np.empty(l, complex), np.empty(l, complex)
+    b = a[i]
     img = []
     for j in range(gsize):
         aux = []
         for k in range(gsize):
-            x = b1[k + gsize * j]
-            y = b1[k + gsize * j + l2]
-            aux.append((x-y))
+            x = b[k + gsize * j]
+            y = b[k + gsize * j + l2]
+            aux.append(x)
         img.append(aux)
+
     # 'nearest' interpolation - faithful but blocky
     plt.imshow(colorize(img), interpolation='none')
-    plt.savefig("Majoranas/2D_Modes_" + str(i) + ".png", quality=90, optimize=True)
+    plt.savefig("Majoranas/2D_Modes_x" + str(i) + ".png", quality=90, optimize=True)
     plt.clf()
     del b1, k, img, aux
 
 for i in majoranas:
     print(i)
-    b1 = []
-    for k in range(l):
-        b1.append(a[i][k])
+    b1, b2 = np.empty(l, complex), np.empty(l, complex)
+    b = a[i]
     img = []
     for j in range(gsize):
         aux = []
         for k in range(gsize):
-            x = b1[k + gsize * j]
-            y = b1[k + gsize * j + l2]
-            aux.append(y-x)
+            x = b[k + gsize * j]
+            y = b[k + gsize * j + l2]
+            aux.append(y)
         img.append(aux)
+
     # 'nearest' interpolation - faithful but blocky
     plt.imshow(colorize(img), interpolation='none')
-    plt.savefig("Majoranas/2D_Modes_-" + str(i) + ".png", quality=90, optimize=True)
+    plt.savefig("Majoranas/2D_Modes_y" + str(i) + ".png", quality=90, optimize=True)
     plt.clf()
     del b1, k, img, aux
 
-
-
 for i in majoranas:
     print(i)
-    b1 = []
-    for k in range(l):
-        b1.append(a[i][k])
+    b1, b2 = np.empty(l, complex), np.empty(l, complex)
+    b = a[i]
     img = []
     for j in range(gsize):
         aux = []
         for k in range(gsize):
-            x = b1[k + gsize * j]
-            y = b1[k + gsize * j + l2]
-            aux.append(x*x.conjugate()+y.conjugate()*y)
+            x = b[k + gsize * j]
+            y = b[k + gsize * j + l2]
+            aux.append(x-y)
         img.append(aux)
+
     # 'nearest' interpolation - faithful but blocky
     plt.imshow(colorize(img), interpolation='none')
-    plt.savefig("Majoranas/2D_Modes_A" + str(i) + "Density.png", quality=90, optimize=True)
+    plt.savefig("Majoranas/2D_Modes_x-y" + str(i) + ".png", quality=90, optimize=True)
+    plt.clf()
+    del b1, k, img, aux
+
+for i in majoranas:
+    print(i)
+    b1, b2 = np.empty(l, complex), np.empty(l, complex)
+    b = a[i]
+    img = []
+    for j in range(gsize):
+        aux = []
+        for k in range(gsize):
+            x = b[k + gsize * j]
+            y = b[k + gsize * j + l2]
+            aux.append(x+y)
+        img.append(aux)
+
+    # 'nearest' interpolation - faithful but blocky
+    plt.imshow(colorize(img), interpolation='none')
+    plt.savefig("Majoranas/2D_Modes_x+y" + str(i) + ".png", quality=90, optimize=True)
+    plt.clf()
+    del b1, k, img, aux
+
+for i in majoranas:
+    print(i)
+    b1, b2 = np.empty(l, complex), np.empty(l, complex)
+    b = a[i]
+    img = []
+    for j in range(gsize):
+        aux = []
+        for k in range(gsize):
+            x = b[k + gsize * j]
+            y = b[k + gsize * j + l2]
+            aux.append(x*x.conjugate()+y*y.conjugate())
+        img.append(aux)
+
+    # 'nearest' interpolation - faithful but blocky
+    plt.imshow(colorize(img), interpolation='none')
+    plt.savefig("Majoranas/2D_Modes_Density+" + str(i) + ".png", quality=90, optimize=True)
+    plt.clf()
+    del b1, k, img, aux
+
+for i in majoranas:
+    print(i)
+    b1, b2 = np.empty(l, complex), np.empty(l, complex)
+    b = a[i]
+    img = []
+    for j in range(gsize):
+        aux = []
+        for k in range(gsize):
+            x = b[k + gsize * j]
+            y = b[k + gsize * j + l2]
+            aux.append(x*x.conjugate()-y*y.conjugate())
+        img.append(aux)
+
+    # 'nearest' interpolation - faithful but blocky
+    plt.imshow(colorize(img), interpolation='none')
+    plt.savefig("Majoranas/2D_Modes_Density-" + str(i) + ".png", quality=90, optimize=True)
+    plt.clf()
+    del b1, k, img, aux
+
+for i in majoranas:
+    print(i)
+    b1, b2 = np.empty(l, complex), np.empty(l, complex)
+    b = a[i]
+    img = []
+    for j in range(gsize):
+        aux = []
+        for k in range(gsize):
+            x = b[k + gsize * j]
+            y = b[k + gsize * j + l2]
+            aux.append(x*y)
+        img.append(aux)
+
+    # 'nearest' interpolation - faithful but blocky
+    plt.imshow(colorize(img), interpolation='none')
+    plt.savefig("Majoranas/2D_Modes_x*y-" + str(i) + ".png", quality=90, optimize=True)
+    plt.clf()
+    del b1, k, img, aux
+
+for i in majoranas:
+    print(i)
+    b1, b2 = np.empty(l, complex), np.empty(l, complex)
+    b = a[i]
+    img = []
+    for j in range(gsize):
+        aux = []
+        for k in range(gsize):
+            x = b[k + gsize * j]
+            y = b[k + gsize * j + l2]
+            aux.append(x.conjugate()*y.conjugate())
+        img.append(aux)
+
+    # 'nearest' interpolation - faithful but blocky
+    plt.imshow(colorize(img), interpolation='none')
+    plt.savefig("Majoranas/2D_Modes_x*y conj-" + str(i) + ".png", quality=90, optimize=True)
     plt.clf()
     del b1, k, img, aux

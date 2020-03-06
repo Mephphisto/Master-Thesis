@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.10)
 project(TST)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -v -lstdc++ -fopenmp -DNOCHANGE -DMKL_ILP64 -inline-force -qopt-report -xHost -O3 -Ofast -mkl")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -v -lstdc++ -fopenmp -DNOCHANGE")
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -liomp5 -lpthread -ldl")
-
+set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -DMKL_ILP64 -inline-force -qopt-report -xHost -O3 -Ofast -mkl")
 add_executable(TST main.cpp)
 
 find_package(Eigen3 3.3 REQUIRED NO_MODULE)
@@ -15,20 +15,22 @@ target_link_libraries(TST ${CUDA_cusolver_LIBRARY})
 include_directories(${CUDA_INCLUDE_DIRS})
 link_directories(${CUDA_LIBRARIES_DIRS})
 
-find_package(MAGMA REQUIRED)
+find_package(MAGMA )
 include_directories(${MAGMA_INCLUDE_DIRS})
 link_directories(${MAGMA_LIBRARIES_DIRS})
 target_include_directories(TST PUBLIC ${MAGMA_INCLUDE_DIRS})
 target_link_libraries(TST ${MAGMA_LIBRARIES})
 
-find_package(OpenMP REQUIRED)
+find_package(OpenMP )
+if(OpenMP_FOUND)
 target_link_libraries(TST OpenMP::OpenMP_CXX)
-
+endif()
 set(MKL_INCLUDE_DIR "/opt/intel/compilers_and_libraries_2019/linux/mkl/include")
 set(MKL_LIBRARY_DIR "/opt/intel/compilers_and_libraries_2019/linux/mkl/lib")
-find_package(MKL REQUIRED)
+find_package(MKL )
+if(MKL_FOUND)
 include_directories(${MKL_INCLUDE_DIR})
 link_directories(${MKL_LIBRARY_DIR})
 target_link_libraries(TST ${MKL_LIBRARY})
-
+endif()
 set(CMAKE_CXX_STANDARD 14)
