@@ -8,6 +8,7 @@
 #include <math.h>
 
 #define OMP_NUM_THREADS 16
+#define MLK_NUM_THREADS OMP_NUM_THREADS
 //ICL NEEDS THIS
 #define  _HAS_CONDITIONAL_EXPLICIT 0
 
@@ -16,7 +17,7 @@
 //#undef USE_OpenCL
 //#define USE_MAGMA
 //#define USE_GPU
-//#define EIGEN_USE_LAPACKE
+
 
 //Define Data Aquisition
 
@@ -32,12 +33,12 @@
 
 //#define PERIODIC_BOUNDRY
 #define PHASE
-constexpr int GRID = 32;
-constexpr int MATRIX_SIZE = (2 * GRID * GRID);
-constexpr int  T_RES = 3 * GRID;
-constexpr double T_START = 0.0;
-constexpr double T_END = ((double) T_RES + 1) / T_RES * M_PI;
-constexpr double T_COUPLE = .95;
+//constexpr int GRID = 32;
+constexpr int MATRIX_SIZE = 101;// (2 * GRID * GRID);
+constexpr int  T_RES = 400; //3 * GRID;
+constexpr double T_START = -1.0;
+constexpr double T_END = 1.0;
+constexpr double T_COUPLE = 1.0;
 constexpr double MU =  -3;
 constexpr double DELTA = 2;
 

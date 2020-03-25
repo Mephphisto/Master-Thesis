@@ -23,12 +23,12 @@
 
 int main() {
 #ifdef USE_MAGMA
-    Diagonalize_Hamiltonian_magma<_2DTopSuperConMatrix>().Do();
+    Diagonalize_Hamiltonian_magma<_1DTopSuperConMatrix>().Do();
 #elif defined USE_OpenCL
     Diagonalize_Hamiltonian_OpenCL<_2DTopSuperConMatrix>();
 #else
     std::cout << "Num Eingen Threads " << Eigen::nbThreads( ) << std::endl;
-    Diagonalize_Hamiltonian_Eigen<_2DTopSuperConMatrixSparse>().Do();
+    Diagonalize_Hamiltonian_Eigen<_1DTopSuperConMatrix>().Do();
 #endif
     return 0;
 }
