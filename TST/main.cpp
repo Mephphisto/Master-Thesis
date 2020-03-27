@@ -4,6 +4,7 @@
 //
 //  Created by Jakob Teuffel on 05.12.19.
 //  Copyright © 2019 Jakob Teuffel. All rights reserved.
+//  Copyright © 2019 Jakob Teuffel. All rights reserved.
 //
 
 

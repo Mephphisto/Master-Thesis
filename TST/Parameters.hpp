@@ -2,8 +2,7 @@
 // Created by jakob on 02.03.20.
 //
 
-#ifndef TST_PARAMETERS_HPP
-#define TST_PARAMETERS_HPP
+#pragma once
 
 #include <math.h>
 
@@ -15,9 +14,8 @@
 //Choose a Solver
 
 //#undef USE_OpenCL
-//#define USE_MAGMA
+#define USE_MAGMA
 //#define USE_GPU
-
 
 //Define Data Aquisition
 
@@ -34,12 +32,11 @@
 //#define PERIODIC_BOUNDRY
 #define PHASE
 //constexpr int GRID = 32;
-constexpr int MATRIX_SIZE = 101;// (2 * GRID * GRID);
+constexpr int MATRIX_SIZE = 2*101*100;// (2 * GRID * GRID);
 constexpr int  T_RES = 400; //3 * GRID;
 constexpr double T_START = -1.0;
 constexpr double T_END = 1.0;
-constexpr double T_COUPLE = 1.0;
-constexpr double MU =  -3;
+constexpr double T_COUPLE = 3.0;
+constexpr double MU =  1;
 constexpr double DELTA = 2;
 
-#endif //TST_PARAMETERS_HPP

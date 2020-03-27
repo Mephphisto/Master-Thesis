@@ -32,32 +32,29 @@ private:
     double t, mu, Delta, t_coup;
 
     void Build_A() {
+
         for (size_t i = 0; i < Msize - 1; i++) {
-            m(i, i) = -mu;
-            if (i = (size_t) Msize / 2) {
-                m(i, i + 1) = -t;
-                m(i + 1, i) = -t;
-                m(i + Msize, i + Msize + 1) = t;
-                m(i + Msize + 1, i + Msize) = t;
+            if (i == (size_t) Msize / 2) {
+                m(i, i) = -t;
+                m(i + Msize, i + Msize) = t;
             } else if (i < Msize / 2) {
-                m(i, i + 1) = -t_coup;
-                m(i + 1, i) = -t_coup;
-                m(i + Msize, i + Msize + 1) = t_coup;
-                m(i + Msize + 1, i + Msize) = t_coup;
+                m(i, i) = -mu;
+                m(i + Msize, i + Msize) = mu;
             } else {
-                m(i, i + 1) = t_coup;
-                m(i + 1, i) = t_coup;
-                m(i + Msize, i + Msize + 1) = -t_coup;
-                m(i + Msize + 1, i + Msize) = -t_coup;
+                m(i, i) = t_coup;
+                m(i + Msize, i + Msize) = -mu;
             }
-            m(i + Msize, i + Msize) = mu;
+            m(i, i + 1) = -t_coup;
+            m(i + 1, i) = -t_coup;
+            m(i + Msize, i + Msize + 1) = t_coup;
+            m(i + Msize + 1, i + Msize) = t_coup;
             m(i, i + 1 + Msize) = -Delta;
             m(i + 1, i + Msize) = Delta;
             m(i + Msize, i + 1) = Delta;
             m(i + 1 + Msize, i) = -Delta;
         }
-        m(Msize - 1, Msize - 1) = -mu;
-        m(2 * Msize - 1, 2 * Msize - 1) = mu;
+        m(Msize - 1, Msize - 1) = mu;
+        m(2 * Msize - 1, 2 * Msize - 1) = -mu;
     }
 };
 

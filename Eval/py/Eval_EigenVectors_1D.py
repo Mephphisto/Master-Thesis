@@ -23,13 +23,13 @@ def colorize(z):
     s = 0.8
 
     c = np.vectorize(hls_to_rgb)(h, l, s)  # --> tuple
-    c = np.array(c)  # -->  array of (3,n,m) shape, but need (n,m,3)
-    c = c.swapaxes(0, 2)
+    #c = np.array(c)  # -->  array of (3,n,m) shape, but need (n,m,3)
+    #c = c.swapaxes(0, 2)
     return c
 
 
-FileName = "EigenVectors_M800_Tres1"
-Path = "/home/jakob/Downloads/TST_MKL_Eigen/TST/cmake-build-release-intel-2019/"
+FileName = "EigenVectors_M202_Tres400"
+Path = "/home/jakob/CLionProjects/TST_MKL_Eigen/TST/cmake-build-release/"
 a = []
 with open(Path + FileName + '.csv', newline='') as csvfile:
     spamreader = csv.reader(csvfile, delimiter=',')
@@ -45,19 +45,23 @@ with open(Path + FileName + '.csv', newline='') as csvfile:
             print(row)
 
 b1,b2 = [],[]
-l = len(a)
-l2 = int(len(a)/2)
-for k in range(l):
-    b1.append(a[l2-1][k])
-    b2.append(a[l2][k])
+l = len(a[0])
+l2 = int(len(a[0]) / 2)
 
-a = []
-for k in range(l2):
-    a.append([b1[k] * b1[int(k + l2)], b2[k] * b2[int(k + l2)]])
+print("l=",l)
 
-# 'nearest' interpolation - faithful but blocky
-#plt.figure(figsize = (len(a), len(a)))
-plt.imshow(colorize(a), interpolation='none', aspect=int(l2/4))
+plt.savefig("KitaevMajoranas+" + ".png", quality=100, optimize=True, dpi=600)
+for i in range(int(len(a))):
+    print(i)
+    b = a[i*2]
+    img = []
+    for k in range(l2):
+        x = b[k]
+        y = b[k+l2]
+        img.append(x.__abs__()+y.__abs__())
 
-plt.show(dpi=1200)
-#plt.savefig("KitaevMajoranas" + ".png", quality=100, optimize=True, dpi=600)
+    # 'nearest' interpolation - faithful but blocky
+    plt.plot(img) #, interpolation='none', aspect=int(l2/4))
+    plt.savefig("Kitaev/Modes" + str(i) + ".png", quality=90, optimize=True)
+    plt.clf()
+    del b, k, img

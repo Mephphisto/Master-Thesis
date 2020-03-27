@@ -9,7 +9,9 @@
 #include <iostream>
 #include <Eigen/Dense>
 #include <fstream>
+#ifdef USE_GPU
 #include "TST_Magma_Solver.hpp"
+#endif
 #include "Hamiltonian_Diagonalizer.hpp"
 #include <magma_lapack.h>
 #include <vector>
