@@ -16,6 +16,7 @@
 //#undef USE_OpenCL
 #define USE_MAGMA
 //#define USE_GPU
+#define EIGEN_USE_LAPACKE
 
 //Define Data Aquisition
 
@@ -31,12 +32,12 @@
 
 //#define PERIODIC_BOUNDRY
 #define PHASE
-//constexpr int GRID = 32;
-constexpr int MATRIX_SIZE = 2*101*100;// (2 * GRID * GRID);
-constexpr int  T_RES = 400; //3 * GRID;
-constexpr double T_START = -1.0;
-constexpr double T_END = 1.0;
-constexpr double T_COUPLE = 3.0;
+constexpr int GRID = 85;
+constexpr int MATRIX_SIZE = (2 * GRID * GRID);
+constexpr int  T_RES = 800;
+constexpr double T_START = 0.0;
+constexpr double T_END = 4.0 / static_cast<double>(GRID);
+constexpr double T_COUPLE = 0.9;
 constexpr double MU =  1;
-constexpr double DELTA = 2;
+constexpr double DELTA = 3;
 

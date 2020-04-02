@@ -37,33 +37,27 @@ l4 = int(l/4)
 print("l=", l)
 b = np.array(a[0])
 plt.savefig("KitaevMajoranas+" + ".png", quality=100, optimize=True, dpi=600)
-idx = 0
 lower, upper = 480,520
+b_last = np.empty(l)
+first = True
+xs,ys = [], []
 for i in range(int(len(a))):
     print(i)
     b = np.array(a[i])
-    xs, ys = np.empty(l2, complex), np.empty(l2,complex)
+    b = b / np.linalg.norm(b)
     if (np.sum(np.abs(b[lower: upper])) > .1):
-        for k in range(l2):
-            x = b[k]
-            y = b[k + l2]
-            xs[k] = x
-            ys[k] = y
+        b_last = b
+        if first:
+            first = False
+            ys.append(1)
+        else:
+            x = np.vdot(b, b_last).__abs__()
+            print(x)
+            xs.append(x)
+            ys.append(ys[-1]*x)
 
-        # 'nearest' interpolation - faithful but blocky
-        #plt.ylim(0, 0.1)
-        #plt.xlim(lower, upper)
-        plt.ylim(0,1)
-        plt.xlim(lower,upper)
-        plt.plot(np.abs(xs+ys))
-        plt.plot(np.abs(xs-ys))
-        plt.savefig("Kitaev/Modes" + str(idx) + ".png", quality=90, optimize=True)
-        plt.clf()
-        plt.plot(np.abs(fft(xs-ys))[:l4])
-        plt.plot(np.abs(fft(xs+ys)[:l4]))
-        plt.ylim(0,13)
-        plt.savefig("Kitaev_FFT/Modes_FFT" + str(idx) + ".png", quality=90, optimize=True)
-        print("[", idx, "]")
-        idx = idx + 1
-        plt.clf()
-        del k, xs, ys
+plt.plot(xs)
+plt.plot(ys)
+plt.yscale("log")
+print(ys[-1])
+plt.show()

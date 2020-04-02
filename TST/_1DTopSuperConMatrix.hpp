@@ -6,14 +6,14 @@
 #include "Hamiltonian_Matrix.hpp"
 #include <Eigen/Dense>
 
-class _1DTopSuperConMatrix : public Hamiltonian_Matrix {
+class _1DTopSuperConMatrix : Hamiltonian_Matrix {
 public:
-    _1DTopSuperConMatrix(size_t size_in, double t_coup, double t_in, double mu_in, double Delta_in) {
-        this->t = -t_in;
-        this->t_coup = t_coup;
+    _1DTopSuperConMatrix(size_t size_in, double t_con, double param, double mu_in, double Delta_in) {
+        this->t = -t_con;
         this->mu = -mu_in;
         this->Delta = Delta_in / 2;
-        Msize = size_in / 2;
+        this->param = param;
+        Gsize = size_in / 2;
         m = Eigen::MatrixXcd(size_in, size_in);
         m.setZero();
         Build_A();
@@ -29,32 +29,30 @@ public:
     }
 
 private:
-    double t, mu, Delta, t_coup;
-
+    Eigen::MatrixXcd m;
+    double t, mu, Delta, param;
+    size_t Gsize;
+    inline double sigm(const  double & x){
+        const double width = 5;
+        return x /(abs(x) + width / 2);
+    }
     void Build_A() {
-
-        for (size_t i = 0; i < Msize - 1; i++) {
-            if (i == (size_t) Msize / 2) {
-                m(i, i) = -t;
-                m(i + Msize, i + Msize) = t;
-            } else if (i < Msize / 2) {
-                m(i, i) = -mu;
-                m(i + Msize, i + Msize) = mu;
-            } else {
-                m(i, i) = t_coup;
-                m(i + Msize, i + Msize) = -mu;
-            }
-            m(i, i + 1) = -t_coup;
-            m(i + 1, i) = -t_coup;
-            m(i + Msize, i + Msize + 1) = t_coup;
-            m(i + Msize + 1, i + Msize) = t_coup;
-            m(i, i + 1 + Msize) = -Delta;
-            m(i + 1, i + Msize) = Delta;
-            m(i + Msize, i + 1) = Delta;
-            m(i + 1 + Msize, i) = -Delta;
+        for (size_t i = 0; i < Gsize - 1; i++) {
+            double Mu_loc = mu * sigm(i + param - Gsize / 2);
+            m(i, i) = Mu_loc + 2 * t;
+            m(i + Gsize, i + Gsize) = -Mu_loc - 2*t;
+            m(i, i + 1) = -t;
+            m(i + 1, i) = -t;
+            m(i + Gsize, i + Gsize + 1) = t;
+            m(i + Gsize + 1, i + Gsize) = t;
+            m(i, i + 1 + Gsize) = -Delta;
+            m(i + 1, i + Gsize) = Delta;
+            m(i + Gsize, i + 1) = Delta;
+            m(i + 1 + Gsize, i) = -Delta;
         }
-        m(Msize - 1, Msize - 1) = mu;
-        m(2 * Msize - 1, 2 * Msize - 1) = -mu;
+        m(Gsize - 1, Gsize - 1) = mu*sigm(Gsize-1+param-Gsize/2) + 2*t;
+        m(2 * Gsize - 1, 2 * Gsize - 1) = -mu*sigm(Gsize-1+param-Gsize/2) - 2*t;
     }
 };
+
 

@@ -1,17 +1,25 @@
 cmake_minimum_required(VERSION 3.10)
 project(TST)
 
-set(CMAKE_THREAD_LIBS_INIT "-lpthread")
+if(TRUE)
+set(CMAKE_THREAD_LIBS_INIT "-pthread")
 set(CMAKE_HAVE_THREADS_LIBRARY 1)
 set(CMAKE_USE_WIN32_THREADS_INIT 0)
 set(CMAKE_USE_PTHREADS_INIT 1)
 set(THREADS_PREFER_PTHREAD_FLAG ON)
+endif()
 
-set(MKLROOT /opt/intel/mkl)
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}  -fopenmp -DMKL_ILP64 -m64 -I${MKLROOT}/include -DNOCHANGE")
-set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS}  -Wl,--start-group ${MKLROOT}/lib/intel64/libmkl_intel_ilp64.a ${MKLROOT}/lib/intel64/libmkl_gnu_thread.a ${MKLROOT}/lib/intel64/libmkl_core.a -Wl,--end-group -lgomp -lpthread -lm -ldl")
-#set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}")
+set(ENV{MKLROOT} "/opt/intel/compilers_and_libraries_2019.5.281/linux/mkl")
+set(ENV{LD_LIBRARY_PATH} "/opt/intel/compilers_and_libraries_2019.5.281/linux/compiler/lib/intel64_lin:/opt/intel/compilers_and_libraries_2019.5.281/linux/mpi/intel64/libfabric/lib:/opt/intel/compilers_and_libraries_2019.5.281/linux/mpi/intel64/lib/release:/opt/intel/compilers_and_libraries_2019.5.281/linux/mpi/intel64/lib:/opt/intel/compilers_and_libraries_2019.5.281/linux/ipp/lib/intel64:/opt/intel/compilers_and_libraries_2019.5.281/linux/compiler/lib/intel64_lin:/opt/intel/compilers_and_libraries_2019.5.281/linux/mkl/lib/intel64_lin:/opt/intel/compilers_and_libraries_2019.5.281/linux/tbb/lib/intel64/gcc4.7:/opt/intel/compilers_and_libraries_2019.5.281/linux/tbb/lib/intel64/gcc4.7:/opt/intel/debugger_2019/libipt/intel64/lib:/opt/intel/compilers_and_libraries_2019.5.281/linux/daal/lib/intel64_lin:/opt/intel/compilers_and_libraries_2019.5.281/linux/daal/../tbb/lib/intel64_lin/gcc4.4")
+set(ENV{MKL_NUM_THREADS} 16)
+set(ENV{OMP_NUM_THREADS)
+set(ENV{VECLIB_MAXIMUM_THREADS} 16)
+
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fopenmp -DNOCHANGE")
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -ldl")
+set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}")
 
 set(CMAKE_CXX_STANDARD 14)
 
@@ -33,7 +41,14 @@ link_directories(${MAGMA_LIBRARIES_DIRS})
 target_include_directories(TST PUBLIC ${MAGMA_INCLUDE_DIRS})
 target_link_libraries(TST ${MAGMA_LIBRARIES})
 
+find_package(MKL REQUIRED)
+if(MKL_FOUND)
+    target_link_libraries(TST ${MKL_LIBRARIES})
+endif()
+
 find_package(OpenMP)
-if(OpenMP_FOUND)
+if (OPENMP_FOUND)
     target_link_libraries(TST OpenMP::OpenMP_CXX)
+    link_directories(${OpenMP_iomp5_LIBRARY} ${OpenMP_CXX_LIBRARIES})
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
 endif()

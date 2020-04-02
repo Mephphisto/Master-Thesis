@@ -22,7 +22,7 @@ protected:
     Eigen::VectorXd t_s;
 
 #ifdef DEBUG_ACTIVE
-    std::chrono::time_point<std::chrono::system_clock>  start, end;
+    std::chrono::time_point<std::chrono::system_clock>  start;
 #endif
     void Preppare() {
 #ifdef SHOW_MATRIX_AND_QUIT
@@ -129,7 +129,7 @@ protected:
 
 #ifdef DEBUG_ACTIVE
         // get start time for runtime Calculation
-        start = std::chrono::system_clock::now();
+        this-> start = std::chrono::system_clock::now();
 #endif
 
     }
@@ -205,7 +205,8 @@ protected:
         //Compute Calculation Time adn print to CMD
         std::cout << std::endl << std::endl << "Runtime = "
                   <<
-                  std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count()
+                  std::chrono::duration_cast<std::chrono::milliseconds>(
+                          std::chrono::system_clock::now() - start).count()
                   << "ms" <<
                   std::endl;
 #endif

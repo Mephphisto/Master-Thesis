@@ -3,7 +3,6 @@
 //
 
 #pragma once
-#define EIGEN_USE_LAPACKE
 
 #include "Parameters.hpp"
 #include <iostream>
