@@ -9,10 +9,6 @@ if (TRUE)
     set(THREADS_PREFER_PTHREAD_FLAG ON)
 endif ()
 
-#set(NOT_CLUSER)
-
-
-
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 
 set(ENV{MKLROOT} "/opt/intel/compilers_and_libraries_2019.5.281/linux/mkl")
@@ -36,7 +32,7 @@ add_executable(TST main.cpp)
 
 find_package(Eigen3 3.3 REQUIRED NO_MODULE)
 target_link_libraries(TST Eigen3::Eigen)
-if (NOT_CLUSER)
+if (${NOT_CLUSER})
     find_package(CUDA REQUIRED)
     target_include_directories(TST PUBLIC ${CUDA_INCLUDE_DIRS})
     target_link_libraries(TST ${CUDA_LIBRARIES})

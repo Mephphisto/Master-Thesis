@@ -58,7 +58,7 @@ def project(x, y):
 
 
 states = len(a)
-majoranas = range(2 * len(a))
+majoranas = range(int(len(a)/2))
 b = np.empty(l, complex)
 N = np.empty(2 * states+1)
 N[0] = 1

@@ -13,9 +13,13 @@
 //Choose a Solver
 
 //#undef USE_OpenCL
-//#define USE_MAGMA
+#define USE_MAGMA
 //#define USE_GPU
+#ifdef USE_MAGMA
+#define EIGEN_USE_LAPACKE_STRICT
+#else
 #define EIGEN_USE_MKL_ALL
+#endif
 
 //Define Data Aquisition
 //#define DEBUG_ACTIVE
@@ -33,9 +37,9 @@
 //constexpr int GRID = 35;
 //constexpr int  T_RES = 400;
 constexpr int MATRIX_SIZE = (2 * GRID * GRID);
-constexpr double T_START = 0.0;
+constexpr double T_START = 0.0000000001;
 constexpr double T_END = 4.0 / static_cast<double>(GRID);
 constexpr double T_COUPLE = -0.9;
-constexpr double MU =  1;
+constexpr double MU =  3;
 constexpr double DELTA = 3;
 
