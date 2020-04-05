@@ -13,22 +13,21 @@
 #include "_2DTopSuperConMatrix.hpp"
 #include "_2DTopSuperConMatrixSparse.hpp"
 
-
 #ifdef USE_MAGMA
 #include "Hamiltonian_Diagonalizer_MAGMA.hpp"
 #elif defined USE_OpenCL
 #include "Hamiltonian_Diagonalizer_OpenCl.hpp"
 #else
 #include "Hamiltonian_Diagonalizer_Eigen.hpp"
+#include "Hamiltonian_Diagonalizer_PLASMA.hpp"
 #endif
 
 int main() {
 #ifdef USE_MAGMA
-    Diagonalize_Hamiltonian_magma<_1DTopSuperConMatrix>().Do();
+    Diagonalize_Hamiltonian_magma<_2DTopSuperConMatrix>().Do();
 #elif defined USE_OpenCL
     Diagonalize_Hamiltonian_OpenCL<_2DTopSuperConMatrix>();
 #else
-    std::cout << "Num Eingen Threads " << Eigen::nbThreads( ) << std::endl;
     Diagonalize_Hamiltonian_Eigen<_1DTopSuperConMatrix>().Do();
 #endif
     return 0;

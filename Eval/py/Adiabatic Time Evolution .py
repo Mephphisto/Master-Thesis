@@ -29,8 +29,8 @@ def colorize(z):
     return c
 
 
-FileName = "EigenVectors_M14450_Tres255"
-Path = "/home/jakob/Downloads/TST_MKL_Eigen/TST/cmake-build-release-intel-2019/"
+FileName = "EigenVectors_M2450_Tres400"
+Path = "/home/jakob/CLionProjects/TST_MKL_Eigen/TST/cmake-build-release/"
 a = []
 with open(Path + FileName + '.csv', newline='') as csvfile:
     spamreader = csv.reader(csvfile, delimiter=',')
@@ -58,7 +58,7 @@ def project(x, y):
 
 
 states = len(a)
-majoranas = range(2 * len(a))
+majoranas = range(int(len(a)/2))
 b = np.empty(l, complex)
 N = np.empty(2 * states+1)
 N[0] = 1

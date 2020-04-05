@@ -477,7 +477,7 @@ CMAKE_HAVE_PTHREADS_CREATE:INTERNAL=
 CMAKE_HAVE_PTHREAD_CREATE:INTERNAL=1
 //Have include pthread.h
 CMAKE_HAVE_PTHREAD_H:INTERNAL=1
-//Source directory with the top level CMakeLists.txt file for this
+//Source directory with the top level FindMKL.cmake file for this
 // project
 CMAKE_HOME_DIRECTORY:INTERNAL=/home/jakob/Downloads/TST_MKL_Eigen/TST
 //Install .so files without execute permission.

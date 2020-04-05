@@ -406,7 +406,7 @@ CMAKE_GENERATOR_TOOLSET:INTERNAL=
 CMAKE_HAVE_LIBC_PTHREAD:INTERNAL=1
 //Have include pthread.h
 CMAKE_HAVE_PTHREAD_H:INTERNAL=1
-//Source directory with the top level CMakeLists.txt file for this
+//Source directory with the top level FindMKL.cmake file for this
 // project
 CMAKE_HOME_DIRECTORY:INTERNAL=/Users/jakobteuffel/CodeBase/TST_MKL_Eigen/TST
 //ADVANCED property for variable: CMAKE_INSTALL_NAME_TOOL
