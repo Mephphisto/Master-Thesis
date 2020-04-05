@@ -5,9 +5,15 @@
 
 #include "Hamiltonian_Matrix.hpp"
 #include <Eigen/Dense>
-
+/// This Class generates matrices representing the topological 1D Kitaev Hamiltonian
 class _1DTopSuperConMatrix : Hamiltonian_Matrix {
 public:
+    /// Constructor for the Hamiltonian
+    /// \param size_in Matrix size
+    /// \param t_con Tunneling Energy
+    /// \param param Parameter to be sweapt
+    /// \param mu_in Chemical Potential
+    /// \param Delta_in Pairing Potential
     _1DTopSuperConMatrix(size_t size_in, double t_con, double param, double mu_in, double Delta_in) {
         this->t = -t_con;
         this->mu = -mu_in;
@@ -20,22 +26,31 @@ public:
         //Build_B();
     }
 
+    /// Nessesary override to provide access to the Eigen Storage Matrix
+    /// \return Eigen Matrix with coeffitents of Hamiltonian
     Eigen::MatrixXcd get() override {
         return m;
     }
 
+    /// Nessesary override to provide access to the trace
+    /// \return trace
     double trace_A() override {
         return 0;
     }
 
 private:
-    Eigen::MatrixXcd m;
+    /// test a , b , c
     double t, mu, Delta, param;
+    /// Gsize is half the Matrix size and thus the size of the \f$ A, B\f$ submatrices
     size_t Gsize;
+    /// Sigmoid Function
+    /// \param x x value
+    /// \return sigm(x)
     inline double sigm(const  double & x){
         const double width = 5;
         return x /(abs(x) + width / 2);
     }
+    /// Build A submatrices
     void Build_A() {
         for (size_t i = 0; i < Gsize - 1; i++) {
             double Mu_loc = mu * sigm(i + param - Gsize / 2);

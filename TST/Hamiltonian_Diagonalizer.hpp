@@ -14,16 +14,24 @@
 #include "Hamiltonian_MatrixSparse.hpp"
 #include "Hamiltonian_Matrix.hpp"
 
+
+/// Abstract Template Baseclass to Solve Hamiltonian
+///
+/// \tparam T Class that buiilds Matrix representing Hamiltonian. Has to be derived from 
 template <class T>
 class Diagonalize_Hamiltonian{
 protected:
+    /// Storage of computed Eigen Values
     Eigen::MatrixXd All_EigenValues;
+    /// Storage of computed Eigen vectors
     std::vector<Eigen::VectorXcd> All_EigenVectors;
+    /// smapling points
     Eigen::VectorXd t_s;
 
 #ifdef DEBUG_ACTIVE
     std::chrono::time_point<std::chrono::system_clock>  start;
 #endif
+    /// Prepare to do computation
     void Preppare() {
 #ifdef SHOW_MATRIX_AND_QUIT
         //Build Matrix shom Matrix in CMD and Quit
