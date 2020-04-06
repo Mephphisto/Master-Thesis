@@ -6,7 +6,6 @@
 
 #include <math.h>
 
-#define MLK_NUM_THREADS OMP_NUM_THREADS
 //ICL NEEDS THIS
 #define  _HAS_CONDITIONAL_EXPLICIT 0
 
@@ -24,7 +23,7 @@
 #endif
 
 //Define Data Aquisition
-//#define DEBUG_ACTIVE
+#define DEBUG_ACTIVE
 #define EVAL_EVAL_BY_CSV
 #define EVAL_EVEC_BY_CSV
 //#define SHOW_MATRIX_AND_QUIT

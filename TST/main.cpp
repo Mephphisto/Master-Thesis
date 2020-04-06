@@ -28,7 +28,9 @@ int main() {
 #elif defined USE_OpenCL
     Diagonalize_Hamiltonian_OpenCL<_2DTopSuperConMatrix>();
 #else
-    Diagonalize_Hamiltonian_Eigen<_1DTopSuperConMatrix>().Do();
+    Diagonalize_Hamiltonian_Eigen<_2DTopSuperConMatrix>().Do();
 #endif
     return 0;
 }
+
+
