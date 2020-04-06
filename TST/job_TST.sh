@@ -1,8 +1,8 @@
 #$ -q idefix.q
 #$ -M j.teuffel@icloud.com and -m b e a
-#$-l hvmem=4G
-#$-l hcpu=48:00:00
-#$-pe smp 4
+#$ -l h_vmem=4G
+#$ -l h_cpu=48:00:00
+#$ -pe smp 4
 git pull
 module load intel
 cd build
