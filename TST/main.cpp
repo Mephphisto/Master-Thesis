@@ -20,15 +20,17 @@
 #else
 #include "Hamiltonian_Diagonalizer_Eigen.hpp"
 #include "Hamiltonian_Diagonalizer_PLASMA.hpp"
+
+#define HAMILTONIAN _2DTopSuperConMatrix
 #endif
 
 int main() {
 #ifdef USE_MAGMA
-    Diagonalize_Hamiltonian_magma<_2DTopSuperConMatrix>().Do();
+    Diagonalize_Hamiltonian_magma<HAMILTONIAN>().Do();
 #elif defined USE_OpenCL
-    Diagonalize_Hamiltonian_OpenCL<_2DTopSuperConMatrix>();
+    Diagonalize_Hamiltonian_OpenCL<HAMILTONIAN>().Do();
 #else
-    Diagonalize_Hamiltonian_Eigen<_2DTopSuperConMatrix>().Do();
+    Diagonalize_Hamiltonian_Eigen<HAMILTONIAN>().Do();
 #endif
     return 0;
 }

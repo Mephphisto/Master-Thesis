@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.10)
 project(TST)
 
-if (TRUE)
+if (FALSE)
     set(CMAKE_THREAD_LIBS_INIT "-pthread")
     set(CMAKE_HAVE_THREADS_LIBRARY 1)
     set(CMAKE_USE_WIN32_THREADS_INIT 0)
