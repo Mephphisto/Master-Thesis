@@ -23,7 +23,6 @@
 #endif
 
 //Define Data Aquisition
-#define DEBUG_ACTIVE
 #define EVAL_EVAL_BY_CSV
 #define EVAL_EVEC_BY_CSV
 //#define SHOW_MATRIX_AND_QUIT

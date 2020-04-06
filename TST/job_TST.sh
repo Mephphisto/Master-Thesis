@@ -1,5 +1,5 @@
 #$-q idefix.q,obelix.q
-#$ -l h_vmem=4G
+#$ -l h_vmem=2G
 #$ -l h_cpu=48:00:00
 #$ -pe smp 16
 #$-M j.teuffel@icloud.com -m ase
