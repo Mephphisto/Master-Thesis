@@ -14,7 +14,10 @@
 
 //#undef USE_OpenCL
 //#define USE_GPU
-//#ifdef USE_MAGMA
+#if MAGMA
+#define USE_MAGMA
+#endif
+#ifdef USE_MAGMA
 #define EIGEN_USE_LAPACKE_STRICT
 #else
 #define EIGEN_USE_MKL_ALL
