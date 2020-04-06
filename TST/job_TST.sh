@@ -3,6 +3,7 @@
 #$ -l h_cpu=48:00:00
 #$ -pe smp 16
 #$-M j.teuffel@icloud.com -m ase
+#$ -cwd
 git commit -am " Prepare Run $date"
 git pull
 module load intel
