@@ -60,8 +60,8 @@ class Diagonalize_Hamiltonian_Eigen : public Diagonalize_Hamiltonian<T> {
                 Solver.compute(m);
                 // Fetch  Eigenvalues from Solver
                 this->All_EigenValues.col(k) = Solver.eigenvalues().col(0).real();
-                this->All_EigenVectors[k] = Solver.eigenvectors();
                 this->t_s(k) = t;
+                this->All_EigenVectors[k](Solver.eigenvectors());
             }
 #if OMP_NUM_THREADS > 1
         }

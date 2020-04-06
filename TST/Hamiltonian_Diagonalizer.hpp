@@ -234,6 +234,7 @@ public:
      void Do() {
         All_EigenValues.resize(MATRIX_SIZE,T_RES);
         t_s.resize(T_RES);
+        All_EigenVectors.resize(T_RES);
         Preppare();
         this->Compute();
         Resolve();
