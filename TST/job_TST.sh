@@ -8,7 +8,7 @@ git pull
 module load intel
 mkdir "build"
 cd build
-cmake cmake .. -DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++  -DTHREADS=4 -DGRID=10 -DT_RES=800 -DUSE_MAGMA=FALSE
+cmake cmake .. -DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++  -DTHREADS=1 -DGRID=10 -DT_RES=800 -DUSE_MAGMA=FALSE
 make -j 16
 ./TST
 git commit -am "Run finished $date"
