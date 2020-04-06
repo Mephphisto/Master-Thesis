@@ -32,6 +32,9 @@ target_compile_definitions(TST PUBLIC GRID=${GRID})
 target_compile_definitions(TST PUBLIC T_RES=${T_RES})
 target_compile_definitions(TST PUBLIC MKL_NUM_THREADS=${THREADS})
 target_compile_definitions(TST PUBLIC MAGMA=${USE_MAGMA})
+if(DEFINED VERBOSE)
+target_compile_definitions(TST PUBLIC DEBUG_ACTIVE="")
+endif()
 
 
 
