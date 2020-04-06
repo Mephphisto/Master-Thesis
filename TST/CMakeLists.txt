@@ -17,10 +17,7 @@ set(ENV{MKL_NUM_THREADS} ${THREADS})
 set(ENV{OMP_NUM_THREADS ${THREADS})
 set(ENV{VECLIB_MAXIMUM_THREADS} ${THREADS})
 
-add_compile_definitions(OMP_NUM_THREADS=${THREADS})
-add_compile_definitions(GRID=${GRID})
-add_compile_definitions(T_RES=${T_RES})
-add_compile_definitions(OMP_NUM_THREADS=${THREADS})
+
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fopenmp -DNOCHANGE")
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -ldl")
@@ -29,6 +26,11 @@ set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}")
 set(CMAKE_CXX_STANDARD 14)
 
 add_executable(TST main.cpp)
+
+target_compile_definitions(TST PUBLIC OMP_NUM_THREADS=${THREADS})
+target_compile_definitions(TST PUBLIC GRID=${GRID})
+target_compile_definitions(TST PUBLIC T_RES=${T_RES})
+target_compile_definitions(TST PUBLIC OMP_NUM_THREADS=${THREADS})
 
 find_package(Eigen3 3.3 REQUIRED NO_MODULE)
 target_link_libraries(TST Eigen3::Eigen)
