@@ -13,9 +13,8 @@
 //Choose a Solver
 
 //#undef USE_OpenCL
-#define USE_MAGMA
 //#define USE_GPU
-#ifdef USE_MAGMA
+//#ifdef USE_MAGMA
 #define EIGEN_USE_LAPACKE_STRICT
 #else
 #define EIGEN_USE_MKL_ALL

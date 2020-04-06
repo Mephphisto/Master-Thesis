@@ -31,6 +31,9 @@ target_compile_definitions(TST PUBLIC OMP_NUM_THREADS=${THREADS})
 target_compile_definitions(TST PUBLIC GRID=${GRID})
 target_compile_definitions(TST PUBLIC T_RES=${T_RES})
 target_compile_definitions(TST PUBLIC OMP_NUM_THREADS=${THREADS})
+target_compile_definitions(TST PUBLIC USE_MAGMA=${USE_MAGMA})
+
+
 
 find_package(Eigen3 3.3 REQUIRED NO_MODULE)
 target_link_libraries(TST Eigen3::Eigen)
