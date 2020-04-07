@@ -61,7 +61,7 @@ states = len(a)
 majoranas = range(int(len(a)/2))
 b = np.empty(l, complex)
 N = np.empty(int(states/2)+1)
-N[0] = 1
+N[0] = 0
 for i in majoranas:
     print(i)
     b1, b2 = np.empty(l, complex), np.empty(l, complex)
@@ -74,7 +74,7 @@ for i in majoranas:
             b2[k] = a[(2 * i + 1) % states][k]
         b = project(b, b1) + project(b, b2)
     Norm = np.sqrt(np.vdot(b, b)).__abs__()
-    N[i+1] = Norm
+    N[i+1] = 1-Norm
     print(Norm)
     b = b / Norm
     img = []

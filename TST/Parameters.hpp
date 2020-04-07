@@ -38,7 +38,7 @@
 //constexpr int  T_RES = 400;
 constexpr int MATRIX_SIZE = (2 * GRID * GRID);
 constexpr double T_START = 0.0000000001;
-constexpr double T_END = 4.0 / static_cast<double>(GRID);
+constexpr double T_END = 1.0 / static_cast<double>(GRID);
 constexpr double T_COUPLE = -0.9;
 constexpr double MU =  3;
 constexpr double DELTA = 3;
