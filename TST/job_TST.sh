@@ -8,7 +8,7 @@ git pull
 module load intel
 mkdir "run $date"
 cd run
-cmake cmake .. -DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++  -DTHREADS=32 -DGRID=60 -DT_RES=1200 -DUSE_MAGMA=FALSE -DVERBOSE=""
+cmake cmake .. -DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++  -DTHREADS=1 -DGRID=10 -DT_RES=1200 -DUSE_MAGMA=FALSE -DVERBOSE=""
 make -j 16
 echo "Running Program"
 ./TST
