@@ -6,7 +6,7 @@
 git commit -am " Prepare Run $date"
 git pull
 module load intel
-mkdir "run"
+mkdir "run $date"
 cd run
 cmake cmake .. -DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++  -DTHREADS=32 -DGRID=60 -DT_RES=1200 -DUSE_MAGMA=FALSE -DVERBOSE=""
 make -j 16
