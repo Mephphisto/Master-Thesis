@@ -38,7 +38,7 @@ private:
     /// Helper function to build the \f$ A \f$ submatrices
     void Build_A() {
 
-        double r = pow(4 / (Gsize_d * 0.05), 2);
+        double r = 4*pow(4 / (Gsize_d * 0.05), 2);
         for (size_t k = 0; k < Msize; k++) {
             for (size_t j = 0; j < Msize; j++) {
                 size_t x_j = index_x(j);
@@ -162,8 +162,7 @@ public:
     /// \param phi_in Rotation Angel of Vortice pair
     /// \param mu_in Chemical Potential Amplitude
     /// \param Delta_in Pairing potential
-    _2DTopSuperConMatrix(size_t
-                         size_in,
+    _2DTopSuperConMatrix(size_t size_in,
                          double t_in,
                          double phi_in,
                          double mu_in,

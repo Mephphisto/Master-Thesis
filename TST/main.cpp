@@ -20,9 +20,9 @@
 #else
 #include "Hamiltonian_Diagonalizer_Eigen.hpp"
 #include "Hamiltonian_Diagonalizer_PLASMA.hpp"
+#endif
 
 #define HAMILTONIAN _2DTopSuperConMatrix
-#endif
 
 int main() {
 #ifdef USE_MAGMA
