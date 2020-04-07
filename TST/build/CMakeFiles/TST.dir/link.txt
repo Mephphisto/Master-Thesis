@@ -1,1 +1,0 @@
-/usr/bin/g++   -fopenmp -DNOCHANGE -fopenmp   -ldl CMakeFiles/TST.dir/main.cpp.o  -o TST -lmkl_intel_lp64 -lmkl_gnu_thread -lmkl_core -fopenmp -lpthread -lm /usr/lib/x86_64-linux-gnu/libdl.so -fopenmp /usr/lib/x86_64-linux-gnu/libdl.so /usr/lib/gcc/x86_64-linux-gnu/7/libgomp.so -lpthread 
