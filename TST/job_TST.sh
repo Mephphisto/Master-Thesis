@@ -10,8 +10,9 @@ module load intel
 mkdir "run"
 cd run
 cmake cmake .. -DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++  -DTHREADS=8 -DGRID=85 -DT_RES=800 -DUSE_MAGMA=FALSE
-make -j 16
+make
 ./TST
-git add .
+cd ..
+git add run
 git commit -am "Run finished $date"
 git push
