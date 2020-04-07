@@ -10,7 +10,7 @@ module load intel/2020
 mkdir "run $date"
 cd run
 cmake cmake .. -DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++  -DTHREADS=96 -DGRID=100 -DT_RES=800 -DUSE_MAGMA=FALSE -DVERBOSE=""
-make -j 16
+make -j 8
 echo "Running Program"
 ./TST
 git add .
