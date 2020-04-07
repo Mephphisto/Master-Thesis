@@ -193,8 +193,10 @@ protected:
                      << "t=  " << std::to_string(MU) << "; Delta = " << std::to_string(DELTA)
                      << "using " << std::to_string(OMP_NUM_THREADS) << " OpenMP Threads" << std::endl;
             csv_file << "M" << "," << std::to_string(MATRIX_SIZE) << " Eigenvalues  ... " << std::endl;
+#ifdef DEBUG_ACTIVE
             //write Eigenvalues
             std::cout << "Min Eval " << All_EigenValues.minCoeff() << std::endl;
+#endif
             for (auto V : All_EigenVectors) {
                 for (auto a : V) {
                     csv_file << "," << a;
@@ -234,7 +236,7 @@ public:
      void Do() {
         All_EigenValues.resize(MATRIX_SIZE,T_RES);
         t_s.resize(T_RES);
-        All_EigenVectors.resize(T_RES);
+        //All_EigenVectors.resize(T_RES);
         Preppare();
         this->Compute();
         Resolve();

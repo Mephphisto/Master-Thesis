@@ -61,7 +61,23 @@ class Diagonalize_Hamiltonian_Eigen : public Diagonalize_Hamiltonian<T> {
                 // Fetch  Eigenvalues from Solver
                 this->All_EigenValues.col(k) = Solver.eigenvalues().col(0).real();
                 this->t_s(k) = t;
-                this->All_EigenVectors[k](Solver.eigenvectors());
+                this->All_EigenValues.col(k) = Solver.eigenvalues().col(0).real() +
+                                               Eigen::VectorXd::Constant(MATRIX_SIZE, (tr - Solver.eigenvalues().col(
+                                                       0).real().sum()) / 2);
+
+                size_t majoranas[2] = {0, 0};
+                for (size_t t = 0; t < this->All_EigenValues.col(k).size(); t++) {
+                    if (abs(this->All_EigenValues.col(k)[t]) < abs(this->All_EigenValues.col(k)[majoranas[0]])) {
+                        majoranas[1] = majoranas[0];
+                        majoranas[0] = t;
+                    } else if (abs(this->All_EigenValues.col(k)[t]) < abs(this->All_EigenValues.col(k)[majoranas[1]])) {
+                        majoranas[1] = t;
+                    }
+                }
+                for (auto l : majoranas) {
+                    std::cout << " EiVal[" << l << "] = " << this->All_EigenValues.col(k)[l];
+                    this->All_EigenVectors.push_back(Solver.eigenvectors().col(l));
+                }
             }
 #if OMP_NUM_THREADS > 1
         }
