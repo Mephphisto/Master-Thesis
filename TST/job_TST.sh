@@ -10,6 +10,7 @@ mkdir "run"
 cd run
 cmake cmake .. -DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++  -DTHREADS=16 -DGRID=100 -DT_RES=800 -DUSE_MAGMA=FALSE
 make -j 16
+echo "finished build"
 ./TST
 git add .
 git commit -am "Run finished $date"

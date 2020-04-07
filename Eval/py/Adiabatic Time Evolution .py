@@ -60,20 +60,22 @@ def project(x, y):
 states = len(a)
 majoranas = range(int(len(a)/2))
 b = np.empty(l, complex)
-N = np.empty(2 * states+1)
+N = np.empty(int(states/2)+1)
 N[0] = 1
 for i in majoranas:
     print(i)
     b1, b2 = np.empty(l, complex), np.empty(l, complex)
     if (i == 0):
-        b = a[0]
+        b = a[1]
+        b = b / np.sqrt(np.vdot(b, b)).__abs__()
     else:
         for k in range(l):
             b1[k] = a[(2 * i) % states][k]
             b2[k] = a[(2 * i + 1) % states][k]
         b = project(b, b1) + project(b, b2)
     Norm = np.sqrt(np.vdot(b, b)).__abs__()
-    N[i+1] = N[i] * Norm
+    N[i+1] = Norm
+    print(Norm)
     b = b / Norm
     img = []
     for j in range(gsize):
@@ -89,8 +91,8 @@ for i in majoranas:
     plt.clf()
     del b1, k, img, aux
 
-plt.plot( np.linspace(0, 4 * pi, 2 * states+1), N)
+plt.plot(N) #np.linspace(0, 4 * pi, 2 * states+1),
 plt.ylabel("Population")
 plt.xlabel("Phase")
 plt.yscale("log")
-plt.savefig("Majoranas/Population-Plot.png", quality=90, optimize=True)
+plt.savefig("Majoranas/Population-Plot2.png", quality=90, optimize=True)
