@@ -111,6 +111,7 @@ namespace magma {
                     rwork, lrwork,
                     iwork, liwork,
                     &m_info);
+            magma_zgetmatrix(n, n, d_r, n, (magmaDoubleComplex *) m_eivec.data(), n, queue);
             m_isInitialized = true;
             m_eigenvectorsOk = computeEigenvectors;
             return;
