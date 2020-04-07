@@ -1,5 +1,5 @@
 #$-q idefix.q,obelix.q
-#$ -l h_vmem=3G
+#$ -l h_vmem=1G
 #$ -l h_cpu=168:00:00
 #$ -pe smp 32
 #$-M j.teuffel@icloud.com -m ase
@@ -8,7 +8,7 @@ git pull
 module load intel
 mkdir "run"
 cd run
-cmake cmake .. -DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++  -DTHREADS=32 -DGRID=60 -DT_RES=1200 -DUSE_MAGMA=FALSE
+cmake cmake .. -DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++  -DTHREADS=32 -DGRID=60 -DT_RES=1200 -DUSE_MAGMA=FALSE -DVERBOSE=""
 make -j 16
 echo "Running Program"
 ./TST
