@@ -51,10 +51,10 @@ class Diagonalize_Hamiltonian_Eigen : public Diagonalize_Hamiltonian<T> {
                 //Storage for Matrix and Trace
                 Eigen::MatrixXcd m;
                 double tr;
-                double t = T_START + (T_END - T_START) * (double(k) / double(T_RES));
+                double param = T_START + (T_END - T_START) * (double(k) / double(T_RES));
                 {
                     //Build Matrix to be Solved by MKL
-                    T M = T(MATRIX_SIZE, T_COUPLE, t, MU, DELTA);
+                    T M = T(MATRIX_SIZE, T_COUPLE, param, MU, DELTA);
                     m = M.get();
                     tr = M.trace_A();
                 }
@@ -62,7 +62,7 @@ class Diagonalize_Hamiltonian_Eigen : public Diagonalize_Hamiltonian<T> {
                 Solver.compute(m);
                 // Fetch  Eigenvalues from Solver
                 this->All_EigenValues.col(k) = Solver.eigenvalues().col(0).real();
-                this->t_s(k) = t;
+                this->t_s(k) = param;
                 this->All_EigenVectors[k](Solver.eigenvectors());
             }
 #if OMP_NUM_THREADS > 1

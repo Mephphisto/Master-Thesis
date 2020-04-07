@@ -162,8 +162,7 @@ public:
     /// \param phi_in Rotation Angel of Vortice pair
     /// \param mu_in Chemical Potential Amplitude
     /// \param Delta_in Pairing potential
-    _2DTopSuperConMatrix(size_t
-                         size_in,
+    _2DTopSuperConMatrix(size_t size_in,
                          double t_in,
                          double phi_in,
                          double mu_in,
