@@ -5,7 +5,7 @@
 #$-M j.teuffel@icloud.com -m ase
 git commit -am " Prepare Run $date"
 git pull
-module load intel
+module load intel/2020
 mkdir "run $date"
 cd run
 cmake cmake .. -DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++  -DTHREADS=1 -DGRID=10 -DT_RES=1200 -DUSE_MAGMA=FALSE -DVERBOSE=""
