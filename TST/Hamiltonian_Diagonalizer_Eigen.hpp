@@ -38,6 +38,7 @@ class Diagonalize_Hamiltonian_Eigen : public Diagonalize_Hamiltonian<T> {
 
             for (auto k = tid; k < T_RES; k += OMP_NUM_THREADS) {
 #ifdef DEBUG_ACTIVE
+#if OMP_NUM_THREADS > 1
                 //verify accurate stride through sample space
                 {
                     //Build String first and print then Prevents Race Condition!
@@ -45,6 +46,7 @@ class Diagonalize_Hamiltonian_Eigen : public Diagonalize_Hamiltonian<T> {
                     msg = "Thread " + std::to_string(tid) + " k= " + std::to_string(k) + "\n";
                     std::cout << msg;
                 }
+#endif
 #endif
                 //Storage for Matrix and Trace
                 Eigen::MatrixXcd m;
