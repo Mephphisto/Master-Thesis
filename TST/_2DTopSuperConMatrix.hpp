@@ -38,7 +38,7 @@ private:
     /// Helper function to build the \f$ A \f$ submatrices
     void Build_A() {
 
-        double r = pow(4 / (Gsize_d * 0.05), 2);
+        double r = 4*pow(4 / (Gsize_d * 0.05), 2);
         for (size_t k = 0; k < Msize; k++) {
             for (size_t j = 0; j < Msize; j++) {
                 size_t x_j = index_x(j);

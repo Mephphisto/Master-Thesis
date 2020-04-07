@@ -46,6 +46,14 @@ class Diagonalize_Hamiltonian_Eigen : public Diagonalize_Hamiltonian<T> {
                     msg = "Thread " + std::to_string(tid) + " k= " + std::to_string(k) + "\n";
                     std::cout << msg;
                 }
+#else
+                //verify accurate stride through sample space
+                {
+                    //Build String first and print then Prevents Race Condition!
+                    std::string msg;
+                    msg = " Status= " + std::to_string(static_cast<float>(k) / T_RES * 100) + "%\n";
+                    std::cout << msg;
+                }
 #endif
 #endif
                 //Storage for Matrix and Trace
