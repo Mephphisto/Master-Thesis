@@ -13,7 +13,7 @@
 #include <Eigen/Dense>
 #include <iostream>
 
-/// Abstract Base class that holds the Hermitian Matrix matrix representig our Hamiltonian.
+/// Abstract Base class that holds the Hermitian Matrix Mat_cd representig our Hamiltonian.
 /// The Matrix has the form
 /// \f[
 /// \left(
@@ -38,14 +38,14 @@ protected:
 public:
     Hamiltonian_Matrix(){} //Do I Need this
     /// Constructor
-    /// \return Hamiltonian_Matrix Opbject need to extract Eigen matrix with "get()"
+    /// \return Hamiltonian_Matrix Opbject need to extract Eigen Mat_cd with "get()"
     Hamiltonian_Matrix(size_t size, double t, double mu, double delta){};
 
     /// All derived classes need a trace funtion as the trace represents a necceccary
     /// Energy shift. from the commutator Relation \f$c^+_j  c_i = 1/2 ( c^+_i c_i + c_i c^+_i - [c_i, c^+_i])\f$
     virtual double trace_A() = 0;
 
-    /// All derived classes need to be able to return the Eigen Storage matrix for computations
+    /// All derived classes need to be able to return the Eigen Storage Mat_cd for computations
     virtual Eigen::MatrixXcd get() = 0;
 
     /// This Function checks Hermiticity fot all derived Classes
@@ -68,7 +68,7 @@ public:
     }
 
     /// Verifies, that the the \f$ A \f$ and \f$ \epsilon A^* \f$ submatrices are indeed related as desired.
-    /// \return True if matrix is incorrect
+    /// \return True if Mat_cd is incorrect
     virtual bool verify_AMatrices(){
 
         bool res = false;
@@ -88,7 +88,7 @@ public:
     }
 
     /// Verifies, that the the \f$ B \f$ and \f$ \epsilon B^* \f$ submatrices are indeed related as desired.
-    /// \return True if matrix is incorrect
+    /// \return True if Mat_cd is incorrect
     virtual bool verify_BMatrices()
     {
         bool res = false;

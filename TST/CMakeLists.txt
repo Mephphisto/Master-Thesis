@@ -25,7 +25,7 @@ set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}")
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_executable(TST main.cpp)
+add_executable(TST main.cpp Time_Evolution.hpp)
 
 target_compile_definitions(TST PUBLIC OMP_NUM_THREADS=1) #${THREADS})
 target_compile_definitions(TST PUBLIC GRID=${GRID})
