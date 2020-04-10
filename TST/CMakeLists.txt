@@ -45,9 +45,11 @@ if(TIME_EVOLUTION)
 endif()
 
 
-
+if(FALSE)
 find_package(Eigen3 3.3 REQUIRED NO_MODULE)
 target_link_libraries(TST Eigen3::Eigen)
+endif()
+include_directories("~/eigen/Eigen")
 if (${USE_MAGMA})
     find_package(CUDA REQUIRED)
     target_include_directories(TST PUBLIC ${CUDA_INCLUDE_DIRS})
