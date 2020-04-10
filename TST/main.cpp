@@ -35,10 +35,23 @@ int main() {
     Diagonalize_Hamiltonian_Eigen<HAMILTONIAN>().Do();
 #endif
 #else
-    Vec omegas(5);
-    omegas << 0.01, 1.0, 2.0, 3.0, 4.0;
+    Vec omegas (48*4);
+    for (size_t k = -96; k < 96; k++){
+        omegas[k+96] = pow(2, k);
+    }
     Vec out = Do(omegas);
-    std::cout << out;
+    try {
+            std::fstream csv_file("Rho_Decay.csv",
+            std::fstream::out);
+            assert(csv_file.is_open());
+            for (auto k = 0; k < 48*4; k++) {
+                csv_file << "{" << omegas[k] << "," << out[k] << "},";
+                csv_file << std::endl;
+            }
+            csv_file.close();
+    } catch (...) {
+        std::cout << "Error writing EigenValues CSV" << std::endl;
+    }
 #endif
     return 0;
 }

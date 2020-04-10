@@ -72,12 +72,9 @@ public:
         dcdt = Vec_cd::Zero(MATRIX_SIZE);
         auto H = T(MATRIX_SIZE, T_COUPLE, theta, MU, DELTA).get();
         for (size_t l = 0; l < MATRIX_SIZE; l++) {
-            auto lv = evec.col(l);
+            Vec_cd vm = evec.col(l).adjoint() * H;
             for (size_t k = 0; k < MATRIX_SIZE; k++) {
-                auto rv = evec.col(k);
-                auto vmv = lv.adjoint() * H * rv;
-                auto c_k = c[k];
-                dcdt[l] += vmv.value() * c_k;
+                dcdt[l] += (vm * evec.col(k)).value() * c[k];
             }
         }
         dcdt *= cd(0, 1.0 / w);
@@ -103,7 +100,7 @@ Vec Do(Vec Omegas) {
     std::tie(eval, evec) = Diagonalize<HAMILTONIAN>();
     Vec_cd C_0 = Get_C_0(eval);
     Vec Rho_t(Omegas.size());
-#pragma omp parallel for num_threads(1)
+#pragma omp parallel for
     for (size_t k = 0; k < Omegas.size(); k++) {
         Vec_cd C_f(MATRIX_SIZE);
         Schroedinger_of_cs<HAMILTONIAN> system( Omegas[k], evec);
