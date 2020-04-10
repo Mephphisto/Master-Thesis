@@ -45,11 +45,8 @@ if(TIME_EVOLUTION)
 endif()
 
 
-if(FALSE)
 find_package(Eigen3 3.3 REQUIRED NO_MODULE)
 target_link_libraries(TST Eigen3::Eigen)
-endif()
-include_directories("~/eigen/Eigen/")
 if (${USE_MAGMA})
     find_package(CUDA REQUIRED)
     target_include_directories(TST PUBLIC ${CUDA_INCLUDE_DIRS})
@@ -79,4 +76,7 @@ if (OPENMP_FOUND)
 endif ()
 
 
-INCLUDE_DIRECTORIES("~/boost_1_72_0/boost/")
+find_package(Boost 1.72.0)
+if(Boost_FOUND)
+  include_directories(${Boost_INCLUDE_DIRS})
+endif()
