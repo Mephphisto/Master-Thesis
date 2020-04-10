@@ -12,9 +12,12 @@
 #include "_1DTopSuperConMatrix.hpp"
 #include "_2DTopSuperConMatrix.hpp"
 #include "_2DTopSuperConMatrixSparse.hpp"
+#include "Time_Evolution.hpp"
 
 #ifdef USE_MAGMA
+
 #include "Hamiltonian_Diagonalizer_MAGMA.hpp"
+
 #elif defined USE_OpenCL
 #include "Hamiltonian_Diagonalizer_OpenCl.hpp"
 #else
@@ -22,15 +25,20 @@
 #include "Hamiltonian_Diagonalizer_PLASMA.hpp"
 #endif
 
-#define HAMILTONIAN _2DTopSuperConMatrix
-
 int main() {
+#ifndef TIME_EVOLUTION
 #ifdef USE_MAGMA
     Diagonalize_Hamiltonian_magma<HAMILTONIAN>().Do();
 #elif defined USE_OpenCL
     Diagonalize_Hamiltonian_OpenCL<HAMILTONIAN>().Do();
 #else
     Diagonalize_Hamiltonian_Eigen<HAMILTONIAN>().Do();
+#endif
+#else
+    Vec omegas(5);
+    omegas << 0.0, 1.0, 2.0, 3.0, 4.0;
+    Vec out = Do(omegas);
+    std::cout << out;
 #endif
     return 0;
 }

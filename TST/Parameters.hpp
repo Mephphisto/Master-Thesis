@@ -14,9 +14,13 @@
 //#undef USE_OpenCL
 #if defined(USE_MAGMA) && !defined(USE_GPU)
 #define EIGEN_USE_LAPACKE_STRICT
-#elseif !defined(USE_MAGMA)
+#error "USING LAPACUE"
+#endif
+#ifndef USE_MAGMA
 #define EIGEN_USE_MKL_ALL
 #endif
+
+#define HAMILTONIAN _2DTopSuperConMatrix
 
 //Define Data Aquisition
 #define EVAL_EVAL_BY_CSV
@@ -24,7 +28,7 @@
 //#define SHOW_MATRIX_AND_QUIT
 //#define MATRIX_TO_CSV
 //#define MU_TO_CSV
-//#define DELTA
+//#define DELTA_To_CSV
 
 //Deine Matrix Parameters
 
@@ -33,7 +37,7 @@
 //constexpr int GRID = 35;
 //constexpr int  T_RES = 400;
 constexpr int MATRIX_SIZE = (2 * GRID * GRID);
-constexpr double T_START = 0.0000000001;
+constexpr double T_START = 0.00000001;
 constexpr double T_END = 1.0 / static_cast<double>(GRID);
 constexpr double T_COUPLE = -0.9;
 constexpr double MU =  3;
