@@ -76,8 +76,8 @@ if (OPENMP_FOUND)
 endif ()
 
 
-find_package(Boost 1.72.0 REQUIRED)
+find_package(Boost  REQUIRED)
 if(Boost_FOUND)
   include_directories(${Boost_INCLUDE_DIRS})
-    message(${Boost_INCLUDE_DIRS})
+    error(${Boost_INCLUDE_DIRS})
 endif()
