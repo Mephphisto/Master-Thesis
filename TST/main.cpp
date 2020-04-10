@@ -36,7 +36,7 @@ int main() {
 #endif
 #else
     Vec omegas(5);
-    omegas << 0.0, 1.0, 2.0, 3.0, 4.0;
+    omegas << 0.01, 1.0, 2.0, 3.0, 4.0;
     Vec out = Do(omegas);
     std::cout << out;
 #endif

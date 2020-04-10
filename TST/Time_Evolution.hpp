@@ -14,6 +14,7 @@
 #include "Time_Evolution.hpp"
 #include <boost/numeric/odeint.hpp>
 #include <math.h>
+#include <boost/numeric/odeint/external/eigen/eigen.hpp>
 
 #if  defined(USE_MAGMA) && defined(USE_GPU)
 
@@ -61,32 +62,24 @@ template<typename T>
 struct Schroedinger_of_cs {
     static_assert(std::is_base_of<Hamiltonian_Matrix, T>::value);
 private:
-    Vec_cd evec;
-    Vec_cd initial_c;
+    Mat_cd evec;
     double w;
 public:
-    Schroedinger_of_cs(Vec_cd initial, double omega, Vec_cd eigen_vectors) {
-        std::cout << "schroedinger constructor called" << std::endl;
-        this->initial_c(MATRIX_SIZE);
-        this->initial_c = initial;
-        this->w = omega;
-        this->evec(MATRIX_SIZE);
-        this->evec = eigen_vectors;
-    }
+    Schroedinger_of_cs( double omega, Mat_cd eigen_vectors): w(omega), evec(eigen_vectors) {}
 
     /// This is the ODE to be solved
-    void operator()(Vec_cd c, Vec_cd dcdt, double theta) {
-        std::cout << "Begin c't()" << std::endl;
+    void operator()(Vec_cd &c, Vec_cd &dcdt, double theta) {
         dcdt = Vec_cd::Zero(MATRIX_SIZE);
-        std::cout << "zerod dxdt"  << std::endl;
         auto H = T(MATRIX_SIZE, T_COUPLE, theta, MU, DELTA).get();
-        std::cout << "fetched Hamil" << std::endl;
         for (size_t l = 0; l < MATRIX_SIZE; l++) {
+            auto lv = evec.col(l);
             for (size_t k = 0; k < MATRIX_SIZE; k++) {
-                dcdt[l] += (evec.col(l).adjoint() * H * evec.col(k)).value() * c[k];
+                auto rv = evec.col(k);
+                auto vmv = lv.adjoint() * H * rv;
+                auto c_k = c[k];
+                dcdt[l] += vmv.value() * c_k;
             }
         }
-        std::cout << "finished Matrix computation" << std::endl;
         dcdt *= cd(0, 1.0 / w);
     }
 };
@@ -96,12 +89,10 @@ struct last_observer {
     Vec_cd  &m_state;
 
     last_observer( Vec_cd &state ) : m_state(state){
-        std::cout << "last observer constructor called" << std::endl;
     }
 
     void operator()( const Vec_cd &x , double t )
     {
-        std::cout << "writitng to SC_final" << std::endl;
         m_state = x ;
     }
 };
@@ -112,12 +103,13 @@ Vec Do(Vec Omegas) {
     std::tie(eval, evec) = Diagonalize<HAMILTONIAN>();
     Vec_cd C_0 = Get_C_0(eval);
     Vec Rho_t(Omegas.size());
-//#pragma omp parallel for num_threads(1)
+#pragma omp parallel for num_threads(1)
     for (size_t k = 0; k < Omegas.size(); k++) {
         Vec_cd C_f(MATRIX_SIZE);
+        Schroedinger_of_cs<HAMILTONIAN> system( Omegas[k], evec);
         boost::numeric::odeint::integrate_const(
                 stepper_type(),
-                Schroedinger_of_cs<HAMILTONIAN>(C_0, Omegas[k], evec),
+                system,
                 C_0,
                 double(0),
                 double(2) * M_PI,
