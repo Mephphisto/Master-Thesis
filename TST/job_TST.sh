@@ -4,6 +4,7 @@
 #$ -pe smp 48
 #$-M j.teuffel@icloud.com -m ase
 #$ -cwd
+export BOOST_ROOT="~/boost_1_72_0/boost"
 git commit -am " Prepare Run $date"
 git pull
 module load intel/2020
