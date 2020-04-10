@@ -29,8 +29,8 @@ def colorize(z):
     return c
 
 
-FileName = "EigenVectors_M14450_Tres1"
-Path = "/home/jakob/Downloads/TST_MKL_Eigen/TST/cmake-build-release-intel-2019/"
+FileName = "EigenVectors_M3200_Tres10"
+Path = "/home/jakob/CLionProjects/TST_MKL_Eigen/TST/cmake-build-release/"
 a = []
 with open(Path + FileName + '.csv', newline='') as csvfile:
     spamreader = csv.reader(csvfile, delimiter=',')

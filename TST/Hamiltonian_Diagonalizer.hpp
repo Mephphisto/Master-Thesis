@@ -20,6 +20,7 @@
 /// \tparam T Class that buiilds Matrix representing Hamiltonian. Has to be derived from 
 template <class T>
 class Diagonalize_Hamiltonian{
+    static_assert(std::is_base_of<Hamiltonian_Matrix, T>::value);
 protected:
     /// Storage of computed Eigen Values
     Eigen::MatrixXd All_EigenValues;
@@ -228,11 +229,6 @@ protected:
     }
 
 public:
-    Diagonalize_Hamiltonian() {
-        bool right_T = std::is_base_of<Hamiltonian_Matrix, T>::value;
-        right_T |= std::is_base_of<Hamiltonian_MatrixSparse, T>::value;
-        assert(right_T);
-    }
      void Do() {
         All_EigenValues.resize(MATRIX_SIZE,T_RES);
         t_s.resize(T_RES);
@@ -241,5 +237,4 @@ public:
         this->Compute();
         Resolve();
     }
-    virtual ~Diagonalize_Hamiltonian() {}
 };

@@ -23,8 +23,10 @@ class Diagonalize_Hamiltonian_magma : public Diagonalize_Hamiltonian<T> {
 
 #ifdef USE_GPU
         magma::SelfAdjointEigenSolver<Eigen::MatrixXcd> Solver(MATRIX_SIZE);
+        std::cout << "running GPU Job" << std::endl;
 #else
         Eigen::SelfAdjointEigenSolver<decltype(((T *) nullptr)->get())> Solver(MATRIX_SIZE);
+        std::cout << "running GPU Job" << std::endl;
 #endif
         for (auto k = 0; k < T_RES; k++) {
 #ifdef DEBUG_ACTIVE
