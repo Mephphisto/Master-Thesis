@@ -69,15 +69,20 @@ public:
 
     /// This is the ODE to be solved
     void operator()(Vec_cd &c, Vec_cd &dcdt, double theta) {
+        auto get = T(MATRIX_SIZE, T_COUPLE, theta, MU, DELTA).get();
+
+        Vec_cd vm;
         dcdt = Vec_cd::Zero(MATRIX_SIZE);
-        auto H = T(MATRIX_SIZE, T_COUPLE, theta, MU, DELTA).get();
         for (size_t l = 0; l < MATRIX_SIZE; l++) {
-            Vec_cd vm = evec.col(l).adjoint() * H;
+            vm.noalias() = evec.col(l).adjoint() * get;
             for (size_t k = 0; k < MATRIX_SIZE; k++) {
-                dcdt[l] += (vm * evec.col(k)).value() * c[k];
+                dcdt[l] += vm.dot(evec.col(k)) * c[k];
             }
         }
-        dcdt *= cd(0, 1.0 / w);
+        dcdt *= cd(0.0, -1.0 / w);
+
+
+         //dcdt = cd(0, -1.0 / w) * evec.conjugate() * get * evec * c;
     }
 };
 

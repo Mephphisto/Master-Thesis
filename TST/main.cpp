@@ -13,6 +13,8 @@
 #include "_2DTopSuperConMatrix.hpp"
 #include "_2DTopSuperConMatrixSparse.hpp"
 #include "Time_Evolution.hpp"
+#include <math.h>
+
 
 #ifdef USE_MAGMA
 
@@ -21,8 +23,10 @@
 #elif defined USE_OpenCL
 #include "Hamiltonian_Diagonalizer_OpenCl.hpp"
 #else
+
 #include "Hamiltonian_Diagonalizer_Eigen.hpp"
 #include "Hamiltonian_Diagonalizer_PLASMA.hpp"
+
 #endif
 
 int main() {
@@ -35,23 +39,33 @@ int main() {
     Diagonalize_Hamiltonian_Eigen<HAMILTONIAN>().Do();
 #endif
 #else
-    Vec omegas (48*4);
-    for (size_t k = -96; k < 96; k++){
-        omegas[k+96] = pow(2, k);
+    std::chrono::time_point<std::chrono::system_clock> start = std::chrono::system_clock::now();
+    const size_t num_steps = 1;
+    Vec omegas(num_steps * 4);
+    for (int k = 0; k < num_steps * 4; k++) {
+        double aux = std::pow(2.0, k-2.0*num_steps);
+        omegas[k] = aux;
     }
+    std::cout << omegas << std::endl;
     Vec out = Do(omegas);
     try {
-            std::fstream csv_file("Rho_Decay.csv",
-            std::fstream::out);
-            assert(csv_file.is_open());
-            for (auto k = 0; k < 48*4; k++) {
-                csv_file << "{" << omegas[k] << "," << out[k] << "},";
-                csv_file << std::endl;
-            }
-            csv_file.close();
+        std::fstream csv_file("Rho_Decay.csv",
+                              std::fstream::out);
+        assert(csv_file.is_open());
+        for (auto k = 0; k < 4 * num_steps; k++) {
+            csv_file << "{" << omegas[k] << "," << out[k] << "},";
+            csv_file << std::endl;
+        }
+        csv_file.close();
     } catch (...) {
         std::cout << "Error writing EigenValues CSV" << std::endl;
     }
+    std::cout << std::endl << std::endl << "Runtime = "
+              <<
+              std::chrono::duration_cast<std::chrono::milliseconds>(
+                      std::chrono::system_clock::now() - start).count()
+              << "ms" <<
+              std::endl;
 #endif
     return 0;
 }
