@@ -40,13 +40,12 @@ int main() {
 #endif
 #else
     std::chrono::time_point<std::chrono::system_clock> start = std::chrono::system_clock::now();
-    const size_t num_steps = 1;
+    const size_t num_steps = 48;
     Vec omegas(num_steps * 4);
     for (int k = 0; k < num_steps * 4; k++) {
         double aux = std::pow(2.0, k-2.0*num_steps);
         omegas[k] = aux;
     }
-    std::cout << omegas << std::endl;
     Vec out = Do(omegas);
     try {
         std::fstream csv_file("Rho_Decay.csv",

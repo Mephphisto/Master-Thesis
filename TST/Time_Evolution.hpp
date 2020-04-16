@@ -44,18 +44,6 @@ inline Vec_cd Get_C_0(Vec eval) {
     return C_0;
 }
 
-template<typename T>
-inline std::tuple<Vec, Mat_cd> Diagonalize() {
-    static_assert(std::is_base_of<Hamiltonian_Matrix, T>::value);
-    T M = T(MATRIX_SIZE, T_COUPLE, T_START, MU, DELTA);
-    double tr = M.trace_A();
-    MSolver Solver(MATRIX_SIZE);
-    Solver.compute(M.get());
-    Vec eval = Solver.eigenvalues().col(0).real() +
-               Vec::Constant(MATRIX_SIZE, 0.5 * (tr - (Solver.eigenvalues().col(0).real()).sum()));;
-    Mat_cd evec = Solver.eigenvectors();
-    return std::make_tuple(eval, evec);
-}
 
 /// This is the ODE to be solved
 template<typename T>
@@ -65,61 +53,72 @@ private:
     Mat_cd evec;
     double w;
 public:
-    Schroedinger_of_cs( double omega, Mat_cd eigen_vectors): w(omega), evec(eigen_vectors) {}
+    Schroedinger_of_cs(double omega, Mat_cd eigen_vectors) : w(omega), evec(eigen_vectors) {}
 
     /// This is the ODE to be solved
     void operator()(Vec_cd &c, Vec_cd &dcdt, double theta) {
-        auto get = T(MATRIX_SIZE, T_COUPLE, theta, MU, DELTA).get();
-
-        Vec_cd vm;
-        dcdt = Vec_cd::Zero(MATRIX_SIZE);
-        for (size_t l = 0; l < MATRIX_SIZE; l++) {
-            vm.noalias() = evec.col(l).adjoint() * get;
-            for (size_t k = 0; k < MATRIX_SIZE; k++) {
-                dcdt[l] += vm.dot(evec.col(k)) * c[k];
-            }
-        }
-        dcdt *= cd(0.0, -1.0 / w);
-
-
-         //dcdt = cd(0, -1.0 / w) * evec.conjugate() * get * evec * c;
+        auto H = T(MATRIX_SIZE, T_COUPLE, theta, MU, DELTA).get();
+        dcdt = cd(0, -1 / w) * evec.adjoint() * H * evec * c;
+        std::cout << dcdt.norm() << std::endl;
     }
 };
 
-
 struct last_observer {
-    Vec_cd  &m_state;
+    Vec_cd &m_state;
 
-    last_observer( Vec_cd &state ) : m_state(state){
+    last_observer(Vec_cd &state) : m_state(state) {
     }
 
-    void operator()( const Vec_cd &x , double t )
-    {
-        m_state = x ;
+    void operator()(const Vec_cd &x, double t) {
+        m_state = x;
     }
 };
 
 Vec Do(Vec Omegas) {
-    Vec eval;
-    Mat_cd evec;
-    std::tie(eval, evec) = Diagonalize<HAMILTONIAN>();
-    Vec_cd C_0 = Get_C_0(eval);
+    static_assert(std::is_base_of<Hamiltonian_Matrix, HAMILTONIAN>::value);
     Vec Rho_t(Omegas.size());
+    Vec_cd C_0, eval;
+    Mat_cd evec;
+    {
+        auto M = HAMILTONIAN(MATRIX_SIZE, T_COUPLE, T_START, MU, DELTA);
+        {
+            std::cout << "Hermiticity Check" << std::endl;
+            M.verify_hermitiity();
+            std::cout << "Matrix Det " << M.get().determinant() << std::endl;
+        }
+        double tr = M.trace_A();
+        MSolver Solver(MATRIX_SIZE);
+        Solver.compute(M.get());
+        std::cout << " Solver Success? " << (Solver.info() == Eigen::NoConvergence) << std::endl;
+        eval = Solver.eigenvalues();
+        evec = Solver.eigenvectors();
+        {
+            std::cout << " Debug Test Diagonalizeing Well?" << std::endl;
+
+            Mat_cd D = (evec.adjoint() * M.get() * evec);
+            D -= eval.asDiagonal();
+            std::cout << "|THT^ -D|" << D.norm() << std::endl;
+            std::cout << (D * Vec_cd::Ones(MATRIX_SIZE)).norm() << std::endl;
+            std::cout << "Debug end" << std::endl;
+        }
+        C_0 = Get_C_0(eval.col(0).real() -
+                      Vec::Constant(MATRIX_SIZE, 0.5 * (tr - (Solver.eigenvalues().col(0).real()).sum())));
+    }
+    double Norm = std::abs(C_0.dot(C_0));
+
 #pragma omp parallel for
     for (size_t k = 0; k < Omegas.size(); k++) {
         Vec_cd C_f(MATRIX_SIZE);
-        Schroedinger_of_cs<HAMILTONIAN> system( Omegas[k], evec);
+        Schroedinger_of_cs<HAMILTONIAN> system(Omegas[k], evec);
         boost::numeric::odeint::integrate_const(
                 stepper_type(),
                 system,
                 C_0,
-                double(0),
-                double(2) * M_PI,
+                T_START,
+                double(2) * M_PI + T_START,
                 double(2.00) * M_PI / T_RES,
                 last_observer(C_f));
-
-        cd aux = (C_0.adjoint() * C_f).value();
-        Rho_t[k] = std::abs(aux);
+        Rho_t[k] = std::abs(C_0.normalized().dot(C_f.normalized())) ;
     }
     return Rho_t;
 }

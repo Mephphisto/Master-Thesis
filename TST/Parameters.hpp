@@ -17,7 +17,7 @@
 #error "USING LAPACUE"
 #endif
 #ifndef USE_MAGMA
-#define EIGEN_USE_MKL_ALL
+//#define EIGEN_USE_MKL_ALL
 #endif
 
 #define HAMILTONIAN _2DTopSuperConMatrix
@@ -31,15 +31,15 @@
 //#define DELTA_To_CSV
 
 //Deine Matrix Parameters
-
+constexpr double pref  = 1e-2;
 //#define PERIODIC_BOUNDRY
 #define PHASE
 //constexpr int GRID = 35;
 //constexpr int  T_RES = 400;
 constexpr int MATRIX_SIZE = (2 * GRID * GRID);
-constexpr double T_START = 0.00000001;
+constexpr double T_START = 0.2;
 constexpr double T_END = 1.0 / static_cast<double>(GRID);
-constexpr double T_COUPLE = -0.9;
-constexpr double MU =  3;
-constexpr double DELTA = 3;
+constexpr double T_COUPLE = -0.9*pref;
+constexpr double MU =  pref*3;
+constexpr double DELTA = pref*3;
 
