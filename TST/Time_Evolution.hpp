@@ -81,17 +81,12 @@ Vec Do(Vec Omegas) {
     Mat_cd evec;
     {
         auto M = HAMILTONIAN(MATRIX_SIZE, T_COUPLE, T_START, MU, DELTA);
+#ifdef DEBUG_ACTIVE
         {
             std::cout << "Hermiticity Check" << std::endl;
             M.verify_hermitiity();
             std::cout << "Matrix Det " << M.get().determinant() << std::endl;
         }
-        double tr = M.trace_A();
-        MSolver Solver(MATRIX_SIZE);
-        Solver.compute(M.get());
-        std::cout << " Solver Success? " << (Solver.info() == Eigen::NoConvergence) << std::endl;
-        eval = Solver.eigenvalues();
-        evec = Solver.eigenvectors();
         {
             std::cout << " Debug Test Diagonalizeing Well?" << std::endl;
 
@@ -101,10 +96,17 @@ Vec Do(Vec Omegas) {
             std::cout << (D * Vec_cd::Ones(MATRIX_SIZE)).norm() << std::endl;
             std::cout << "Debug end" << std::endl;
         }
+#endif
+        double tr = M.trace_A();
+        MSolver Solver(MATRIX_SIZE);
+        Solver.compute(M.get());
+        std::cout << " Solver Success? " << (Solver.info() == Eigen::NoConvergence) << std::endl;
+        eval = Solver.eigenvalues();
+        evec = Solver.eigenvectors();
+
         C_0 = Get_C_0(eval.col(0).real() -
                       Vec::Constant(MATRIX_SIZE, 0.5 * (tr - (Solver.eigenvalues().col(0).real()).sum())));
     }
-    double Norm = std::abs(C_0.dot(C_0));
 
 #pragma omp parallel for
     for (size_t k = 0; k < Omegas.size(); k++) {
