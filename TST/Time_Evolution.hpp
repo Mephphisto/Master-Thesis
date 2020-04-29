@@ -51,15 +51,14 @@ struct Schroedinger_of_cs {
     static_assert(std::is_base_of<Hamiltonian_Matrix, T>::value);
 private:
     Mat_cd evec;
-    double w;
+    double w, Norm;
 public:
-    Schroedinger_of_cs(double omega, Mat_cd eigen_vectors) : w(omega), evec(eigen_vectors) {}
+    Schroedinger_of_cs(double omega, Mat_cd eigen_vectors, double n) : w(omega), evec(eigen_vectors), Norm(n) {}
 
     /// This is the ODE to be solved
     void operator()(Vec_cd &c, Vec_cd &dcdt, double theta) {
-        auto H = T(MATRIX_SIZE, T_COUPLE, theta, MU, DELTA).get();
+        auto H = T(MATRIX_SIZE, T_COUPLE, theta, MU, DELTA).get()/Norm;
         dcdt = cd(0, -1 / w) * evec.adjoint() * H * evec * c;
-        std::cout << dcdt.norm() << std::endl;
     }
 };
 
@@ -78,40 +77,31 @@ Vec Do(Vec Omegas) {
     static_assert(std::is_base_of<Hamiltonian_Matrix, HAMILTONIAN>::value);
     Vec Rho_t(Omegas.size());
     Vec_cd C_0, eval;
+    double Norm;
     Mat_cd evec;
     {
         auto M = HAMILTONIAN(MATRIX_SIZE, T_COUPLE, T_START, MU, DELTA);
-#ifdef DEBUG_ACTIVE
-        {
-            std::cout << "Hermiticity Check" << std::endl;
-            M.verify_hermitiity();
-            std::cout << "Matrix Det " << M.get().determinant() << std::endl;
-        }
-        {
-            std::cout << " Debug Test Diagonalizeing Well?" << std::endl;
-
-            Mat_cd D = (evec.adjoint() * M.get() * evec);
-            D -= eval.asDiagonal();
-            std::cout << "|THT^ -D|" << D.norm() << std::endl;
-            std::cout << (D * Vec_cd::Ones(MATRIX_SIZE)).norm() << std::endl;
-            std::cout << "Debug end" << std::endl;
-        }
-#endif
         double tr = M.trace_A();
-        MSolver Solver(MATRIX_SIZE);
-        Solver.compute(M.get());
-        std::cout << " Solver Success? " << (Solver.info() == Eigen::NoConvergence) << std::endl;
+        cd det = M.get().determinant();
+        Norm = std::abs(pow(det,1/MATRIX_SIZE));
+        //MSolver Solver(MATRIX_SIZE);
+        //Solver.compute(M.get()/Norm);
+#ifdef DEBUG_ACTIVE
+        std::cout << "det = " << det << std::endl
+        << "Norm = " << Norm << std::endl
+        <<"det(m) = " << (M.get()/Norm).determinant() << std::endl;
+#endif
+/*        std::cout << " Solver Success? " << (Solver.info() == Eigen::NoConvergence) << std::endl;
         eval = Solver.eigenvalues();
         evec = Solver.eigenvectors();
-
         C_0 = Get_C_0(eval.col(0).real() -
                       Vec::Constant(MATRIX_SIZE, 0.5 * (tr - (Solver.eigenvalues().col(0).real()).sum())));
-    }
+    */}/*
 
 #pragma omp parallel for
     for (size_t k = 0; k < Omegas.size(); k++) {
         Vec_cd C_f(MATRIX_SIZE);
-        Schroedinger_of_cs<HAMILTONIAN> system(Omegas[k], evec);
+        Schroedinger_of_cs<HAMILTONIAN> system(Omegas[k], evec, Norm);
         boost::numeric::odeint::integrate_const(
                 stepper_type(),
                 system,
@@ -121,6 +111,6 @@ Vec Do(Vec Omegas) {
                 double(2.00) * M_PI / T_RES,
                 last_observer(C_f));
         Rho_t[k] = std::abs(C_0.normalized().dot(C_f.normalized())) ;
-    }
+    }*/
     return Rho_t;
 }

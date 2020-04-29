@@ -31,7 +31,7 @@
 //#define DELTA_To_CSV
 
 //Deine Matrix Parameters
-constexpr double pref  = 1/3;
+constexpr double pref  = 0.6;
 //#define PERIODIC_BOUNDRY
 #define PHASE
 //constexpr int GRID = 35;
