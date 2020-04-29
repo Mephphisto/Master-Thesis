@@ -5,6 +5,8 @@
 
 #include <Eigen/Dense>
 #include <omp.h>
+#include <boost/numeric/odeint.hpp>
+#include <boost/numeric/odeint/external/eigen/eigen.hpp>
 #include "Hamiltonian_Matrix.hpp"
 #include "Hamiltonian_MatrixSparse.hpp"
 #include "Parameters.hpp"
@@ -12,9 +14,8 @@
 #include "_2DTopSuperConMatrix.hpp"
 #include "_2DTopSuperConMatrixSparse.hpp"
 #include "Time_Evolution.hpp"
-#include <boost/numeric/odeint.hpp>
+
 #include <math.h>
-#include <boost/numeric/odeint/external/eigen/eigen.hpp>
 
 #if  defined(USE_MAGMA) && defined(USE_GPU)
 
@@ -35,7 +36,7 @@ typedef boost::numeric::odeint::runge_kutta4<Vec_cd> stepper_type;
 
 namespace pl = std::placeholders;
 
-inline Vec_cd Get_C_0(Vec eval, Vec_cd evec) {
+inline Vec_cd Get_C_0(Vec eval, Mat_cd evec) {
     Vec_cd C_0 = Vec_cd(MATRIX_SIZE);
     // Summ up over Fermmie see and Majorana states
     for (size_t k = 0; k < MATRIX_SIZE; k++) {
@@ -58,7 +59,7 @@ public:
     /// This is the ODE to be solved
     void operator()(Vec_cd &c, Vec_cd &dcdt, double theta) {
         auto H = T(MATRIX_SIZE, T_COUPLE, theta, MU, DELTA).get();
-        dcdt = cd(0, -1 / w) * H  * c;
+        dcdt = cd(0, -1 / w) * H * c;
         std::cout << dcdt.norm() << std::endl;
     }
 };
@@ -87,6 +88,14 @@ Vec Do(Vec Omegas) {
             M.verify_hermitiity();
             std::cout << "Matrix Det " << M.get().determinant() << std::endl;
         }
+#endif
+        double tr = M.trace_A();
+        MSolver Solver(MATRIX_SIZE);
+        Solver.compute(M.get());
+        std::cout << " Solver Success? " << (Solver.info() == Eigen::NoConvergence) << std::endl;
+        eval = Solver.eigenvalues();
+        evec = Solver.eigenvectors();
+#ifdef DEBUG_ACTIVE
         {
             std::cout << " Debug Test Diagonalizeing Well?" << std::endl;
 
@@ -97,16 +106,11 @@ Vec Do(Vec Omegas) {
             std::cout << "Debug end" << std::endl;
         }
 #endif
-        double tr = M.trace_A();
-        MSolver Solver(MATRIX_SIZE);
-        Solver.compute(M.get());
-        std::cout << " Solver Success? " << (Solver.info() == Eigen::NoConvergence) << std::endl;
-        eval = Solver.eigenvalues();
-        evec = Solver.eigenvectors();
 
-        C_0 = Get_C_0(eval.col(0).real() -
-                      Vec::Constant(MATRIX_SIZE, 0.5 * (tr - (Solver.eigenvalues().col(0).real()).sum())),
-                      evec);
+        auto aux1 = eval.col(0).real();
+        auto aux2 = Vec::Constant(MATRIX_SIZE, 0.5 * (tr - aux1.sum()));
+        auto aux = aux1-aux2;
+        C_0 = Get_C_0(aux, evec);
     }
 
 #pragma omp parallel for
@@ -121,7 +125,7 @@ Vec Do(Vec Omegas) {
                 double(2) * M_PI + T_START,
                 double(2.00) * M_PI / T_RES,
                 last_observer(C_f));
-        Rho_t[k] = std::abs(C_0.dot(C_f))/std::pow(C_0.norm(),2) ;
+        Rho_t[k] = std::abs(C_0.dot(C_f)) / std::pow(C_0.norm(), 2);
     }
     return Rho_t;
 }

@@ -12,12 +12,10 @@
 //Choose a Solver
 
 //#undef USE_OpenCL
-#if defined(USE_MAGMA) && !defined(USE_GPU)
+#if defined(USE_MAGMA)
 #define EIGEN_USE_LAPACKE_STRICT
-#error "USING LAPACUE"
-#endif
-#ifndef USE_MAGMA
-//#define EIGEN_USE_MKL_ALL
+#else
+#define EIGEN_USE_MKL_ALL
 #endif
 
 #define HAMILTONIAN _2DTopSuperConMatrix
@@ -31,7 +29,7 @@
 //#define DELTA_To_CSV
 
 //Deine Matrix Parameters
-constexpr double pref  = 1/3;
+constexpr double pref  = 0.4;
 //#define PERIODIC_BOUNDRY
 #define PHASE
 //constexpr int GRID = 35;
