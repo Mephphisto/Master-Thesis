@@ -12,8 +12,8 @@
 //Choose a Solver
 
 //#undef USE_OpenCL
-#if defined(USE_MAGMA)
-#define EIGEN_USE_LAPACKE_STRICT
+#if defined(USE_MAGMA) && !defined(USE_GPU)
+//#define EIGEN_USE_LAPACKE_STRICT
 #else
 #define EIGEN_USE_MKL_ALL
 #endif
@@ -29,7 +29,7 @@
 //#define DELTA_To_CSV
 
 //Deine Matrix Parameters
-constexpr double pref  = 0.4;
+constexpr double pref  = 1.0/3.0;
 //#define PERIODIC_BOUNDRY
 #define PHASE
 //constexpr int GRID = 35;

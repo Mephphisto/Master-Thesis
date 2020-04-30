@@ -176,7 +176,7 @@ public:
         this->Vort_x = sin(phi_in) * (Gsize_d - 1) / 4;
         this->Vort_y = cos(phi_in) * (Gsize_d - 1) / 4;
 #ifdef DEBUG_ACTIVE
-        {
+        /*{
             // send message in a unified Racecondition safe way
 
             std::string thread_msg = (omp_get_num_threads() > 1) ? "of thread " + (std::to_string(omp_get_thread_num()))
@@ -184,7 +184,7 @@ public:
             std::string msg = "Vortex" + thread_msg +
                               " at (" + std::to_string(Vort_x) + " , " + std::to_string(Vort_y) + " ) \n";
             std::cout << msg;
-        }
+        }*/
 #endif
         m = Eigen::MatrixXcd(size_in, size_in);
         Build_A();

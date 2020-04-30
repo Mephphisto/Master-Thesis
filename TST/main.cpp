@@ -12,7 +12,9 @@
 #include "_1DTopSuperConMatrix.hpp"
 #include "_2DTopSuperConMatrix.hpp"
 #include "_2DTopSuperConMatrixSparse.hpp"
+#ifdef TIME_EVOLUTION
 #include "Time_Evolution.hpp"
+#endif
 #include <math.h>
 
 
@@ -40,17 +42,15 @@ int main() {
 #endif
 #else
     std::chrono::time_point<std::chrono::system_clock> start = std::chrono::system_clock::now();
-    /*
-    const size_t num_steps = 48;
-    Vec omegas(num_steps * 4);
-    for (int k = 0; k < num_steps * 4; k++) {
-        double aux = std::pow(2.0, k-2.0*num_steps);
+
+    const size_t num_steps = 48*4;
+    Vec omegas(num_steps);
+    for (int k = 0; k < num_steps; k++) {
+        double aux = std::pow(2.0, (k-.5*num_steps)/6);
         omegas[k] = aux;
-    }*/
-    Vec omegas(5);
-    omegas << 0.25,0.5,1,2,4;
+    }
     Vec out = Do(omegas);
-    try {
+     try {
         std::fstream csv_file("Rho_Decay.csv",
                               std::fstream::out);
         assert(csv_file.is_open());
