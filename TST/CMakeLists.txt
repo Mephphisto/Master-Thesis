@@ -19,7 +19,7 @@ set(ENV{VECLIB_MAXIMUM_THREADS} ${THREADS})
 
 
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fopenmp -DNOCHANGE")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fopenmp -DADD_")
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -ldl")
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}")
 
@@ -74,7 +74,6 @@ if (OPENMP_FOUND)
     link_directories(${OpenMP_iomp5_LIBRARY} ${OpenMP_CXX_LIBRARIES})
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
 endif ()
-
 
 find_package(Boost 1.70.0  REQUIRED)
 if(Boost_FOUND)

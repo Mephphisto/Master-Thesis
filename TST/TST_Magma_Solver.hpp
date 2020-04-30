@@ -79,10 +79,7 @@ namespace magma {
 
         void compute(MatrixType M) {
 
-            eigen_assert(matrix.cols() == matrix.rows());
-            eigen_assert((options & ~(EigVecMask | GenEigMask)) == 0
-                         && (options & EigVecMask) != EigVecMask
-                         && "invalid option parameter");
+            eigen_assert(M.cols() == M.rows());
 
             bool computeEigenvectors = true;
             magma_int_t n = Eigen::internal::convert_index<magma_int_t>(M.cols());
