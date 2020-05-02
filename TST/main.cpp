@@ -46,7 +46,7 @@ int main() {
     const size_t num_steps = 48*4;
     Vec omegas(num_steps);
     for (int k = 0; k < num_steps; k++) {
-        double aux = std::pow(2.0, (k-.5*num_steps)/6);
+        double aux = std::pow(2.0, 14*(k-.5*num_steps)/num_steps);
         omegas[k] = aux;
     }
     Vec out = Do(omegas);

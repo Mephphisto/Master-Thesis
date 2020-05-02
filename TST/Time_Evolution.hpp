@@ -16,6 +16,8 @@
 #include <boost/phoenix/core.hpp>
 #include <boost/phoenix/operator.hpp>
 
+#undef DEBUG_ACTIVE
+
 typedef Eigen::MatrixXcd Mat_cd;
 typedef Eigen::VectorXcd Vec_cd;
 typedef Eigen::VectorXd Vec;
@@ -114,7 +116,7 @@ Vec Do(Vec Omegas) {
         C_0 = Get_C_0(eval.col(0).real() - Vec::Constant(MATRIX_SIZE, 0.5 * (tr - eval.col(0).real().sum())), evec);
     }
 
-#pragma omp parallel for
+#pragma omp parallel for num_threads(OMP_NUM_THREADS)
     for (size_t k = 0; k < Omegas.size(); k++) {
         Vec_cd C_f(MATRIX_SIZE), C;
         C = C_0;
