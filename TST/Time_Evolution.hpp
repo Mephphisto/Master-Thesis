@@ -48,10 +48,9 @@ template<typename T>
 struct Schroedinger_of_cs {
     static_assert(std::is_base_of<Hamiltonian_Matrix, T>::value);
 private:
-    Mat_cd evec;
     double w;
 public:
-    Schroedinger_of_cs(double omega, Mat_cd eigen_vectors) : w(omega), evec(eigen_vectors) {}
+    Schroedinger_of_cs(double omega) : w(omega) {}
 
     /// This is the ODE to be solved
     void operator()(const Vec_cd &c, Vec_cd &dcdt, double theta) {
@@ -101,7 +100,7 @@ Vec Do(Vec Omegas) {
         double tr = M.trace_A();
         MSolver Solver(MATRIX_SIZE);
         Solver.compute(M.get());
-        if (Solver.info() == Eigen::NoConvergence) std::cout << " Demoralisation:: NoConvergence " << std::endl;
+        assert((" Demoralisation:: NoConvergence ",Solver.info() == Eigen::NoConvergence));
         eval = Solver.eigenvalues();
         evec = Solver.eigenvectors();
 #ifdef DEBUG_ACTIVE
@@ -118,9 +117,8 @@ Vec Do(Vec Omegas) {
 
 #pragma omp parallel for num_threads(OMP_NUM_THREADS)
     for (size_t k = 0; k < Omegas.size(); k++) {
-        Vec_cd C_f(MATRIX_SIZE), C;
-        C = C_0;
-        Schroedinger_of_cs<HAMILTONIAN> system(Omegas[k], evec);
+        Vec_cd C_f(MATRIX_SIZE), C = C_0;
+        Schroedinger_of_cs<HAMILTONIAN> system(Omegas[k]);
         boost::numeric::odeint::integrate_const(
                 stepper_type(),
                 system,
