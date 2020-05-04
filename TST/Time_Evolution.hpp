@@ -100,7 +100,7 @@ Vec Do(Vec Omegas) {
         double tr = M.trace_A();
         MSolver Solver(MATRIX_SIZE);
         Solver.compute(M.get());
-        assert((" Demoralisation:: NoConvergence ",Solver.info() == Eigen::NoConvergence));
+        assert((" Demoralisation :: No Success ",Solver.info() == Eigen::Success));
         eval = Solver.eigenvalues();
         evec = Solver.eigenvectors();
 #ifdef DEBUG_ACTIVE
