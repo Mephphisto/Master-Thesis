@@ -54,9 +54,9 @@ public:
 
     /// This is the ODE to be solved
     void operator()(const Vec_cd &c, Vec_cd &dcdt, double theta) {
-        auto H = T(MATRIX_SIZE, T_COUPLE, theta, MU, DELTA).get();
+        auto H = T(MATRIX_SIZE, T_COUPLE, theta/w, MU, DELTA).get();
         dcdt = H * c;
-        dcdt *= cd(0, -1 / w);
+        dcdt *= cd(0, -1);
     }
 };
 
@@ -100,7 +100,7 @@ Vec Do(Vec Omegas) {
         double tr = M.trace_A();
         MSolver Solver(MATRIX_SIZE);
         Solver.compute(M.get());
-        assert((" Demoralisation :: No Success ",Solver.info() == Eigen::Success));
+        assert((" Demoralisation :: No Success ", Solver.info() == Eigen::Success));
         eval = Solver.eigenvalues();
         evec = Solver.eigenvectors();
 #ifdef DEBUG_ACTIVE
@@ -114,9 +114,19 @@ Vec Do(Vec Omegas) {
 
         C_0 = Get_C_0(eval.col(0).real() - Vec::Constant(MATRIX_SIZE, 0.5 * (tr - eval.col(0).real().sum())), evec);
     }
-
 #pragma omp parallel for num_threads(OMP_NUM_THREADS)
     for (size_t k = 0; k < Omegas.size(); k++) {
+        Vec_cd C_End;
+                {
+                auto M = HAMILTONIAN(MATRIX_SIZE, T_COUPLE,  T_END / Omegas[k], MU, DELTA);
+                double tr_E = M.trace_A();
+                MSolver Solver(MATRIX_SIZE);
+                Solver.compute(M.get());
+                assert((" Demoralisation :: No Success ", Solver.info() == Eigen::Success));
+                auto eval_E = Solver.eigenvalues();
+                auto evec_E = Solver.eigenvectors();
+                C_End = Get_C_0(eval_E.col(0).real() - Vec::Constant(MATRIX_SIZE, 0.5 * (tr_E - eval_E.col(0).real().sum())), evec_E);
+                }
         Vec_cd C_f(MATRIX_SIZE), C = C_0;
         Schroedinger_of_cs<HAMILTONIAN> system(Omegas[k]);
         boost::numeric::odeint::integrate_const(
@@ -124,14 +134,14 @@ Vec Do(Vec Omegas) {
                 system,
                 C,
                 T_START,
-                double(2) * M_PI + T_START,
-                double(2.00) * M_PI / T_RES,
+                T_END,
+                double(2.00) * M_PI / T_RES * Omegas[k],
                 last_observer(C_f));
 #ifdef DEBUG_ACTIVE
-        std::cout << "w= " << Omegas[k] << " |C_0-C_f| = " << (C_0 - C_f).norm() << " <C_0,C_f>/|C_0|² = "
-                  << std::abs(C_0.dot(C_f)) / std::pow(C_0.norm(), 2) << std::endl;
+        std::cout << "w= " << Omegas[k] << " |C_E-C_f| = " << (C_End - C_f).norm() << " <C_E,C_f>/|C_0|² = "
+                  << std::abs(C_End.dot(C_f)) / std::pow(C_End.norm(), 2) << std::endl;
 #endif
-        Rho_t[k] = std::abs(C_0.dot(C_f)) / std::pow(C_0.norm(), 2);
+        Rho_t[k] = std::abs(C_End.dot(C_f)) / std::pow(C_End.norm(), 2);
     }
     return Rho_t;
 }
