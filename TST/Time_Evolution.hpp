@@ -95,7 +95,7 @@ struct last_observer {
     }
 };
 
-Vec Do(Vec const Omegas) {
+Vec Do(Vec const &Omegas) {
     static_assert(std::is_base_of<Hamiltonian_Matrix, HAMILTONIAN >::value, "Given Class is not derived from Hamiltonian_Matrix");
     Vec Rho_t(Omegas.size());
     Vec_cd C_0, eval;
@@ -125,7 +125,7 @@ Vec Do(Vec const Omegas) {
 
         C_0 = Get_C_0(Energys(evec, tr), evec);
     }
-#pragma omp parallel for schedule(dynamic) shared(Rho_t, C_0, eval, evec)
+#pragma omp parallel for shared(Rho_t, C_0, eval, evec, Omegas, std::cout) default(none)
     for (size_t k = 0; k < Omegas.size(); k++) {
         Vec_cd C_End;
         Vec Enrgy_E;
