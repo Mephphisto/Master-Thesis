@@ -78,8 +78,7 @@ struct last_observer {
     Vec_cd C_0;
 #endif
 
-
-    last_observer(Vec_cd &state) : m_state(state) {
+    explicit last_observer(Vec_cd &state) : m_state(state) {
 #ifdef DEBUG_ACTIVE
         C_0 = Vec_cd::Ones(MATRIX_SIZE);
 #endif
@@ -92,11 +91,11 @@ struct last_observer {
                   << std::abs(C_0.dot(x)) / std::pow(C_0.norm(), 2) << std::endl;
         if (t - T_START < double(2.00) * M_PI / (T_RES + 1)) C_0 = x;
 #endif
-        if (t = double(2) * M_PI + T_START) m_state = x;
+        if (t == double(2) * M_PI + T_START) m_state = x;
     }
 };
 
-Vec Do(Vec Omegas) {
+Vec Do(Vec const Omegas) {
     static_assert(std::is_base_of<Hamiltonian_Matrix, HAMILTONIAN>::value);
     Vec Rho_t(Omegas.size());
     Vec_cd C_0, eval;
@@ -112,7 +111,7 @@ Vec Do(Vec Omegas) {
         double tr = M.trace_A();
         MSolver Solver(MATRIX_SIZE);
         Solver.compute(M.get());
-        assert((" Demoralisation :: No Success ", Solver.info() == Eigen::Success));
+        assert(("Demoralisation :: No Success ", Solver.info() == Eigen::Success));
         eval = Solver.eigenvalues();
         evec = Solver.eigenvectors();
 #ifdef DEBUG_ACTIVE
@@ -136,7 +135,7 @@ Vec Do(Vec Omegas) {
             double tr_E = M.trace_A();
             MSolver Solver(MATRIX_SIZE);
             Solver.compute(M.get());
-            if(Solver.info() != Eigen::Success) {
+            if (Solver.info() != Eigen::Success) {
                 std::cout << " Demoralisation :: No Success w= " << Omegas[k] << std::endl;
             }
             auto eval_E = Solver.eigenvalues();
