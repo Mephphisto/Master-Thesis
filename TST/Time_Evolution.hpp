@@ -52,7 +52,8 @@ inline double Get_C_final_Overlap(Vec_cd const &C_f, Vec eval, Mat_cd evec) {
 }
 
 inline Vec Energys(Vec_cd eval, double tr) {
-    return eval.col(0).real() - Vec::Constant(MATRIX_SIZE, 0.5 * (tr - eval.col(0).real().sum()));
+    Vec res = eval.col(0).real() - Vec::Constant(MATRIX_SIZE, 0.5 * (tr - eval.col(0).real().sum()));
+    return res;
 }
 
 /// This is the ODE to be solved
@@ -65,8 +66,7 @@ public:
 
     /// This is the ODE to be solved
     void operator()(const Vec_cd &c, Vec_cd &dcdt, double theta) {
-        auto H = T(MATRIX_SIZE, T_COUPLE, theta / w, MU, DELTA).get();
-        dcdt = H * c;
+        dcdt = T(MATRIX_SIZE, T_COUPLE, theta / w, MU, DELTA).get() * c;
         dcdt *= cd(0, -1);
     }
 };
@@ -123,7 +123,7 @@ Vec Do(Vec const &Omegas) {
         std::cout << "Debug end" << std::endl;
 #endif
 
-        C_0 = Get_C_0(Energys(evec, tr), evec);
+        C_0 = Get_C_0(Energys(eval, tr), evec);
     }
 #pragma omp parallel for shared(Rho_t, C_0, eval, evec, Omegas, std::cout) default(none)
     for (size_t k = 0; k < Omegas.size(); k++) {
@@ -138,9 +138,8 @@ Vec Do(Vec const &Omegas) {
             if (Solver.info() != Eigen::Success) {
                 std::cout << " Demoralisation :: No Success w= " << Omegas[k] << std::endl;
             }
-            auto eval_E = Solver.eigenvalues();
             evec_E = Solver.eigenvectors();
-            Enrgy_E = Energys(evec_E, tr_E);
+            Enrgy_E = Energys(Solver.eigenvalues(), tr_E);
             C_End = Get_C_0(Enrgy_E, evec_E);
         }
         Vec_cd C_f(MATRIX_SIZE), C = C_0;
