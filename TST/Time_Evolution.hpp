@@ -126,7 +126,7 @@ Vec Do(Vec Omegas) {
 
         C_0 = Get_C_0(Energys(evec, tr), evec);
     }
-#pragma omp parallel for
+#pragma omp parallel for schedule(dynamic) shared(Rho_t, C_0, eval, evec, Omegas)
     for (size_t k = 0; k < Omegas.size(); k++) {
         Vec_cd C_End;
         Vec Enrgy_E;
@@ -136,7 +136,9 @@ Vec Do(Vec Omegas) {
             double tr_E = M.trace_A();
             MSolver Solver(MATRIX_SIZE);
             Solver.compute(M.get());
-            assert((" Demoralisation :: No Success ", Solver.info() == Eigen::Success));
+            if(Solver.info() != Eigen::Success) {
+                std::cout << " Demoralisation :: No Success w= " << Omegas[k] << std::endl;
+            }
             auto eval_E = Solver.eigenvalues();
             evec_E = Solver.eigenvectors();
             Enrgy_E = Energys(evec_E, tr_E);
