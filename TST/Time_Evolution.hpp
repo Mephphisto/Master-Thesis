@@ -126,7 +126,7 @@ Vec Do(Vec Omegas) {
 
         C_0 = Get_C_0(Energys(evec, tr), evec);
     }
-#pragma omp parallel for num_threads(OMP_NUM_THREADS)
+#pragma omp parallel for
     for (size_t k = 0; k < Omegas.size(); k++) {
         Vec_cd C_End;
         Vec Enrgy_E;
