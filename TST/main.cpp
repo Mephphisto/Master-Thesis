@@ -43,7 +43,7 @@ int main() {
 #else
     std::chrono::time_point<std::chrono::system_clock> start = std::chrono::system_clock::now();
 
-    const size_t num_steps = 48*16;
+    const size_t num_steps = 8;//48*16;
     Vec omegas(num_steps);
     for (int k = 0; k < num_steps; k++) {
         double aux = std::pow(2.0, 14*(k-.5*num_steps)/num_steps);
