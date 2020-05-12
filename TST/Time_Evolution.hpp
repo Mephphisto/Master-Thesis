@@ -9,7 +9,7 @@
 #include <boost/numeric/odeint/external/eigen/eigen.hpp>
 #include "Hamiltonian_Matrix.hpp"
 #include "Parameters.hpp"
-#include <math.h>
+#include <cmath>
 #include <omp.h>
 
 #include <boost/phoenix/core.hpp>
@@ -42,7 +42,7 @@ inline Vec_cd Get_C_0(Vec eval, Mat_cd evec) {
     return C_0;
 }
 
-inline double Get_C_final_Overlap(Vec_cd C_f, Vec eval, Mat_cd evec) {
+inline double Get_C_final_Overlap(Vec_cd const &C_f, Vec eval, Mat_cd evec) {
     double res = 0;
     // Summ up over Fermmie see and Majorana states
     for (size_t k = 0; k < MATRIX_SIZE; k++) {
@@ -58,11 +58,10 @@ inline Vec Energys(Vec_cd eval, double tr) {
 /// This is the ODE to be solved
 template<typename T>
 struct Schroedinger_of_cs {
-    static_assert(std::is_base_of<Hamiltonian_Matrix, T>::value);
 private:
     double w;
 public:
-    Schroedinger_of_cs(double omega) : w(omega) {}
+    explicit Schroedinger_of_cs(double omega) : w(omega) {}
 
     /// This is the ODE to be solved
     void operator()(const Vec_cd &c, Vec_cd &dcdt, double theta) {
@@ -82,7 +81,6 @@ struct last_observer {
 #ifdef DEBUG_ACTIVE
         C_0 = Vec_cd::Ones(MATRIX_SIZE);
 #endif
-
     }
 
     void operator()(const Vec_cd &x, double t) {
@@ -91,12 +89,14 @@ struct last_observer {
                   << std::abs(C_0.dot(x)) / std::pow(C_0.norm(), 2) << std::endl;
         if (t - T_START < double(2.00) * M_PI / (T_RES + 1)) C_0 = x;
 #endif
-        if (t == double(2) * M_PI + T_START) m_state = x;
+        if (t == double(2) * M_PI + T_START) {
+            m_state = x;
+        }
     }
 };
 
 Vec Do(Vec const Omegas) {
-    static_assert(std::is_base_of<Hamiltonian_Matrix, HAMILTONIAN>::value);
+    static_assert(std::is_base_of<Hamiltonian_Matrix, HAMILTONIAN >::value, "Given Class is not derived from Hamiltonian_Matrix");
     Vec Rho_t(Omegas.size());
     Vec_cd C_0, eval;
     Mat_cd evec;
@@ -125,7 +125,7 @@ Vec Do(Vec const Omegas) {
 
         C_0 = Get_C_0(Energys(evec, tr), evec);
     }
-#pragma omp parallel for schedule(dynamic) shared(Rho_t, C_0, eval, evec, Omegas)
+#pragma omp parallel for schedule(dynamic) shared(Rho_t, C_0, eval, evec)
     for (size_t k = 0; k < Omegas.size(); k++) {
         Vec_cd C_End;
         Vec Enrgy_E;
