@@ -16,7 +16,7 @@
 #include <boost/phoenix/core.hpp>
 #include <boost/phoenix/operator.hpp>
 
-#undef DEBUG_ACTIVE
+//#undef DEBUG_ACTIVE
 
 typedef Eigen::MatrixXcd Mat_cd;
 typedef Eigen::VectorXcd Vec_cd;
