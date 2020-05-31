@@ -1,0 +1,24 @@
+[master 6a147f75]  Prepare Run small
+ Committer: Jakob Teuffel <jteuffel@idefix907.physnet.uni-hamburg.de>
+Your name and email address were configured automatically based
+on your username and hostname. Please check that they are accurate.
+You can suppress this message by setting them explicitly. Run the
+following command and follow the instructions in your editor to edit
+your configuration file:
+
+    git config --global --edit
+
+After doing this, you may fix the identity used for this commit with:
+
+    git commit --amend --reset-author
+
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+Already up to date.
+Module for intel compilers_and_libraries_2020.0.166/linux:
+(Intel Compilers ver. 19.1.0.166 (Parallel Studio XE 2020)) - loaded.
+/opt/sge-local/spool/idefix907/job_scripts/8406257: 12: cd: can't cd to run Time Eval vsmall fast
+CMake Error: The source directory "/afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen_2D" does not appear to contain CMakeLists.txt.
+Specify --help for usage, or press the help button on the CMake GUI.
+make: *** No targets specified and no makefile found.  Stop.
+Running Program
+/opt/sge-local/spool/idefix907/job_scripts/8406257: 16: /opt/sge-local/spool/idefix907/job_scripts/8406257: ./TST: not found
