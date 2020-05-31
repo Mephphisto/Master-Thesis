@@ -22,3 +22,21 @@ Specify --help for usage, or press the help button on the CMake GUI.
 make: *** No targets specified and no makefile found.  Stop.
 Running Program
 /opt/sge-local/spool/idefix907/job_scripts/8406257: 16: /opt/sge-local/spool/idefix907/job_scripts/8406257: ./TST: not found
+[master 067eb1e6] Run finished
+ Committer: Jakob Teuffel <jteuffel@idefix907.physnet.uni-hamburg.de>
+Your name and email address were configured automatically based
+on your username and hostname. Please check that they are accurate.
+You can suppress this message by setting them explicitly. Run the
+following command and follow the instructions in your editor to edit
+your configuration file:
+
+    git config --global --edit
+
+After doing this, you may fix the identity used for this commit with:
+
+    git commit --amend --reset-author
+
+ 1 file changed, 24 insertions(+)
+ create mode 100644 TST/job_TST.sh.o8406257
+To github.com:Mephphisto/TST_MKL_Eigen.git
+   91879083..067eb1e6  master -> master
