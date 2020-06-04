@@ -23,3 +23,22 @@ Specify --help for usage, or press the help button on the CMake GUI.
 make: *** No targets specified and no makefile found.  Stop.
 Running Program
 /opt/sge-local/obelix12/job_scripts/8322920: 16: /opt/sge-local/obelix12/job_scripts/8322920: ./TST: not found
+[master 2b5a956d] Run finished
+ Committer: Jakob Teuffel <jteuffel@obelix12.physnet.uni-hamburg.de>
+Ihr Name und E-Mail Adresse wurden automatisch auf Basis
+Ihres Benutzer- und Rechnernamens konfiguriert. Bitte prüfen Sie, dass
+diese zutreffend sind. Sie können diese Meldung unterdrücken, indem Sie
+diese explizit setzen. Führen Sie dazu den folgenden Befehl aus und folgen
+Sie den Anweisungen in Ihrem Editor, um die Konfigurationsdatei zu bearbeiten:
+
+    git config --global --edit
+
+Nachdem Sie das getan haben, können Sie Ihre Identität für diesen Commit
+ändern mit:
+
+    git commit --amend --reset-author
+
+ 1 file changed, 25 insertions(+)
+ create mode 100644 TST/job_TST.sh.o8322920
+To github.com:Mephphisto/TST_MKL_Eigen.git
+   5d3d2915..2b5a956d  master -> master
