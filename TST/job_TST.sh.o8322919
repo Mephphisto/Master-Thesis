@@ -1,0 +1,19 @@
+Auf Branch master
+Ihr Branch ist auf demselben Stand wie 'origin/master'.
+
+Unversionierte Dateien:
+	job_TST.sh.o8322689
+	job_TST.sh.o8322919
+	job_TST.sh.o8445592
+	job_TST.sh.o8446643
+
+nichts zum Commit vorgemerkt, aber es gibt unversionierte Dateien
+Bereits aktuell.
+Module for intel compilers_and_libraries_2020.0.166/linux:
+(Intel Compilers ver. 19.1.0.166 (Parallel Studio XE 2020)) - loaded.
+/opt/sge-local/obelix12/job_scripts/8322919: 12: cd: can't cd to run Time Eval small 
+CMake Error: The source directory "/afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen" does not appear to contain CMakeLists.txt.
+Specify --help for usage, or press the help button on the CMake GUI.
+make: *** No targets specified and no makefile found.  Stop.
+Running Program
+/opt/sge-local/obelix12/job_scripts/8322919: 16: /opt/sge-local/obelix12/job_scripts/8322919: ./TST: not found

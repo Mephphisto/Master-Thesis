@@ -1,0 +1,11 @@
+On branch master
+Your branch is up to date with 'origin/master'.
+
+Untracked files:
+	job_TST.sh.o8445592
+
+nothing added to commit but untracked files present
+Already up to date.
+Module for intel compilers_and_libraries_2020.0.166/linux:
+(Intel Compilers ver. 19.1.0.166 (Parallel Studio XE 2020)) - loaded.
+/opt/sge-local/spool/idefix926/job_scripts/8445592: 11: /opt/sge-local/spool/idefix926/job_scripts/8445592: Syntax error: redirection unexpected
