@@ -1,0 +1,35 @@
+On branch master
+Your branch is up to date with 'origin/master'.
+
+Untracked files:
+	job_TST.sh.o8359577
+	job_TST.sh.o8445591
+	run Time Eval vsmall fast/
+
+nothing added to commit but untracked files present
+From github.com:Mephphisto/TST_MKL_Eigen
+   e154ba91..2b5a956d  master     -> origin/master
+Updating e154ba91..2b5a956d
+Fast-forward
+ TST/job_TST.sh          |   6 ----
+ TST/job_TST.sh.o8322689 |  79 ++++++++++++++++++++++++++++++++++++++++++++++++
+ TST/job_TST.sh.o8322919 |  41 +++++++++++++++++++++++++
+ TST/job_TST.sh.o8322920 |  25 +++++++++++++++
+ TST/job_TST.sh.o8445592 |  11 +++++++
+ TST/job_TST.sh.o8446643 |  51 +++++++++++++++++++++++++++++++
+ TST/run Time Eval/TST   | Bin 0 -> 561200 bytes
+ 7 files changed, 207 insertions(+), 6 deletions(-)
+ create mode 100644 TST/job_TST.sh.o8322689
+ create mode 100644 TST/job_TST.sh.o8322919
+ create mode 100644 TST/job_TST.sh.o8322920
+ create mode 100644 TST/job_TST.sh.o8445592
+ create mode 100644 TST/job_TST.sh.o8446643
+ create mode 100755 TST/run Time Eval/TST
+Module for intel compilers_and_libraries_2020.0.166/linux:
+(Intel Compilers ver. 19.1.0.166 (Parallel Studio XE 2020)) - loaded.
+/opt/sge-local/spool/obelix20/job_scripts/8359577: 12: cd: can't cd to run Time Eval vsmall 
+CMake Error: The source directory "/afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen_2D" does not appear to contain CMakeLists.txt.
+Specify --help for usage, or press the help button on the CMake GUI.
+make: *** No targets specified and no makefile found.  Stop.
+Running Program
+/opt/sge-local/spool/obelix20/job_scripts/8359577: 16: /opt/sge-local/spool/obelix20/job_scripts/8359577: ./TST: not found
