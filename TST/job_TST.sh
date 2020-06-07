@@ -4,12 +4,12 @@
 #$ -pe smp 35
 #$-M j.teuffel@icloud.com -m ase
 #$ -cwd
+path="run Time Eval Release G35 Res200"
 export BOOST_ROOT="~/boost_1_72_0/"
-git commit -am " Prepare Run Release"
 git pull
 module load intel/2020
-mkdir "run Time Eval Release f"
-cd "run Time Eval Release f"
+mkdir $path
+cd $path
 cmake cmake .. -DCMAKE_BUILD_TYPE=Release  -DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++  -DTHREADS=35 -DGRID=85 -DT_RES=200 -DUSE_MAGMA=FALSE -DVERBOSE=FALSE  -DUSE_GPU=FALSE -DTIME_EVOLUTION=TRUE -DCMAKE_PREFIX_PATH="~/boost_1_72_0/"
 make -j 8
 echo "Running Program"
