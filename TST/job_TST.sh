@@ -4,9 +4,8 @@
 #$ -pe smp 35
 #$-M j.teuffel@icloud.com -m ase
 #$ -cwd
-path="run Time Eval Release G35 Res200"
+path="run_Time_Eval_Release_G35_Res200"
 export BOOST_ROOT="~/boost_1_72_0/"
-git pull
 module load intel/2020
 mkdir $path
 cd $path
