@@ -13,7 +13,7 @@
 #include <omp.h>
 #include "implicit_euler_Eigen.hpp"
 #include <string>
-
+/// Neccecary ? is this nneded for ODEint ?
 #include <boost/phoenix/core.hpp>
 #include <boost/phoenix/core.hpp>
 #include <boost/phoenix/operator.hpp>
@@ -30,28 +30,32 @@ typedef Mat_cd Jacobi;
 typedef double Time;
 typedef boost::numeric::odeint::implicit_euler_Eigen<cd> Stepper;
 
-
+/// check is GPU is designated for diagonalisation
 #if  defined(USE_MAGMA) && defined(USE_GPU)
 #include "TST_Magma_Solver.hpp"
 typedef magma::SelfAdjointEigenSolver<Mat_cd> MSolver;
 #else
 typedef Eigen::SelfAdjointEigenSolver<Mat_cd> MSolver;
 #endif
-
+// activate deactivate manual debugging diring execution
 #undef DEBUG_ACTIVE2
 
+/// Build QM Groundsate according to energy levels
 inline Vec_cd Get_C_0(Vec eval, Mat_cd evec) {
     Vec_cd C_0 = Vec_cd(MATRIX_SIZE);
-    // Summ up over Fermmie see and Majorana states
+    // Summ up over Fermmie see and Majorana states thus including the first state above \mu
     for (size_t k = 0; k < MATRIX_SIZE; k++) {
         C_0 += (eval[k] < 10e-7) ? evec.col(k).normalized() : Vec_cd::Zero(MATRIX_SIZE);
     }
 #ifdef DEBUG_ACTIVE2
+    /// print out the Vectornorm thus the particle number in the Fermi see +1 (see above)
     std::cout << "|C_0| = " << C_0.norm() << std::endl;
 #endif
     return C_0;
 }
 
+/// causes errors : Basis of compllex Vectorspace is overcomplete in Real subspace!
+#deprecated
 inline double Get_C_final_Overlap(Vec_cd const &C_f, Vec eval, Mat_cd evec) {
     double res = 0;
     // Summ up over Fermmie see and Majorana states
@@ -61,13 +65,14 @@ inline double Get_C_final_Overlap(Vec_cd const &C_f, Vec eval, Mat_cd evec) {
     return res;
 }
 
+/// This computes the Energies from the Eigenvalues according to "Plegot & Ripka"
 inline Vec Energys(Vec_cd eval, double tr) {
     Vec res = eval.col(0).real() - Vec::Constant(MATRIX_SIZE, 0.5 * (tr - eval.col(0).real().sum()));
     return res;
 }
 
 
-/// This is the ODE to be solved
+/// This is the ODE to be solved AKA the schroedinger Equation
 template<typename T>
 struct Schroedinger_of_cs {
 private:
@@ -77,11 +82,11 @@ public:
 
     /// This is the ODE to be solved
     void operator()(const State &c, State &dcdt, Time theta) {
-        dcdt = T(MATRIX_SIZE, T_COUPLE, theta / w, MU, DELTA).get() * c;
-        dcdt *= cd(0, -1);
+        dcdt = T(MATRIX_SIZE, T_COUPLE, theta , MU, DELTA).get() * c;
+        dcdt *= cd(0, -1/w);
     }
 };
-
+/// This is the Jacobi Matrix of the Schroedinger Equation AKA the Hamiltonian. (Check this!)
 template<typename T>
 struct Schroedinger_of_cs_Jacobi {
 private:
@@ -91,8 +96,7 @@ public:
 
     /// This is the ODE to be solved
     void operator()(const State &c, Jacobi &Jacobi, Time theta) {
-        auto M(T(MATRIX_SIZE, T_COUPLE, theta / w, MU, DELTA).get());
-        Jacobi = T(MATRIX_SIZE, T_COUPLE, theta / w, MU, DELTA).get();
+        Jacobi = T(MATRIX_SIZE, T_COUPLE, theta, MU, DELTA).get();
     }
 };
 
