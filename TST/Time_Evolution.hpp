@@ -77,8 +77,8 @@ public:
 
     /// This is the ODE to be solved
     void operator()(const State &c, State &dcdt, Time theta) {
-        dcdt = T(MATRIX_SIZE, T_COUPLE, theta / w, MU, DELTA).get() * c;
-        dcdt *= cd(0, -1);
+        dcdt = T(MATRIX_SIZE, T_COUPLE, theta , MU, DELTA).get() * c;
+        dcdt *= cd(0, -1/ w);
     }
 };
 
