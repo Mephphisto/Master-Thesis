@@ -7,7 +7,8 @@
 #include <complex>
 #include <omp.h>
 #include <Eigen/Sparse>
-
+/// This Class is a deprecated attempt to convert the Prohject to sparse matrices. This Class is however functional
+#pragma deprecated
 class _2DTopSuperConMatrixSparse : public Hamiltonian_MatrixSparse {
 private:
     double t, mu, Gsize_d, Vort_x , Vort_y  ;
