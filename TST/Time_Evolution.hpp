@@ -135,6 +135,8 @@ Vec Do_TE(Vec const &Omegas) {
 
         C_0 = Get_C_0(Energys(eval, tr), evec);
     }
+    const Vec_cd Maj1 = evec.col(MATRIX_SIZE/2);
+    const Vec_cd Maj2 = evec.col(MATRIX_SIZE/2+1);
 #pragma omp parallel for shared(Rho_t, C_0, eval, evec, Omegas, std::cout) default(none)
     for (size_t k = 0; k < Omegas.size(); k++) {
 
@@ -151,7 +153,8 @@ Vec Do_TE(Vec const &Omegas) {
                 double(2.00) * M_PI / T_RES / Omegas[k],
                 last_observer(C_f));
 
-        Rho_t[k] = std::abs(C_0.dot(C_f)) / std::pow(C_0.norm(), 2);//Get_C_final_Overlap(C_f, Enrgy_E, evec_E);
+        double res = std::arg(std::abs(Maj1.dot(C_f))/std::abs(Maj2.dot(C_f)));
+        Rho_t[k] = res;
     }
     return Rho_t;
 }
