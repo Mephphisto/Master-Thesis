@@ -20,6 +20,7 @@
 
 // Eigen Typedefs
 typedef Eigen::MatrixXcd Mat_cd;
+typedef Eigen::MatrixXcd Mat;
 typedef Eigen::VectorXcd Vec_cd;
 typedef Eigen::VectorXd Vec;
 typedef std::complex<double> cd;
@@ -104,10 +105,10 @@ struct last_observer {
     }
 };
 
-Vec Do_TE(Vec const &Omegas) {
+Mat Do_TE(Vec const &Omegas) {
     static_assert(std::is_base_of<Hamiltonian_Matrix, HAMILTONIAN>::value,
                   "Given Class is not derived from Hamiltonian_Matrix");
-    Vec Rho_t(Omegas.size());
+    Mat Rho_t(Omegas.size(),3);
     Vec_cd C_0, eval;
     Mat_cd evec;
     {
@@ -135,8 +136,8 @@ Vec Do_TE(Vec const &Omegas) {
 
         C_0 = Get_C_0(Energys(eval, tr), evec);
     }
-    const Vec_cd Maj1 = evec.col(MATRIX_SIZE/2);
-    const Vec_cd Maj2 = evec.col(MATRIX_SIZE/2+1);
+    const Vec_cd Maj1 = evec.col(MATRIX_SIZE / 2);
+    const Vec_cd Maj2 = evec.col(MATRIX_SIZE / 2 + 1);
 #pragma omp parallel for shared(Rho_t, C_0, eval, evec, Omegas, std::cout) default(none)
     for (size_t k = 0; k < Omegas.size(); k++) {
 
@@ -152,9 +153,10 @@ Vec Do_TE(Vec const &Omegas) {
                 (double) T_START + T_END,
                 double(2.00) * M_PI / T_RES / Omegas[k],
                 last_observer(C_f));
-
-        double res = std::arg(std::abs(Maj1.dot(C_f))/std::abs(Maj2.dot(C_f)));
-        Rho_t[k] = res;
+        double norm = C_f.norm();
+        double res = std::pow(std::abs(C_f.dot(Maj1 - Maj2)), 2) /norm /2;
+        double res2 = std::pow(std::abs(C_f.dot(Maj1 + Maj2)), 2) /norm /2;
+        Rho_t.col(k) = Eigen::Vector3d(res, res2, norm);
     }
     return Rho_t;
 }
