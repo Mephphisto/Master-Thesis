@@ -9,6 +9,8 @@
 #include <boost/numeric/odeint/external/eigen/eigen.hpp>
 #include "Hamiltonian_Matrix.hpp"
 #include "Parameters.hpp"
+#include "Majorana_Transform.hpp"
+#include "Typedefs.hpp"
 #include <cmath>
 #include <omp.h>
 //#include "implicit_euler_Eigen.hpp"
@@ -18,12 +20,6 @@
 #include <boost/phoenix/core.hpp>
 #include <boost/phoenix/operator.hpp>
 
-// Eigen Typedefs
-typedef Eigen::MatrixXcd Mat_cd;
-typedef Eigen::MatrixXcd Mat;
-typedef Eigen::VectorXcd Vec_cd;
-typedef Eigen::VectorXd Vec;
-typedef std::complex<double> cd;
 
 typedef double Time;
 
@@ -35,18 +31,30 @@ typedef magma::SelfAdjointEigenSolver<Mat_cd> MSolver;
 typedef Eigen::SelfAdjointEigenSolver<Mat_cd> MSolver;
 #endif
 
-#define DEBUG_ACTIVE2
-
-inline Vec_cd Get_C_0(Vec eval, Mat_cd evec) {
+inline std::tuple<Vec_cd, Vec_cd, Vec_cd> Get_C_0_Majs(Vec eval, Mat_cd evec) {
     Vec_cd C_0 = Vec_cd(MATRIX_SIZE);
     // Summ up over Fermmie see and Majorana states
-    for (size_t k = 0; k < MATRIX_SIZE; k++) {
-        C_0 += (eval[k] < 10e-7) ? evec.col(k).normalized() : Vec_cd::Zero(MATRIX_SIZE);
+    size_t majoranas[2] = {0, 0};
+    for (size_t t = 0; t < eval.size(); t++) {
+        if (abs(eval[t]) < abs(eval[majoranas[0]])) {
+            majoranas[1] = majoranas[0];
+            majoranas[0] = t;
+        } else if (abs(eval[t]) < abs(eval[majoranas[1]])) {
+            majoranas[1] = t;
+        }
     }
-#ifdef DEBUG_ACTIVE2
+    for (size_t k = 0; k < MATRIX_SIZE; k++) {
+        if ((k != majoranas[0]) || k > (k != majoranas[1])) {
+            C_0 += (eval[k] < 10e-7) ? evec.col(k).normalized() : Vec_cd::Zero(MATRIX_SIZE);
+        }
+    }
+    std::cout << "E_maj1 = " << eval[majoranas[0]] << " E_maj2" << eval[majoranas[1]] << std::endl;
+    auto tpl = Majoranaize(evec.col(majoranas[0]).normalized(), evec.col(majoranas[1]).normalized());
+    C_0 += std::get<0>(tpl) + std::get<1>(tpl);
+#ifdef DEBUG_ACTIVE
     std::cout << "|C_0| = " << C_0.norm() << std::endl;
 #endif
-    return C_0;
+    return std::make_tuple(C_0, std::get<0>(tpl), std::get<1>(tpl));
 }
 
 inline double Get_C_final_Overlap(Vec_cd const &C_f, Vec eval, Mat_cd evec) {
@@ -108,12 +116,12 @@ struct last_observer {
 Mat Do_TE(Vec const &Omegas) {
     static_assert(std::is_base_of<Hamiltonian_Matrix, HAMILTONIAN>::value,
                   "Given Class is not derived from Hamiltonian_Matrix");
-    Mat Rho_t(Omegas.size(),3);
-    Vec_cd C_0, eval;
+    Mat Rho_t(3, Omegas.size());
+    Vec_cd C_0, eval, Maj1, Maj2;
     Mat_cd evec;
     {
         auto M = HAMILTONIAN(MATRIX_SIZE, T_COUPLE, T_START, MU, DELTA);
-#ifdef DEBUG_ACTIVE2
+#ifdef DEBUG_ACTIVE
         std::cout << "Hermiticity Check" << std::endl;
         M.verify_hermitiity();
         std::cout << "Matrix Det " << M.get().determinant() << std::endl;
@@ -125,7 +133,7 @@ Mat Do_TE(Vec const &Omegas) {
         assert(("Demoralisation :: No Success ", Solver.info() == Eigen::Success));
         eval = Solver.eigenvalues();
         evec = Solver.eigenvectors();
-#ifdef DEBUG_ACTIVE2
+#ifdef DEBUG_ACTIVE
         std::cout << " Debug Test Diagonalizeing Well?" << std::endl;
         Mat_cd D = (evec.adjoint() * M.get() * evec);
         D -= eval.asDiagonal();
@@ -134,11 +142,12 @@ Mat Do_TE(Vec const &Omegas) {
         std::cout << "Debug end" << std::endl;
 #endif
 
-        C_0 = Get_C_0(Energys(eval, tr), evec);
+        auto tpl = Get_C_0_Majs(Energys(eval, tr), evec);
+        C_0 = std::get<0>(tpl);
+        Maj1 = std::get<1>(tpl), Maj2 = std::get<2>(tpl);
     }
-    const Vec_cd Maj1 = evec.col(MATRIX_SIZE / 2);
-    const Vec_cd Maj2 = evec.col(MATRIX_SIZE / 2 + 1);
-#pragma omp parallel for shared(Rho_t, C_0, eval, evec, Omegas, std::cout) default(none)
+
+#pragma omp parallel for shared(Rho_t, C_0, eval, evec, Omegas, std::cout, Maj1, Maj2) default(none)
     for (size_t k = 0; k < Omegas.size(); k++) {
 
         Vec_cd C_f(MATRIX_SIZE);
@@ -151,12 +160,12 @@ Mat Do_TE(Vec const &Omegas) {
                 (double) T_START,
 
                 (double) T_START + T_END,
-                double(2.00) * M_PI / T_RES / Omegas[k],
+                double(2.00) * M_PI / T_RES,
                 last_observer(C_f));
         double norm = C_f.norm();
-        double res = std::pow(std::abs(C_f.dot(Maj1 - Maj2)), 2) /norm /2;
-        double res2 = std::pow(std::abs(C_f.dot(Maj1 + Maj2)), 2) /norm /2;
-        Rho_t.col(k) = Eigen::Vector3d(res, res2, norm);
+        double res = std::pow(std::abs(C_f.dot(Maj1 - Maj2)), 2) / norm / 2;
+        double res2 = std::pow(std::abs(C_f.dot(Maj1 + Maj2)), 2) / norm / 2;
+        Rho_t.col(k) = Eigen::Vector3d({res, res2, norm});
     }
     return Rho_t;
 }

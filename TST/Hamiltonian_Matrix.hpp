@@ -12,6 +12,7 @@
 
 #include <Eigen/Dense>
 #include <iostream>
+#include "Typedefs.hpp"
 
 /// Abstract Base class that holds the Hermitian Matrix Mat_cd representig our Hamiltonian.
 /// The Matrix has the form
@@ -34,7 +35,7 @@ protected:
     /// Size - n of the n x n Matrix
     size_t Msize;
     /// The "Eigen" Matrix that holds the entries.
-    Eigen::MatrixXcd m;
+    Mat_cd m;
 public:
     Hamiltonian_Matrix(){} //Do I Need this
     /// Constructor
@@ -46,7 +47,7 @@ public:
     virtual double trace_A() = 0;
 
     /// All derived classes need to be able to return the Eigen Storage Mat_cd for computations
-    virtual Eigen::MatrixXcd get() = 0;
+    virtual Mat_cd get() = 0;
 
     /// This Function checks Hermiticity fot all derived Classes
     /// \return True if Matrix is Non Hermitian

@@ -43,7 +43,7 @@ int main() {
 #else
     std::chrono::time_point<std::chrono::system_clock> start = std::chrono::system_clock::now();
 
-    const size_t num_steps = 4*OMP_NUM_THREADS;
+    const size_t num_steps = OMP_NUM_THREADS;
     Vec omegas(num_steps);
     for (int k = 0; k < num_steps; k++) {
         double aux = std::pow(2.0, 14*(k-.5*num_steps)/num_steps-1);
@@ -56,7 +56,7 @@ int main() {
         assert(csv_file.is_open());
          csv_file << "{{w, maj1-m1j2, maj1+m1j2,norm},";
         for (auto k = 0; k < omegas.size(); k++) {
-            csv_file << "{" << omegas[k] << "," << out(k,0) << "," << out(k,1) << "," << out(k,2) << "},";
+            csv_file << "{" << omegas[k] << "," << out(0,k) << "," << out(1,k) << "," << out(2,k) << "},";
         }
         csv_file << "}" ;
         csv_file.close();

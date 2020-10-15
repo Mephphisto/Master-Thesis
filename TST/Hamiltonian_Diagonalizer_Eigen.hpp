@@ -18,8 +18,9 @@
 #include <vector>
 #if OMP_NUM_THREADS > 1
 #include <omp.h>
+#include "Majorana_Transform.hpp"
+#include "Typedefs.hpp"
 #endif
-
 
 template<class T>
 class Diagonalize_Hamiltonian_Eigen : public Diagonalize_Hamiltonian<T> {
@@ -47,7 +48,7 @@ class Diagonalize_Hamiltonian_Eigen : public Diagonalize_Hamiltonian<T> {
                 }
 #endif
                 //Storage for Matrix and Trace
-                Eigen::MatrixXcd m;
+                Mat_cd m;
                 double tr;
                 double t = T_START + (T_END - T_START) * (double(k) / double(T_RES));
                 {
@@ -62,7 +63,7 @@ class Diagonalize_Hamiltonian_Eigen : public Diagonalize_Hamiltonian<T> {
                 this->All_EigenValues.col(k) = Solver.eigenvalues().col(0).real();
                 this->t_s(k) = t;
                 this->All_EigenValues.col(k) = Solver.eigenvalues().col(0).real() +
-                                               Eigen::VectorXd::Constant(MATRIX_SIZE, (tr - Solver.eigenvalues().col(
+                                               Vec::Constant(MATRIX_SIZE, (tr - Solver.eigenvalues().col(
                                                        0).real().sum()) / 2);
 
                 size_t majoranas[2] = {0, 0};
@@ -74,10 +75,17 @@ class Diagonalize_Hamiltonian_Eigen : public Diagonalize_Hamiltonian<T> {
                         majoranas[1] = t;
                     }
                 }
+#define MAJIZE
+#ifdef MAJIZE
+                auto tpl = Majoranaize(Solver.eigenvectors().col(majoranas[0]).normalized(),Solver.eigenvectors().col(majoranas[1]).normalized());
+                this->All_EigenVectors.push_back(std::get<0>(tpl));
+                this->All_EigenVectors.push_back(std::get<1>(tpl));
+#else
                 for (auto l : majoranas) {
                     std::cout << " EiVal[" << l << "] = " << this->All_EigenValues.col(k)[l];
                     this->All_EigenVectors.push_back(Solver.eigenvectors().col(l));
                 }
+#endif
             }
 #if OMP_NUM_THREADS > 1
         }
