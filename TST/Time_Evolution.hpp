@@ -48,7 +48,9 @@ inline std::tuple<Vec_cd, Vec_cd, Vec_cd> Get_C_0_Majs(Vec eval, Mat_cd evec) {
             C_0 += (eval[k] < 10e-7) ? evec.col(k).normalized() : Vec_cd::Zero(MATRIX_SIZE);
         }
     }
-    std::cout << "E_maj1 = " << eval[majoranas[0]] << " E_maj2" << eval[majoranas[1]] << std::endl;
+#ifdef DEBUG_ACTIVE
+    std::cout << "E_maj1 = " << eval[majoranas[0]] << " E_maj2 = " << eval[majoranas[1]] << std::endl;
+#endif
     auto tpl = Majoranaize(evec.col(majoranas[0]).normalized(), evec.col(majoranas[1]).normalized());
     C_0 += std::get<0>(tpl) + std::get<1>(tpl);
 #ifdef DEBUG_ACTIVE

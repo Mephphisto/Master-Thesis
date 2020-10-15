@@ -45,17 +45,17 @@ inline std::tuple<Vec_cd, Vec_cd> Majoranaize(Vec_cd v, Vec_cd w) {
 #pragma omp critical
         {
             double norm1 = std::abs(MyDot(X.conjugate(), X)), norm2 = std::abs(MyDot(Y.conjugate(), Y));
-            if (static_cast<int>(std::log(norm1)) >= static_cast<int>(std::log(norm1))) {
-                std::cerr <<  " For the Majorana Transform to be successfull |maj1_s|² << |maj2_s|² is neede ";
+            if (static_cast<int>(std::log(norm1)) >= static_cast<int>(std::log(norm2))) {
+                std::cerr << " For the Majorana Transform to be successful |maj1_s|² << |maj2_s|² is needed" << std::endl;
             }
-
             std::cout << "|maj1_s|²= " << norm1
                       << " |maj2_s|²= " << norm2
                       << std::endl;
         }
 #endif
-    return std::make_tuple(X, Y);
-}
+        return std::make_tuple(X, Y);
+    }
 
 }
+
 #endif //TST_MAJORANA_TRANSFORM_HPP
