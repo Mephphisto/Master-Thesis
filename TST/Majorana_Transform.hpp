@@ -53,7 +53,6 @@ inline std::tuple<Vec_cd, Vec_cd> Majoranaize(Vec_cd v, Vec_cd w) {
                       << " |maj2_s|²= " << norm2
                       << std::endl;
         }
-    }
 #endif
     return std::make_tuple(X, Y);
 }

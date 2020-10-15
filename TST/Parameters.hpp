@@ -13,7 +13,7 @@
 
 //#undef USE_OpenCL
 #if defined(USE_MAGMA) && !defined(USE_GPU)
-//#define EIGEN_USE_LAPACKE_STRICT
+#define EIGEN_USE_LAPACKE_STRICT
 #else
 #define EIGEN_USE_MKL_ALL
 #endif
@@ -36,7 +36,7 @@ constexpr double pref  = 1.0/3.0;
 //constexpr int  T_RES = 400;
 constexpr int MATRIX_SIZE = (2 * GRID * GRID);
 constexpr double T_START = 0.001;
-constexpr double T_END =  double(M_PI) + T_START;
+constexpr double T_END =  double(2.0*M_PI) + T_START;
 constexpr double T_COUPLE = -2*pref;
 constexpr double MU =  pref*3;
 constexpr double DELTA = pref*3;
