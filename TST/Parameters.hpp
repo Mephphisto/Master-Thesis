@@ -26,7 +26,7 @@
 //#define SHOW_MATRIX_AND_QUIT
 //#define MATRIX_TO_CSV
 //#define MU_TO_CSV
-#define DELTA_TO_CSV
+//#define DELTA_TO_CSV
 
 //Deine Matrix Parameters
 constexpr double pref  = 1.0/3.0;
@@ -36,7 +36,7 @@ constexpr double pref  = 1.0/3.0;
 //constexpr int  T_RES = 400;
 constexpr int MATRIX_SIZE = (2 * GRID * GRID);
 constexpr double T_START = double(0.000);
-constexpr double T_END = 1.00;
+constexpr double T_END = double(M_PI);
 constexpr double T_COUPLE = -2*pref;
 constexpr double MU =  pref*3;
 constexpr double DELTA = pref*3;

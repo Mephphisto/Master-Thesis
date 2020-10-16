@@ -62,6 +62,16 @@ class Diagonalize_Hamiltonian_Eigen : public Diagonalize_Hamiltonian<T> {
                 //Solve the Matrix
                 Solver.compute(m);
                 // Fetch  Eigenvalues from Solver
+                // Check successful Eigen solve
+#pragma omp critical
+                {
+                    auto status = Solver.info();
+                    if (status != Eigen::Success) {
+                        if (status == Eigen::ComputationInfo::NoConvergence) std::cerr << "NoConvergence" << std::endl;
+                        if (status == Eigen::ComputationInfo::InvalidInput) std::cerr << "InvalidInput"<< std::endl;
+                        if (status == Eigen::ComputationInfo::NumericalIssue) std::cerr << "NumericalIssue"<< std::endl;
+                    }
+                }
                 this->All_EigenValues.col(k) = Solver.eigenvalues().col(0).real();
                 this->t_s(k) = t;
                 this->All_EigenValues.col(k) = Solver.eigenvalues().col(0).real() +

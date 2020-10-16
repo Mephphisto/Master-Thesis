@@ -106,7 +106,14 @@ private:
                                               static_cast<double>(y_j + y_k) / 2 - (Gsize_d - 1) / 2 - Vort_y);
                 phase *= std::complex<double>(static_cast<double>(x_j + x_k) / 2 - (Gsize_d - 1) / 2 + Vort_x,
                                               static_cast<double>(y_j + y_k) / 2 - (Gsize_d - 1) / 2 + Vort_y);
-                phase = phase / abs(phase);
+                {
+                    double Abs = abs(phase);
+                    if (Abs != 0.0) {
+                        phase = phase /Abs;
+                    }else{
+                    phase = 0.0;
+                    }
+                }
 #else
                 phase = std::complex<double>(1, 0);
 #endif
@@ -174,9 +181,9 @@ public:
         this->Gsize = sqrt(Msize);
         this->Gsize_d = static_cast<double>(Gsize);
         {
-            //double sp = sin(phi_in), cp = cos(phi_in);
-            this->Vort_x = Gsize/4 * phi_in; //sp * (Gsize_d - 1) / 4;
-            this->Vort_y = 0.00; //cp * (Gsize_d - 1) / 4;
+            double sp = sin(phi_in), cp = cos(phi_in);
+            this->Vort_x = sp * (Gsize_d - 1) / 4;
+            this->Vort_y = cp * (Gsize_d - 1) / 4;
         }
 #pragma omp critical
         std::cout << "phi=" << phi_in << "Vort_x= " << Vort_x << " Vort_y = " << Vort_y << std::endl;
