@@ -38,6 +38,6 @@ constexpr int MATRIX_SIZE = (2 * GRID * GRID);
 constexpr double T_START = 0.2;
 constexpr double T_END = double(2) * M_PI + T_START;
 constexpr double T_COUPLE = -0.9*pref;
-constexpr double MU =  pref*3;
+constexpr double MU =  -pref*3;
 constexpr double DELTA = pref*3;
 
