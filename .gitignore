@@ -9,6 +9,7 @@ install_manifest.txt
 compile_commands.json
 CTestTestfile.cmake
 _deps
+Eval/py/Majoranas
 
 **/.vs
 # Prerequisites
@@ -408,3 +409,9 @@ MigrationBackup/
 /TST/cmake-build-debug/
 /Eval/py/Majoranas/
 /Eval/py/Majoranas2D/
+/Eval/py/interpret/
+/Eval/py/Kitaev/
+/Eval/py/Kitaev_FFT/
+/Eval/py/Majoranas/
+/Eval/py/Majoranas_+Mu/
+/Eval/py/Modes/

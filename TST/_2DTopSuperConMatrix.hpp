@@ -7,21 +7,38 @@
 #include <complex>
 #include <Eigen/Dense>
 
+/// This Class generates matrices representing the topological chiral 2D p-Wave Superconducter Hamiltonian
 class _2DTopSuperConMatrix : public Hamiltonian_Matrix {
 private:
-    double t, mu, Gsize_d, Vort_x , Vort_y  ;
+    /// Tunneling Energy
+    double t;
+    /// Chemical Potential Amplitude
+    double mu;
+    /// Grid Size as double for computations
+    double Gsize_d;
+    /// Vortex X-Position
+    double Vort_x;
+    /// Vortex Y-Position
+    double Vort_y;
+    /// Complex Pairing Potential
     std::complex<double> Delta;
+    /// Grid  size
     size_t Gsize;
 
+    ///  Helper Funtion to set \f$ A , B |f$ and \f$ \epsilon B^* ,  \f$ simulataneously.
+    /// \param k  k - Index
+    /// \param j j - Index
+    /// \param val New Value of the Submatrix
     inline void set(size_t k, size_t j, std::complex<double> val) {
         auto MS = 2 * Msize;
         m(k, j) = val;
         m((k + Msize) % MS, (j + Msize) % MS) = -std::conj(val);
     }
 
+    /// Helper function to build the \f$ A \f$ submatrices
     void Build_A() {
 
-        double r = pow(4/(Gsize_d*0.3),2);
+        double r = 4*pow(4 / (Gsize_d * 0.05), 2);
         for (size_t k = 0; k < Msize; k++) {
             for (size_t j = 0; j < Msize; j++) {
                 size_t x_j = index_x(j);
@@ -31,9 +48,9 @@ private:
 
                 if ((x_k == x_j) && (y_k == y_j)) {
                     double Ex = exp(-r * (pow(x_j - Gsize_d / 2 - Vort_x, 2)
-                                       +  pow(y_j - Gsize_d / 2 - Vort_y, 2)))
-                               + exp(-r * (pow(x_j - Gsize_d / 2 + Vort_x, 2)
-                                       +  pow(y_j - Gsize_d / 2 + Vort_y, 2)));
+                                          + pow(y_j - Gsize_d / 2 - Vort_y, 2)))
+                                + exp(-r * (pow(x_j - Gsize_d / 2 + Vort_x, 2)
+                                            + pow(y_j - Gsize_d / 2 + Vort_y, 2)));
                     set(k, j, mu - 2 * mu * Ex);
                     // Alternative Code with Hard Edge
                     /*if
@@ -72,6 +89,7 @@ private:
         }
     }
 
+    /// Helper function to build the \f$ B \f$ submatrices
     void Build_B() {
         for (size_t k = 0; k < Msize; k++) {
             for (size_t j = 0; j < Msize; j++) {
@@ -90,7 +108,7 @@ private:
                                               static_cast<double>(y_j + y_k) / 2 - (Gsize_d - 1) / 2 + Vort_y);
                 phase = phase / abs(phase);
 #else
-                phase = std::complex<double>(1,0);
+                phase = std::complex<double>(1, 0);
 #endif
                 if ((x_k == x_j) && (y_k == y_j + 1)) {
                     set(k, j + Msize, std::complex<double>(0, 1) * Delta * phase);
@@ -116,22 +134,35 @@ private:
             }
         }
     }
-
+    /// Helper fuction to get the index from a x/y coordinate Pair
+    /// \param index_x  x - Coordinate
+    /// \param index_y  y - Coordinate
+    /// \return Index
     inline size_t at(size_t index_x, size_t index_y) {
         return index_x + Gsize * index_y;
     }
-
+    /// Helper Function to get the X - Coordinate from a Index
+    /// \param pos - Index
+    /// \return X - Coordinate
     inline size_t index_x(size_t pos) {
         return pos % Gsize;
     }
 
+    /// Helper Function to get the Y - Coordinate from a Index
+    /// \param pos - Index
+    /// \return Y - Coordinate
     inline size_t index_y(size_t pos) {
         return pos / Gsize;
     }
 
 public:
-    _2DTopSuperConMatrix(size_t
-                         size_in,
+    /// Constructor to create Matrices
+    /// \param size_in  Matrix Size
+    /// \param t_in tunneling energy
+    /// \param phi_in Rotation Angel of Vortice pair
+    /// \param mu_in Chemical Potential Amplitude
+    /// \param Delta_in Pairing potential
+    _2DTopSuperConMatrix(size_t size_in,
                          double t_in,
                          double phi_in,
                          double mu_in,
@@ -144,16 +175,29 @@ public:
         this->Gsize_d = static_cast<double>(Gsize);
         this->Vort_x = sin(phi_in) * (Gsize_d - 1) / 4;
         this->Vort_y = cos(phi_in) * (Gsize_d - 1) / 4;
-        std::cout << "Vortex at (" << Vort_x << " , " << Vort_y << " )" << std::endl;
+#ifdef DEBUG_ACTIVE
+        /*{
+            // send message in a unified Racecondition safe way
+
+            std::string thread_msg = (omp_get_num_threads() > 1) ? "of thread " + (std::to_string(omp_get_thread_num()))
+                                                                 : "";
+            std::string msg = "Vortex" + thread_msg +
+                              " at (" + std::to_string(Vort_x) + " , " + std::to_string(Vort_y) + " ) \n";
+            std::cout << msg;
+        }*/
+#endif
         m = Eigen::MatrixXcd(size_in, size_in);
         Build_A();
         Build_B();
     }
 
+    /// Nessesary override to provide access to the Eigen Storage Matrix
+    /// \return Eigen Matrix with coeffitents of Hamiltonian
     Eigen::MatrixXcd get() override {
         return m;
     }
-
+    /// Nessesary override to provide access to the trace
+    /// \return trace
     double trace_A() override {
         return 0;
     }

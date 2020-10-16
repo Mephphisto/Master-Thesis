@@ -4,32 +4,17 @@ from typing import Iterable, Tuple, TypeVar
 
 import numpy as np
 import pylab as plt
+from scipy.fft import fft
 from numpy import pi
 
 T = TypeVar("T")
-
-
 def grouped(iterable: Iterable[T], n=2) -> Iterable[Tuple[T, ...]]:
     """s -> (s0,s1,s2,...sn-1), (sn,sn+1,sn+2,...s2n-1), ..."""
     return zip(*[iter(iterable)] * n)
 
 
-def colorize(z):
-    r = np.abs(z)
-    arg = np.angle(z)
-
-    h = 180 * arg / pi  # (arg + pi) / (2 * pi) + 0.5
-    l = 1.0 - 1.0 / (1.0 + r ** 0.3)
-    s = 0.8
-
-    c = np.vectorize(hls_to_rgb)(h, l, s)  # --> tuple
-    c = np.array(c)  # -->  array of (3,n,m) shape, but need (n,m,3)
-    c = c.swapaxes(0, 2)
-    return c
-
-
-FileName = "EigenVectors_M800_Tres1"
-Path = "/home/jakob/Downloads/TST_MKL_Eigen/TST/cmake-build-release-intel-2019/"
+FileName = "EigenVectors_M2002_Tres800"
+Path = "/home/jakob/CLionProjects/TST_MKL_Eigen/TST/cmake-build-release-intel/"
 a = []
 with open(Path + FileName + '.csv', newline='') as csvfile:
     spamreader = csv.reader(csvfile, delimiter=',')
@@ -44,20 +29,41 @@ with open(Path + FileName + '.csv', newline='') as csvfile:
         else:
             print(row)
 
-b1,b2 = [],[]
-l = len(a)
-l2 = int(len(a)/2)
-for k in range(l):
-    b1.append(a[l2-1][k])
-    b2.append(a[l2][k])
+b1, b2 = [], []
+l = len(a[0])
+l2 = int(len(a[0]) / 2)
+l4 = int(l/4)
 
-a = []
-for k in range(l2):
-    a.append([b1[k] * b1[int(k + l2)], b2[k] * b2[int(k + l2)]])
+print("l=", l)
+b = np.array(a[0])
+plt.savefig("KitaevMajoranas+" + ".png", quality=100, optimize=True, dpi=600)
+idx = 0
+lower, upper = 480,520
+for i in range(int(len(a))):
+    print(i)
+    b = np.array(a[i])
+    xs, ys = np.empty(l2, complex), np.empty(l2,complex)
+    if (np.sum(np.abs(b[lower: upper])) > .1):
+        for k in range(l2):
+            x = b[k]
+            y = b[k + l2]
+            xs[k] = x
+            ys[k] = y
 
-# 'nearest' interpolation - faithful but blocky
-#plt.figure(figsize = (len(a), len(a)))
-plt.imshow(colorize(a), interpolation='none', aspect=int(l2/4))
-
-plt.show(dpi=1200)
-#plt.savefig("KitaevMajoranas" + ".png", quality=100, optimize=True, dpi=600)
+        # 'nearest' interpolation - faithful but blocky
+        #plt.ylim(0, 0.1)
+        #plt.xlim(lower, upper)
+        plt.ylim(0,1)
+        plt.xlim(lower,upper)
+        plt.plot(np.abs(xs+ys))
+        plt.plot(np.abs(xs-ys))
+        plt.savefig("Kitaev/Modes" + str(idx) + ".png", quality=90, optimize=True)
+        plt.clf()
+        plt.plot(np.abs(fft(xs-ys))[:l4])
+        plt.plot(np.abs(fft(xs+ys)[:l4]))
+        plt.ylim(0,13)
+        plt.savefig("Kitaev_FFT/Modes_FFT" + str(idx) + ".png", quality=90, optimize=True)
+        print("[", idx, "]")
+        idx = idx + 1
+        plt.clf()
+        del k, xs, ys

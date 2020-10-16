@@ -15,7 +15,7 @@ def grouped(iterable: Iterable[T], n=2) -> Iterable[Tuple[T, ...]]:
     return zip(*[iter(iterable)] * n)
 
 
-FileName = "MU_M1922_Tres32"
+FileName = "EigenVectors_M14450_Tres32"
 Path = "/home/jakob/Downloads/TST_MKL_Eigen/TST/cmake-build-release-intel-2019/"
 a = []
 with open(Path + FileName + '.csv', newline='') as csvfile:
@@ -51,14 +51,14 @@ for i in range(len(a)):
         for k in range(gsize):
             x = b1[k + gsize * j]
             y = b1[k + gsize * j + l2]
-            z = (x.real - y.real)/2
+            z = (x*x.conjugate() + y*y.conjugate())/2
             Z[k, j] = float(z.real)
 
     ax.plot_surface(X, Y, Z, cmap='viridis', edgecolor='none')
     ax.set_xlabel('X')
     ax.set_ylabel('Y')
     ax.set_zlabel('Density')
-    ax.view_init(20, 25)
+    ax.view_init(80, 25)
     fig.show()
     fig.savefig("Majoranas2D/2D_Modes_" + str(i) + ".png", quality=90, optimize=True)
     fig.clf()
