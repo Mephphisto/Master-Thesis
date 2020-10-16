@@ -173,8 +173,13 @@ public:
         this->Msize = size_in / 2;
         this->Gsize = sqrt(Msize);
         this->Gsize_d = static_cast<double>(Gsize);
-        this->Vort_x = sin(phi_in) * (Gsize_d - 1) / 4;
-        this->Vort_y = cos(phi_in) * (Gsize_d - 1) / 4;
+        {
+            //double sp = sin(phi_in), cp = cos(phi_in);
+            this->Vort_x = Gsize/4 * phi_in; //sp * (Gsize_d - 1) / 4;
+            this->Vort_y = 0.00; //cp * (Gsize_d - 1) / 4;
+        }
+#pragma omp critical
+        std::cout << "phi=" << phi_in << "Vort_x= " << Vort_x << " Vort_y = " << Vort_y << std::endl;
 #ifdef DEBUG_ACTIVE
         /*{
             // send message in a unified Racecondition safe way
