@@ -13,6 +13,7 @@
 #include <chrono>
 #include "Hamiltonian_MatrixSparse.hpp"
 #include "Hamiltonian_Matrix.hpp"
+#include "Typedefs.hpp"
 
 
 /// Abstract Template Baseclass to Solve Hamiltonian
@@ -25,9 +26,9 @@ protected:
     /// Storage of computed Eigen Values
     Eigen::MatrixXd All_EigenValues;
     /// Storage of computed Eigen vectors
-    std::vector<Eigen::VectorXcd> All_EigenVectors;
+    std::vector<Vec_cd> All_EigenVectors;
     /// smapling points
-    Eigen::VectorXd t_s;
+    Vec t_s;
 
 #ifdef DEBUG_ACTIVE
     std::chrono::time_point<std::chrono::system_clock>  start;
@@ -92,7 +93,7 @@ protected:
                      << "using " << std::to_string(OMP_NUM_THREADS) << " OpenMP Threads" << std::endl;
             csv_file << "M" << "," << std::to_string(MATRIX_SIZE) << " Eigenvalues  ... " << std::endl;
             //write Eigenvalues
-            Eigen::MatrixXcd M = T(MATRIX_SIZE, T_COUPLE, T_START, MU, DELTA).get();
+            Mat_cd M = T(MATRIX_SIZE, T_COUPLE, T_START, MU, DELTA).get();
             for (auto a : M.diagonal()) {
                 csv_file << "," << a;
             }
@@ -118,7 +119,7 @@ protected:
                      << "using " << std::to_string(OMP_NUM_THREADS) << " OpenMP Threads" << std::endl;
             csv_file << "M" << "," << std::to_string(MATRIX_SIZE) << " Eigenvalues  ... " << std::endl;
             //write Eigenvalues
-            Eigen::MatrixXcd M = T(MATRIX_SIZE, T_COUPLE, T_START, MU, DELTA).get();
+            Mat_cd M = T(MATRIX_SIZE, T_COUPLE, T_START, MU, DELTA).get();
             for (auto a : M.diagonal<MATRIX_SIZE / 2 + 1>()) {
                 csv_file << "," << a;
             }

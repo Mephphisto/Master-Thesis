@@ -45,7 +45,7 @@ if(TIME_EVOLUTION)
 endif()
 
 
-find_package(Eigen3 3.3 REQUIRED NO_MODULE)
+find_package(Eigen3 3.3.9 REQUIRED NO_MODULE)
 target_link_libraries(TST Eigen3::Eigen)
 if (${USE_MAGMA})
     find_package(CUDA REQUIRED)

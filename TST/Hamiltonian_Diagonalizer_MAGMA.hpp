@@ -15,6 +15,7 @@
 #include <magma_lapack.h>
 #include <vector>
 #include <chrono>
+#include "Typedefs.hpp"
 
 
 template<class T>
@@ -22,7 +23,7 @@ class Diagonalize_Hamiltonian_magma : public Diagonalize_Hamiltonian<T> {
     virtual void Compute() override {
 
 #ifdef USE_GPU
-        magma::SelfAdjointEigenSolver<Eigen::MatrixXcd> Solver(MATRIX_SIZE);
+        magma::SelfAdjointEigenSolver<Mat_cd> Solver(MATRIX_SIZE);
         std::cout << "running GPU Job" << std::endl;
 #else
         Eigen::SelfAdjointEigenSolver<decltype(((T *) nullptr)->get())> Solver(MATRIX_SIZE);
@@ -39,7 +40,7 @@ class Diagonalize_Hamiltonian_magma : public Diagonalize_Hamiltonian<T> {
             }
 #endif
             //Storage for Matrix and Trace
-            Eigen::MatrixXcd m;
+            Mat_cd m;
             double tr;
             double t = T_START + (T_END - T_START) * (double(k) / double(T_RES));
             {
@@ -53,7 +54,7 @@ class Diagonalize_Hamiltonian_magma : public Diagonalize_Hamiltonian<T> {
             // Fetch  Eigenvalues from Solver
 
             this->All_EigenValues.col(k) = Solver.eigenvalues().col(0).real() +
-                                           Eigen::VectorXd::Constant(MATRIX_SIZE, (tr - Solver.eigenvalues().col(
+                                           Vec::Constant(MATRIX_SIZE, (tr - Solver.eigenvalues().col(
                                                    0).real().sum()) / 2);
 
             size_t majoranas[2] = {0, 0};

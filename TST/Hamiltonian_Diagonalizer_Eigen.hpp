@@ -16,17 +16,16 @@
 #include <chrono>
 #include <fstream>
 #include <vector>
-
 #if OMP_NUM_THREADS > 1
-
 #include <omp.h>
-
+#include "Majorana_Transform.hpp"
+#include "Typedefs.hpp"
 #endif
 
 
 template<class T>
 class Diagonalize_Hamiltonian_Eigen : public Diagonalize_Hamiltonian<T> {
-    virtual void Compute() override {
+     virtual void Compute() override {
 #if OMP_NUM_THREADS > 1
 #pragma omp parallel num_threads(OMP_NUM_THREADS)
 
@@ -37,7 +36,7 @@ class Diagonalize_Hamiltonian_Eigen : public Diagonalize_Hamiltonian<T> {
 #else
             int tid = 0;
 #endif
-            Eigen::SelfAdjointEigenSolver<decltype(((T *) nullptr)->get())> Solver(MATRIX_SIZE);
+            Eigen::SelfAdjointEigenSolver<decltype(((T*)nullptr)->get())> Solver(MATRIX_SIZE);
 
             for (auto k = tid; k < T_RES; k += OMP_NUM_THREADS) {
 #ifdef DEBUG_ACTIVE
@@ -50,7 +49,7 @@ class Diagonalize_Hamiltonian_Eigen : public Diagonalize_Hamiltonian<T> {
                 }
 #endif
                 //Storage for Matrix and Trace
-                Eigen::MatrixXcd m;
+                Mat_cd m;
                 double tr;
                 double t = T_START + (T_END - T_START) * (double(k) / double(T_RES));
                 {
@@ -75,7 +74,7 @@ class Diagonalize_Hamiltonian_Eigen : public Diagonalize_Hamiltonian<T> {
                 this->All_EigenValues.col(k) = Solver.eigenvalues().col(0).real();
                 this->t_s(k) = t;
                 this->All_EigenValues.col(k) = Solver.eigenvalues().col(0).real() +
-                                               Eigen::VectorXd::Constant(MATRIX_SIZE, (tr - Solver.eigenvalues().col(
+                                               Vec::Constant(MATRIX_SIZE, (tr - Solver.eigenvalues().col(
                                                        0).real().sum()) / 2);
 
                 size_t majoranas[2] = {0, 0};
@@ -87,6 +86,15 @@ class Diagonalize_Hamiltonian_Eigen : public Diagonalize_Hamiltonian<T> {
                         majoranas[1] = t;
                     }
                 }
+#define MAJIZE
+#ifdef MAJIZE
+                auto tpl = Majoranaize(Solver.eigenvectors().col(majoranas[0]).normalized(),Solver.eigenvectors().col(majoranas[1]).normalized());
+                this->All_EigenVectors.push_back(std::get<0>(tpl));
+                this->All_EigenVectors.push_back(std::get<1>(tpl));
+#else
+                for (auto l : majoranas) {
+                    std::cout << " EiVal[" << l << "] = " << this->All_EigenValues.col(k)[l];
+                    this->All_EigenVectors.push_back(Solver.eigenvectors().col(l));
 #pragma omp critical
                 {
                     std::cout << "t = " << t << " ";
@@ -95,28 +103,7 @@ class Diagonalize_Hamiltonian_Eigen : public Diagonalize_Hamiltonian<T> {
                     }
                     std::cout << std::endl;
                 }
-                Eigen::VectorXcd maj1, maj2;
-                {
-                    Eigen::VectorXcd X, Y;
-                    X = Solver.eigenvectors().col(majoranas[0]).normalized();
-                    Y = Solver.eigenvectors().col(majoranas[1]).normalized();
-                    {
-                        Eigen::VectorXcd Ys = Y.segment(0, MATRIX_SIZE / 2);
-                        std::complex<double> sDot = X.segment(0, MATRIX_SIZE / 2).transpose() * Ys;
-                        std::complex<double> sNorm2 = Ys.squaredNorm();
-                        maj1 = X - Y * sDot / sNorm2;
-                    }
-                    maj1.normalize();
-                    {
-                        std::complex<double> dotXm1 = X.transpose() * maj1;
-                        std::complex<double> dotYm1 = Y.transpose() * maj1;
-                        maj2 = X - maj1 * dotXm1 + Y - maj1 * dotYm1;
-                    }
-                    maj2.normalize();
-                }
-
-                this->All_EigenVectors.push_back(maj1);
-                this->All_EigenVectors.push_back(maj2);
+#endif
             }
 #if OMP_NUM_THREADS > 1
         }
