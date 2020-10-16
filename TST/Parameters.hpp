@@ -36,8 +36,8 @@ constexpr double pref  = 1.0/3.0;
 //constexpr int  T_RES = 400;
 constexpr int MATRIX_SIZE = (2 * GRID * GRID);
 constexpr double T_START = 0.0;
-constexpr double T_END =  double(2.0*M_PI) + T_START;
-constexpr double T_COUPLE = -2*pref;
+constexpr double T_END =  double(2.0*M_PI)*T_ROT + T_START;
+constexpr double T_COUPLE = T_C*pref;
 constexpr double MU =  pref*3;
 constexpr double DELTA = pref*3;
 

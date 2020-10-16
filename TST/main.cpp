@@ -43,10 +43,10 @@ int main() {
 #else
     std::chrono::time_point<std::chrono::system_clock> start = std::chrono::system_clock::now();
 
-    const size_t num_steps = 4*OMP_NUM_THREADS;
+    const size_t num_steps = W_RES;
     Vec omegas(num_steps);
     for (int k = 0; k < num_steps; k++) {
-        double aux = std::pow(2.0, 14*(k-.5*num_steps)/num_steps-1);
+        double aux = std::pow(10.0, W_START + (W_END - W_START) * (double(k) / double(W_RES)));
         omegas[k] = aux;
     }
     Mat out = Do_TE(omegas);
