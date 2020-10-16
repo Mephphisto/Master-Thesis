@@ -95,14 +95,6 @@ class Diagonalize_Hamiltonian_Eigen : public Diagonalize_Hamiltonian<T> {
                 for (auto l : majoranas) {
                     std::cout << " EiVal[" << l << "] = " << this->All_EigenValues.col(k)[l];
                     this->All_EigenVectors.push_back(Solver.eigenvectors().col(l));
-#pragma omp critical
-                {
-                    std::cout << "t = " << t << " ";
-                    for (auto l : majoranas) {
-                        std::cout << " EiVal[" << l << "] = " << this->All_EigenValues.col(k)[l];
-                    }
-                    std::cout << std::endl;
-                }
 #endif
             }
 #if OMP_NUM_THREADS > 1
