@@ -15,7 +15,7 @@
 #ifdef TIME_EVOLUTION
 #include "Time_Evolution.hpp"
 #endif
-#include <math.h>
+#include <cmath>
 
 
 #ifdef USE_MAGMA
@@ -32,6 +32,7 @@
 #endif
 
 int main() {
+    std::chrono::time_point<std::chrono::system_clock> start = std::chrono::system_clock::now();
 #ifndef TIME_EVOLUTION
 #ifdef USE_MAGMA
     Diagonalize_Hamiltonian_magma<HAMILTONIAN>().Do();
@@ -41,34 +42,43 @@ int main() {
     Diagonalize_Hamiltonian_Eigen<HAMILTONIAN>().Do();
 #endif
 #else
-    std::chrono::time_point<std::chrono::system_clock> start = std::chrono::system_clock::now();
 
+<<<<<<< HEAD
     const size_t num_steps = 85*4;
     Vec omegas(num_steps);
     for (int k = 0; k < num_steps; k++) {
         double aux = std::pow(2.0, 15*(k-.5*num_steps)/num_steps-1);
+=======
+
+    const size_t num_steps = W_RES;
+    Vec omegas(num_steps);
+    for (int k = 0; k < num_steps; k++) {
+        double aux = std::pow(10.0, W_START + (W_END - W_START) * (double(k) / double(W_RES)));
+>>>>>>> 681774e4aadd278002bf4b37513dab9bf4d6039b
         omegas[k] = aux;
     }
-    Vec out = Do_TE(omegas);
+    Mat out = Do_TE(omegas);
      try {
         std::fstream csv_file("Rho_Decay.csv",
                               std::fstream::out);
         assert(csv_file.is_open());
+         csv_file << "{{w, maj1-m1j2, maj1+m1j2,norm},";
         for (auto k = 0; k < omegas.size(); k++) {
-            csv_file << "{" << omegas[k] << "," << out[k] << "},";
-            csv_file << std::endl;
+            csv_file << "{" << omegas[k] << "," << out(0,k) << "," << out(1,k) << "," << out(2,k) << "},";
         }
+        csv_file << "}" ;
         csv_file.close();
     } catch (...) {
         std::cout << "Error writing EigenValues CSV" << std::endl;
     }
+#endif
     std::cout << std::endl << std::endl << "Runtime = "
               <<
               std::chrono::duration_cast<std::chrono::milliseconds>(
                       std::chrono::system_clock::now() - start).count()
               << "ms" <<
               std::endl;
-#endif
+
     return 0;
 }
 

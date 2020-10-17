@@ -4,6 +4,7 @@
 #pragma once
 
 #include "Hamiltonian_MatrixSparse.hpp"
+#include "Typedefs.hpp"
 #include <complex>
 #include <omp.h>
 #include <Eigen/Sparse>
@@ -12,18 +13,19 @@
 class _2DTopSuperConMatrixSparse : public Hamiltonian_MatrixSparse {
 private:
     double t, mu, Gsize_d, Vort_x , Vort_y  ;
-    std::complex<double> Delta;
+    cd Delta;
     size_t Gsize;
 
-    inline void set(size_t k, size_t j, std::complex<double> val) {
+    inline void set(size_t k, size_t j, cd val) {
         auto MS = 2 * Msize;
         m.insert(k, j) = val;
         m.insert((k + Msize) % MS, (j + Msize) % MS) = -std::conj(val);
     }
 
-    void Build_A() {
+    inline void Build_A() {
 
         double r = pow(4/(Gsize_d*0.05),2);
+#pragma unrollandfuse
         for (size_t k = 0; k < Msize; k++) {
             for (size_t j = 0; j < Msize; j++) {
                 size_t x_j = index_x(j);
@@ -71,7 +73,8 @@ private:
         }
     }
 
-    void Build_B() {
+    inline void Build_B() {
+#pragma unroll
         for (size_t k = 0; k < Msize; k++) {
             for (size_t j = 0; j < Msize; j++) {
                 size_t x_j = index_x(j);
@@ -79,35 +82,35 @@ private:
                 size_t x_k = index_x(k);
                 size_t y_k = index_y(k);
 
-                std::complex<double> phase;
+                cd phase;
 #ifdef PHASE
 
-                phase = std::complex<double>(1, 0);
-                phase *= std::complex<double>(static_cast<double>(x_j + x_k) / 2 - (Gsize_d - 1) / 2 - Vort_x,
+                phase = cd(1, 0);
+                phase *= cd(static_cast<double>(x_j + x_k) / 2 - (Gsize_d - 1) / 2 - Vort_x,
                                               static_cast<double>(y_j + y_k) / 2 - (Gsize_d - 1) / 2 - Vort_y);
-                phase *= std::complex<double>(static_cast<double>(x_j + x_k) / 2 - (Gsize_d - 1) / 2 + Vort_x,
+                phase *= cd(static_cast<double>(x_j + x_k) / 2 - (Gsize_d - 1) / 2 + Vort_x,
                                               static_cast<double>(y_j + y_k) / 2 - (Gsize_d - 1) / 2 + Vort_y);
                 phase = phase / abs(phase);
 #else
-                phase = std::complex<double>(1,0);
+                phase = cd(1,0);
 #endif
                 if ((x_k == x_j) && (y_k == y_j + 1)) {
-                    set(k, j + Msize, std::complex<double>(0, 1) * Delta * phase);
+                    set(k, j + Msize, cd(0, 1) * Delta * phase);
                 } else if ((x_k == x_j) && (y_k == y_j - 1)) {
-                    set(k, j + Msize, std::complex<double>(0, -1) * Delta * phase);
+                    set(k, j + Msize, cd(0, -1) * Delta * phase);
                 } else if ((x_k == x_j + 1) && (y_k == y_j)) {
-                    set(k, j + Msize, std::complex<double>(1, 0) * Delta * phase);
+                    set(k, j + Msize, cd(1, 0) * Delta * phase);
                 } else if ((x_k == x_j - 1) && (y_k == y_j)) {
-                    set(k, j + Msize, std::complex<double>(-1, 0) * Delta * phase);
+                    set(k, j + Msize, cd(-1, 0) * Delta * phase);
 #ifdef PERIODIC_BOUNDRY
                     } else if ((x_k == x_j) && (y_k == Gsize - 1) && (y_j == 0)) {
-                        set(k, j + Msize, std::complex<double>(0, -1) * Delta * phase);
+                        set(k, j + Msize, cd(0, -1) * Delta * phase);
                     } else if ((x_k == x_j) && (y_k == 0) && (y_j == Gsize - 1)) {
-                        set(k, j + Msize, std::complex<double>(0, 1) * Delta * phase);
+                        set(k, j + Msize, cd(0, 1) * Delta * phase);
                     } else if ((x_k == Gsize - 1) && (x_j == 0) && (y_k == y_j)) {
-                        set(k, j + Msize, std::complex<double>(-1, 0) * Delta * phase);
+                        set(k, j + Msize, cd(-1, 0) * Delta * phase);
                     } else if ((x_k == 0) && (x_j == Gsize - 1) && (y_k == y_j)) {
-                        set(k, j + Msize, std::complex<double>(1, 0) * Delta * phase);
+                        set(k, j + Msize, cd(1, 0) * Delta * phase);
 #endif
                 }
             }
@@ -134,7 +137,7 @@ public:
                          double Delta_in) {
         this->t = t_in;
         this->mu = mu_in;
-        this->Delta = static_cast<std::complex<double>>(Delta_in / 2);
+        this->Delta = static_cast<cd>(Delta_in / 2);
         this->Msize = size_in / 2;
         this->Gsize = sqrt(Msize);
         this->Gsize_d = static_cast<double>(Gsize);
@@ -153,7 +156,7 @@ public:
         Build_B();
     }
 
-    Eigen::SparseMatrix<std::complex<double>> get() override {
+    Eigen::SparseMatrix<cd> get() override {
         return m;
     }
 

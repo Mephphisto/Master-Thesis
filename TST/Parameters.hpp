@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include <math.h>
+#include <cmath>
 
 //ICL NEEDS THIS
 #define  _HAS_CONDITIONAL_EXPLICIT 0
@@ -13,7 +13,7 @@
 
 //#undef USE_OpenCL
 #if defined(USE_MAGMA) && !defined(USE_GPU)
-//#define EIGEN_USE_LAPACKE_STRICT
+#define EIGEN_USE_LAPACKE_STRICT
 #else
 #define EIGEN_USE_MKL_ALL
 #endif
@@ -26,18 +26,25 @@
 //#define SHOW_MATRIX_AND_QUIT
 //#define MATRIX_TO_CSV
 //#define MU_TO_CSV
-#define DELTA_TO_CSV
+//#define DELTA_To_CSV
+#define MAJIZE
 
 //Deine Matrix Parameters
-constexpr double pref  = 1.0/3.0;
+constexpr double pref = 1.0 / 3.0;
 //#define PERIODIC_BOUNDRY
 #define PHASE
-//constexpr int GRID = 35;
-//constexpr int  T_RES = 400;
 constexpr int MATRIX_SIZE = (2 * GRID * GRID);
+<<<<<<< HEAD
 constexpr double T_START = double(0.000);
 constexpr double T_END = 8.00;
 constexpr double T_COUPLE = -2*pref;
 constexpr double MU =  pref*3;
 constexpr double DELTA = pref*3;
+=======
+constexpr double T_START = 0.0;
+constexpr double T_END = (M_PI * 2.0 * T_ROT + T_START);
+constexpr double T_COUPLE = T_C * pref;
+constexpr double MU = pref * 3;
+constexpr double DELTA = pref * 3;
+>>>>>>> 681774e4aadd278002bf4b37513dab9bf4d6039b
 

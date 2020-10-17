@@ -1,0 +1,28 @@
+Module for intel compilers_and_libraries_2020.0.166/linux:
+(Intel Compilers ver. 19.1.0.166 (Parallel Studio XE 2020)) - loaded.
+mkdir: cannot create directory 'rune_G35_Res2000': File exists
+-- MKL_THREADING = OMP
+-- Checking for [mkl_intel_lp64 - mkl_gnu_thread - mkl_core - gomp - pthread - m - dl]
+--   Library mkl_intel_lp64: /opt/intel/mkl/lib/intel64/libmkl_intel_lp64.so
+--   Library mkl_gnu_thread: /opt/intel/mkl/lib/intel64/libmkl_gnu_thread.so
+--   Library mkl_core: /opt/intel/mkl/lib/intel64/libmkl_core.so
+--   Library gomp: -fopenmp
+--   Library pthread: /usr/lib/x86_64-linux-gnu/libpthread.so
+--   Library m: /usr/lib/x86_64-linux-gnu/libm.so
+--   Library dl: /usr/lib/x86_64-linux-gnu/libdl.so
+-- MKL library found
+-- Found OpenMP_C: -fopenmp  
+-- Found OpenMP_CXX: -fopenmp  
+-- Found OpenMP: TRUE   
+-- Boost version: 1.72.0
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/rune_G35_Res2000
+[100%] Built target TST
+Running Program
+Hermiticity Check
+Matrix Det (inf,-inf)
+M*1= 14.0701
+
+libgomp: Thread creation failed: Resource temporarily unavailable
+finished

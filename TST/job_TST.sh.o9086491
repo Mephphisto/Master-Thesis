@@ -1,0 +1,348 @@
+Module for intel compilers_and_libraries_2020.0.166/linux:
+(Intel Compilers ver. 19.1.0.166 (Parallel Studio XE 2020)) - loaded.
+mkdir: cannot create directory 'rune_G35_Res500_NegMu': File exists
+-- MKL_THREADING = OMP
+-- Checking for [mkl_intel_lp64 - mkl_gnu_thread - mkl_core - gomp - pthread - m - dl]
+--   Library mkl_intel_lp64: /opt/intel/mkl/lib/intel64/libmkl_intel_lp64.so
+--   Library mkl_gnu_thread: /opt/intel/mkl/lib/intel64/libmkl_gnu_thread.so
+--   Library mkl_core: /opt/intel/mkl/lib/intel64/libmkl_core.so
+--   Library gomp: -fopenmp
+--   Library pthread: /usr/lib/x86_64-linux-gnu/libpthread.so
+--   Library m: /usr/lib/x86_64-linux-gnu/libm.so
+--   Library dl: /usr/lib/x86_64-linux-gnu/libdl.so
+-- MKL library found
+-- Found OpenMP_C: -fopenmp  
+-- Found OpenMP_CXX: -fopenmp  
+-- Found OpenMP: TRUE   
+-- Boost version: 1.72.0
+-- Configuring done
+You have changed variables that require your cache to be deleted.
+Configure will be re-run and you may have to reset some variables.
+The following variables have changed:
+CMAKE_C_COMPILER= icc
+CMAKE_CXX_COMPILER= icpc
+
+-- The C compiler identification is Intel 19.1.0.20191121
+-- The CXX compiler identification is Intel 19.1.0.20191121
+-- Check for working C compiler: /opt/sw/intel/2020/compilers_and_libraries_2020.0.166/linux/bin/intel64/icc
+-- Check for working C compiler: /opt/sw/intel/2020/compilers_and_libraries_2020.0.166/linux/bin/intel64/icc -- works
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Check for working CXX compiler: /opt/sw/intel/2020/compilers_and_libraries_2020.0.166/linux/bin/intel64/icpc
+-- Check for working CXX compiler: /opt/sw/intel/2020/compilers_and_libraries_2020.0.166/linux/bin/intel64/icpc -- works
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- MKL_THREADING = OMP
+-- Looking for sys/types.h
+-- Looking for sys/types.h - found
+-- Looking for stdint.h
+-- Looking for stdint.h - found
+-- Looking for stddef.h
+-- Looking for stddef.h - found
+-- Check size of void*
+-- Check size of void* - done
+-- Checking for [mkl_intel_lp64 - mkl_intel_thread - mkl_core - iomp5 - pthread - m - dl]
+--   Library mkl_intel_lp64: /opt/intel/mkl/lib/intel64/libmkl_intel_lp64.so
+--   Library mkl_intel_thread: /opt/intel/mkl/lib/intel64/libmkl_intel_thread.so
+--   Library mkl_core: /opt/intel/mkl/lib/intel64/libmkl_core.so
+--   Library iomp5: /opt/intel/lib/intel64/libiomp5.so
+--   Library pthread: /usr/lib/x86_64-linux-gnu/libpthread.so
+--   Library m: /usr/lib/x86_64-linux-gnu/libm.so
+--   Library dl: /usr/lib/x86_64-linux-gnu/libdl.so
+-- Looking for cblas_sgemm
+-- Looking for cblas_sgemm - found
+-- MKL library found
+-- Found OpenMP_C: -qopenmp (found version "5.0") 
+-- Found OpenMP_CXX: -qopenmp (found version "5.0") 
+-- Found OpenMP: TRUE (found version "5.0")  
+-- Boost version: 1.72.0
+-- Configuring done
+CMake Warning at CMakeLists.txt:28 (add_executable):
+  Cannot generate a safe runtime search path for target TST because files in
+  some directories may conflict with libraries in implicit directories:
+
+    runtime library [libiomp5.so] in /opt/sw/intel/2020/compilers_and_libraries_2020.0.166/linux/compiler/lib/intel64_lin may be hidden by files in:
+      /opt/intel/lib/intel64
+
+  Some of these libraries may not be found correctly.
+
+
+-- Generating done
+-- Build files have been written to: /afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/rune_G35_Res500_NegMu
+Scanning dependencies of target TST
+[ 50%] Building CXX object CMakeFiles/TST.dir/main.cpp.o
+In file included from /afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/main.cpp(11):
+/afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/Parameters.hpp(37): error: expected an expression
+  constexpr int MATRIX_SIZE = (2 * GRID * GRID);
+                                              ^
+
+In file included from /afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/main.cpp(29):
+/afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/Hamiltonian_Diagonalizer_Eigen.hpp(19): error: expected an expression
+  #if OMP_NUM_THREADS > 1
+                      ^
+
+In file included from /afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/main.cpp(29):
+/afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/Hamiltonian_Diagonalizer_Eigen.hpp(27): error: expected an expression
+  #if OMP_NUM_THREADS > 1
+                      ^
+
+In file included from /afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/main.cpp(29):
+/afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/Hamiltonian_Diagonalizer_Eigen.hpp(82): error: expected an expression
+  #if OMP_NUM_THREADS > 1
+                      ^
+
+/afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/Hamiltonian_Diagonalizer.hpp(233): error: expected an expression
+          All_EigenValues.resize(MATRIX_SIZE,T_RES);
+                                                  ^
+
+/afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/Hamiltonian_Diagonalizer.hpp(234): error: no instance of overloaded function "Eigen::Matrix<_Scalar, _Rows, _Cols, _Options, _MaxRows, _MaxCols>::resize [with _Scalar=double, _Rows=-1, _Cols=1, _Options=0, _MaxRows=-1, _MaxCols=1]" matches the argument list
+            object type is: Eigen::VectorXd
+          t_s.resize(T_RES);
+              ^
+/usr/include/eigen3/Eigen/src/Core/PlainObjectBase.h(348): note: this candidate was rejected because mismatch in count of arguments
+      inline void resize(Index rows, NoChange_t)
+                  ^
+/usr/include/eigen3/Eigen/src/Core/PlainObjectBase.h(334): note: this candidate was rejected because mismatch in count of arguments
+      inline void resize(NoChange_t, Index cols)
+                  ^
+/usr/include/eigen3/Eigen/src/Core/PlainObjectBase.h(309): note: this candidate was rejected because mismatch in count of arguments
+      inline void resize(Index size)
+                  ^
+/usr/include/eigen3/Eigen/src/Core/PlainObjectBase.h(279): note: this candidate was rejected because mismatch in count of arguments
+      EIGEN_STRONG_INLINE void resize(Index rows, Index cols)
+                               ^
+
+/afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/Hamiltonian_Diagonalizer.hpp(159): error: no instance of overloaded function "std::to_string" matches the argument list
+                                    + "_Tres" + std::to_string(T_RES) + ".csv",
+                                                ^
+/afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/_2DTopSuperConMatrixSparse.hpp(145): note: this candidate was rejected because mismatch in count of arguments
+              std::string thread_msg = (omp_get_num_threads()>1) ? "of thread "+ (std::to_string(omp_get_thread_num())): "";
+                                                                                       ^
+/afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/_2DTopSuperConMatrixSparse.hpp(145): note: this candidate was rejected because mismatch in count of arguments
+              std::string thread_msg = (omp_get_num_threads()>1) ? "of thread "+ (std::to_string(omp_get_thread_num())): "";
+                                                                                       ^
+/afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/_2DTopSuperConMatrixSparse.hpp(145): note: this candidate was rejected because mismatch in count of arguments
+              std::string thread_msg = (omp_get_num_threads()>1) ? "of thread "+ (std::to_string(omp_get_thread_num())): "";
+                                                                                       ^
+/afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/_2DTopSuperConMatrixSparse.hpp(145): note: this candidate was rejected because mismatch in count of arguments
+              std::string thread_msg = (omp_get_num_threads()>1) ? "of thread "+ (std::to_string(omp_get_thread_num())): "";
+                                                                                       ^
+/afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/_2DTopSuperConMatrixSparse.hpp(145): note: this candidate was rejected because mismatch in count of arguments
+              std::string thread_msg = (omp_get_num_threads()>1) ? "of thread "+ (std::to_string(omp_get_thread_num())): "";
+                                                                                       ^
+/afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/_2DTopSuperConMatrixSparse.hpp(145): note: this candidate was rejected because mismatch in count of arguments
+              std::string thread_msg = (omp_get_num_threads()>1) ? "of thread "+ (std::to_string(omp_get_thread_num())): "";
+                                                                                       ^
+/afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/_2DTopSuperConMatrixSparse.hpp(145): note: this candidate was rejected because mismatch in count of arguments
+              std::string thread_msg = (omp_get_num_threads()>1) ? "of thread "+ (std::to_string(omp_get_thread_num())): "";
+                                                                                       ^
+/afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/_2DTopSuperConMatrixSparse.hpp(145): note: this candidate was rejected because mismatch in count of arguments
+              std::string thread_msg = (omp_get_num_threads()>1) ? "of thread "+ (std::to_string(omp_get_thread_num())): "";
+                                                                                       ^
+/afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/_2DTopSuperConMatrixSparse.hpp(145): note: this candidate was rejected because mismatch in count of arguments
+              std::string thread_msg = (omp_get_num_threads()>1) ? "of thread "+ (std::to_string(omp_get_thread_num())): "";
+                                                                                       ^
+          detected during instantiation of "void Diagonalize_Hamiltonian<T>::Do() [with T=_2DTopSuperConMatrix]" at line 41 of "/afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/main.cpp"
+
+/afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/Hamiltonian_Diagonalizer.hpp(166): error: no instance of overloaded function "std::to_string" matches the argument list
+                       << std::to_string(T_RES) << " Steps. With: "
+                          ^
+/afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/_2DTopSuperConMatrixSparse.hpp(145): note: this candidate was rejected because mismatch in count of arguments
+              std::string thread_msg = (omp_get_num_threads()>1) ? "of thread "+ (std::to_string(omp_get_thread_num())): "";
+                                                                                       ^
+/afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/_2DTopSuperConMatrixSparse.hpp(145): note: this candidate was rejected because mismatch in count of arguments
+              std::string thread_msg = (omp_get_num_threads()>1) ? "of thread "+ (std::to_string(omp_get_thread_num())): "";
+                                                                                       ^
+/afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/_2DTopSuperConMatrixSparse.hpp(145): note: this candidate was rejected because mismatch in count of arguments
+              std::string thread_msg = (omp_get_num_threads()>1) ? "of thread "+ (std::to_string(omp_get_thread_num())): "";
+                                                                                       ^
+/afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/_2DTopSuperConMatrixSparse.hpp(145): note: this candidate was rejected because mismatch in count of arguments
+              std::string thread_msg = (omp_get_num_threads()>1) ? "of thread "+ (std::to_string(omp_get_thread_num())): "";
+                                                                                       ^
+/afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/_2DTopSuperConMatrixSparse.hpp(145): note: this candidate was rejected because mismatch in count of arguments
+              std::string thread_msg = (omp_get_num_threads()>1) ? "of thread "+ (std::to_string(omp_get_thread_num())): "";
+                                                                                       ^
+/afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/_2DTopSuperConMatrixSparse.hpp(145): note: this candidate was rejected because mismatch in count of arguments
+              std::string thread_msg = (omp_get_num_threads()>1) ? "of thread "+ (std::to_string(omp_get_thread_num())): "";
+                                                                                       ^
+/afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/_2DTopSuperConMatrixSparse.hpp(145): note: this candidate was rejected because mismatch in count of arguments
+              std::string thread_msg = (omp_get_num_threads()>1) ? "of thread "+ (std::to_string(omp_get_thread_num())): "";
+                                                                                       ^
+/afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/_2DTopSuperConMatrixSparse.hpp(145): note: this candidate was rejected because mismatch in count of arguments
+              std::string thread_msg = (omp_get_num_threads()>1) ? "of thread "+ (std::to_string(omp_get_thread_num())): "";
+                                                                                       ^
+/afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/_2DTopSuperConMatrixSparse.hpp(145): note: this candidate was rejected because mismatch in count of arguments
+              std::string thread_msg = (omp_get_num_threads()>1) ? "of thread "+ (std::to_string(omp_get_thread_num())): "";
+                                                                                       ^
+          detected during instantiation of "void Diagonalize_Hamiltonian<T>::Do() [with T=_2DTopSuperConMatrix]" at line 41 of "/afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/main.cpp"
+
+/afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/Hamiltonian_Diagonalizer.hpp(168): error: no instance of overloaded function "std::to_string" matches the argument list
+                       << "using " << std::to_string(OMP_NUM_THREADS) << " OpenMP Threads" << std::endl;
+                                      ^
+/afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/_2DTopSuperConMatrixSparse.hpp(145): note: this candidate was rejected because mismatch in count of arguments
+              std::string thread_msg = (omp_get_num_threads()>1) ? "of thread "+ (std::to_string(omp_get_thread_num())): "";
+                                                                                       ^
+/afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/_2DTopSuperConMatrixSparse.hpp(145): note: this candidate was rejected because mismatch in count of arguments
+              std::string thread_msg = (omp_get_num_threads()>1) ? "of thread "+ (std::to_string(omp_get_thread_num())): "";
+                                                                                       ^
+/afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/_2DTopSuperConMatrixSparse.hpp(145): note: this candidate was rejected because mismatch in count of arguments
+              std::string thread_msg = (omp_get_num_threads()>1) ? "of thread "+ (std::to_string(omp_get_thread_num())): "";
+                                                                                       ^
+/afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/_2DTopSuperConMatrixSparse.hpp(145): note: this candidate was rejected because mismatch in count of arguments
+              std::string thread_msg = (omp_get_num_threads()>1) ? "of thread "+ (std::to_string(omp_get_thread_num())): "";
+                                                                                       ^
+/afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/_2DTopSuperConMatrixSparse.hpp(145): note: this candidate was rejected because mismatch in count of arguments
+              std::string thread_msg = (omp_get_num_threads()>1) ? "of thread "+ (std::to_string(omp_get_thread_num())): "";
+                                                                                       ^
+/afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/_2DTopSuperConMatrixSparse.hpp(145): note: this candidate was rejected because mismatch in count of arguments
+              std::string thread_msg = (omp_get_num_threads()>1) ? "of thread "+ (std::to_string(omp_get_thread_num())): "";
+                                                                                       ^
+/afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/_2DTopSuperConMatrixSparse.hpp(145): note: this candidate was rejected because mismatch in count of arguments
+              std::string thread_msg = (omp_get_num_threads()>1) ? "of thread "+ (std::to_string(omp_get_thread_num())): "";
+                                                                                       ^
+/afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/_2DTopSuperConMatrixSparse.hpp(145): note: this candidate was rejected because mismatch in count of arguments
+              std::string thread_msg = (omp_get_num_threads()>1) ? "of thread "+ (std::to_string(omp_get_thread_num())): "";
+                                                                                       ^
+/afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/_2DTopSuperConMatrixSparse.hpp(145): note: this candidate was rejected because mismatch in count of arguments
+              std::string thread_msg = (omp_get_num_threads()>1) ? "of thread "+ (std::to_string(omp_get_thread_num())): "";
+                                                                                       ^
+          detected during instantiation of "void Diagonalize_Hamiltonian<T>::Do() [with T=_2DTopSuperConMatrix]" at line 41 of "/afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/main.cpp"
+
+/afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/Hamiltonian_Diagonalizer.hpp(171): error: expected an expression
+              for (auto k = 0; k < T_RES; k++) {
+                                        ^
+          detected during instantiation of "void Diagonalize_Hamiltonian<T>::Do() [with T=_2DTopSuperConMatrix]" at line 41 of "/afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/main.cpp"
+
+/afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/Hamiltonian_Diagonalizer.hpp(173): error: this range-based "for" statement requires a suitable "begin" function and none was found
+                  for (auto a : All_EigenValues.col(k)) {
+                                ^
+          detected during instantiation of "void Diagonalize_Hamiltonian<T>::Do() [with T=_2DTopSuperConMatrix]" at line 41 of "/afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/main.cpp"
+
+/afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/Hamiltonian_Diagonalizer.hpp(186): error: no instance of overloaded function "std::to_string" matches the argument list
+                                    + "_Tres" + std::to_string(T_RES) + ".csv",
+                                                ^
+/afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/_2DTopSuperConMatrixSparse.hpp(145): note: this candidate was rejected because mismatch in count of arguments
+              std::string thread_msg = (omp_get_num_threads()>1) ? "of thread "+ (std::to_string(omp_get_thread_num())): "";
+                                                                                       ^
+/afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/_2DTopSuperConMatrixSparse.hpp(145): note: this candidate was rejected because mismatch in count of arguments
+              std::string thread_msg = (omp_get_num_threads()>1) ? "of thread "+ (std::to_string(omp_get_thread_num())): "";
+                                                                                       ^
+/afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/_2DTopSuperConMatrixSparse.hpp(145): note: this candidate was rejected because mismatch in count of arguments
+              std::string thread_msg = (omp_get_num_threads()>1) ? "of thread "+ (std::to_string(omp_get_thread_num())): "";
+                                                                                       ^
+/afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/_2DTopSuperConMatrixSparse.hpp(145): note: this candidate was rejected because mismatch in count of arguments
+              std::string thread_msg = (omp_get_num_threads()>1) ? "of thread "+ (std::to_string(omp_get_thread_num())): "";
+                                                                                       ^
+/afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/_2DTopSuperConMatrixSparse.hpp(145): note: this candidate was rejected because mismatch in count of arguments
+              std::string thread_msg = (omp_get_num_threads()>1) ? "of thread "+ (std::to_string(omp_get_thread_num())): "";
+                                                                                       ^
+/afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/_2DTopSuperConMatrixSparse.hpp(145): note: this candidate was rejected because mismatch in count of arguments
+              std::string thread_msg = (omp_get_num_threads()>1) ? "of thread "+ (std::to_string(omp_get_thread_num())): "";
+                                                                                       ^
+/afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/_2DTopSuperConMatrixSparse.hpp(145): note: this candidate was rejected because mismatch in count of arguments
+              std::string thread_msg = (omp_get_num_threads()>1) ? "of thread "+ (std::to_string(omp_get_thread_num())): "";
+                                                                                       ^
+/afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/_2DTopSuperConMatrixSparse.hpp(145): note: this candidate was rejected because mismatch in count of arguments
+              std::string thread_msg = (omp_get_num_threads()>1) ? "of thread "+ (std::to_string(omp_get_thread_num())): "";
+                                                                                       ^
+/afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/_2DTopSuperConMatrixSparse.hpp(145): note: this candidate was rejected because mismatch in count of arguments
+              std::string thread_msg = (omp_get_num_threads()>1) ? "of thread "+ (std::to_string(omp_get_thread_num())): "";
+                                                                                       ^
+          detected during instantiation of "void Diagonalize_Hamiltonian<T>::Do() [with T=_2DTopSuperConMatrix]" at line 41 of "/afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/main.cpp"
+
+/afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/Hamiltonian_Diagonalizer.hpp(193): error: no instance of overloaded function "std::to_string" matches the argument list
+                       << std::to_string(T_RES) << " Steps. With: "
+                          ^
+/afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/_2DTopSuperConMatrixSparse.hpp(145): note: this candidate was rejected because mismatch in count of arguments
+              std::string thread_msg = (omp_get_num_threads()>1) ? "of thread "+ (std::to_string(omp_get_thread_num())): "";
+                                                                                       ^
+/afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/_2DTopSuperConMatrixSparse.hpp(145): note: this candidate was rejected because mismatch in count of arguments
+              std::string thread_msg = (omp_get_num_threads()>1) ? "of thread "+ (std::to_string(omp_get_thread_num())): "";
+                                                                                       ^
+/afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/_2DTopSuperConMatrixSparse.hpp(145): note: this candidate was rejected because mismatch in count of arguments
+              std::string thread_msg = (omp_get_num_threads()>1) ? "of thread "+ (std::to_string(omp_get_thread_num())): "";
+                                                                                       ^
+/afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/_2DTopSuperConMatrixSparse.hpp(145): note: this candidate was rejected because mismatch in count of arguments
+              std::string thread_msg = (omp_get_num_threads()>1) ? "of thread "+ (std::to_string(omp_get_thread_num())): "";
+                                                                                       ^
+/afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/_2DTopSuperConMatrixSparse.hpp(145): note: this candidate was rejected because mismatch in count of arguments
+              std::string thread_msg = (omp_get_num_threads()>1) ? "of thread "+ (std::to_string(omp_get_thread_num())): "";
+                                                                                       ^
+/afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/_2DTopSuperConMatrixSparse.hpp(145): note: this candidate was rejected because mismatch in count of arguments
+              std::string thread_msg = (omp_get_num_threads()>1) ? "of thread "+ (std::to_string(omp_get_thread_num())): "";
+                                                                                       ^
+/afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/_2DTopSuperConMatrixSparse.hpp(145): note: this candidate was rejected because mismatch in count of arguments
+              std::string thread_msg = (omp_get_num_threads()>1) ? "of thread "+ (std::to_string(omp_get_thread_num())): "";
+                                                                                       ^
+/afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/_2DTopSuperConMatrixSparse.hpp(145): note: this candidate was rejected because mismatch in count of arguments
+              std::string thread_msg = (omp_get_num_threads()>1) ? "of thread "+ (std::to_string(omp_get_thread_num())): "";
+                                                                                       ^
+/afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/_2DTopSuperConMatrixSparse.hpp(145): note: this candidate was rejected because mismatch in count of arguments
+              std::string thread_msg = (omp_get_num_threads()>1) ? "of thread "+ (std::to_string(omp_get_thread_num())): "";
+                                                                                       ^
+          detected during instantiation of "void Diagonalize_Hamiltonian<T>::Do() [with T=_2DTopSuperConMatrix]" at line 41 of "/afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/main.cpp"
+
+/afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/Hamiltonian_Diagonalizer.hpp(195): error: no instance of overloaded function "std::to_string" matches the argument list
+                       << "using " << std::to_string(OMP_NUM_THREADS) << " OpenMP Threads" << std::endl;
+                                      ^
+/afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/_2DTopSuperConMatrixSparse.hpp(145): note: this candidate was rejected because mismatch in count of arguments
+              std::string thread_msg = (omp_get_num_threads()>1) ? "of thread "+ (std::to_string(omp_get_thread_num())): "";
+                                                                                       ^
+/afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/_2DTopSuperConMatrixSparse.hpp(145): note: this candidate was rejected because mismatch in count of arguments
+              std::string thread_msg = (omp_get_num_threads()>1) ? "of thread "+ (std::to_string(omp_get_thread_num())): "";
+                                                                                       ^
+/afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/_2DTopSuperConMatrixSparse.hpp(145): note: this candidate was rejected because mismatch in count of arguments
+              std::string thread_msg = (omp_get_num_threads()>1) ? "of thread "+ (std::to_string(omp_get_thread_num())): "";
+                                                                                       ^
+/afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/_2DTopSuperConMatrixSparse.hpp(145): note: this candidate was rejected because mismatch in count of arguments
+              std::string thread_msg = (omp_get_num_threads()>1) ? "of thread "+ (std::to_string(omp_get_thread_num())): "";
+                                                                                       ^
+/afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/_2DTopSuperConMatrixSparse.hpp(145): note: this candidate was rejected because mismatch in count of arguments
+              std::string thread_msg = (omp_get_num_threads()>1) ? "of thread "+ (std::to_string(omp_get_thread_num())): "";
+                                                                                       ^
+/afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/_2DTopSuperConMatrixSparse.hpp(145): note: this candidate was rejected because mismatch in count of arguments
+              std::string thread_msg = (omp_get_num_threads()>1) ? "of thread "+ (std::to_string(omp_get_thread_num())): "";
+                                                                                       ^
+/afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/_2DTopSuperConMatrixSparse.hpp(145): note: this candidate was rejected because mismatch in count of arguments
+              std::string thread_msg = (omp_get_num_threads()>1) ? "of thread "+ (std::to_string(omp_get_thread_num())): "";
+                                                                                       ^
+/afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/_2DTopSuperConMatrixSparse.hpp(145): note: this candidate was rejected because mismatch in count of arguments
+              std::string thread_msg = (omp_get_num_threads()>1) ? "of thread "+ (std::to_string(omp_get_thread_num())): "";
+                                                                                       ^
+/afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/_2DTopSuperConMatrixSparse.hpp(145): note: this candidate was rejected because mismatch in count of arguments
+              std::string thread_msg = (omp_get_num_threads()>1) ? "of thread "+ (std::to_string(omp_get_thread_num())): "";
+                                                                                       ^
+          detected during instantiation of "void Diagonalize_Hamiltonian<T>::Do() [with T=_2DTopSuperConMatrix]" at line 41 of "/afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/main.cpp"
+
+/afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/Hamiltonian_Diagonalizer.hpp(202): error: this range-based "for" statement requires a suitable "begin" function and none was found
+                  for (auto a : V) {
+                                ^
+          detected during instantiation of "void Diagonalize_Hamiltonian<T>::Do() [with T=_2DTopSuperConMatrix]" at line 41 of "/afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/main.cpp"
+
+/afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/Hamiltonian_Diagonalizer_Eigen.hpp(39): error: expected an expression
+              for (auto k = tid; k < T_RES; k += OMP_NUM_THREADS) {
+                                          ^
+
+/afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/Hamiltonian_Diagonalizer_Eigen.hpp(39): error: expected an expression
+              for (auto k = tid; k < T_RES; k += OMP_NUM_THREADS) {
+                                                                ^
+
+/afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/Hamiltonian_Diagonalizer_Eigen.hpp(52): warning #39: division by zero
+                  double t = T_START + (T_END - T_START) * (double(k) / double(T_RES));
+                                                                        ^
+          detected during instantiation of "void Diagonalize_Hamiltonian_Eigen<T>::Compute() [with T=_2DTopSuperConMatrix]" 
+
+compilation aborted for /afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/main.cpp (code 2)
+CMakeFiles/TST.dir/build.make:62: recipe for target 'CMakeFiles/TST.dir/main.cpp.o' failed
+make[2]: *** [CMakeFiles/TST.dir/main.cpp.o] Error 2
+CMakeFiles/Makefile2:67: recipe for target 'CMakeFiles/TST.dir/all' failed
+make[1]: *** [CMakeFiles/TST.dir/all] Error 2
+Makefile:83: recipe for target 'all' failed
+make: *** [all] Error 2
+Running Program
+/opt/sge-local/spool/obelix25/job_scripts/9086491: 15: /opt/sge-local/spool/obelix25/job_scripts/9086491: ./TST: not found
+finished

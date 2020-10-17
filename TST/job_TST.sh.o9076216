@@ -1,0 +1,296 @@
+Module for intel compilers_and_libraries_2020.0.166/linux:
+(Intel Compilers ver. 19.1.0.166 (Parallel Studio XE 2020)) - loaded.
+-- The C compiler identification is GNU 7.5.0
+-- The CXX compiler identification is GNU 7.5.0
+-- Check for working C compiler: /usr/bin/gcc
+-- Check for working C compiler: /usr/bin/gcc -- works
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Check for working CXX compiler: /usr/bin/g++
+-- Check for working CXX compiler: /usr/bin/g++ -- works
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- MKL_THREADING = OMP
+-- Looking for sys/types.h
+-- Looking for sys/types.h - found
+-- Looking for stdint.h
+-- Looking for stdint.h - found
+-- Looking for stddef.h
+-- Looking for stddef.h - found
+-- Check size of void*
+-- Check size of void* - done
+-- Checking for [mkl_intel_lp64 - mkl_gnu_thread - mkl_core - gomp - pthread - m - dl]
+--   Library mkl_intel_lp64: /opt/intel/mkl/lib/intel64/libmkl_intel_lp64.so
+--   Library mkl_gnu_thread: /opt/intel/mkl/lib/intel64/libmkl_gnu_thread.so
+--   Library mkl_core: /opt/intel/mkl/lib/intel64/libmkl_core.so
+--   Library gomp: -fopenmp
+--   Library pthread: /usr/lib/x86_64-linux-gnu/libpthread.so
+--   Library m: /usr/lib/x86_64-linux-gnu/libm.so
+--   Library dl: /usr/lib/x86_64-linux-gnu/libdl.so
+-- Looking for cblas_sgemm
+-- Looking for cblas_sgemm - found
+-- MKL library found
+-- Found OpenMP_C: -fopenmp (found version "4.5") 
+-- Found OpenMP_CXX: -fopenmp (found version "4.5") 
+-- Found OpenMP: TRUE (found version "4.5")  
+-- Boost version: 1.72.0
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/rune_G35_Res500_NegMu
+Scanning dependencies of target TST
+[ 50%] Building CXX object CMakeFiles/TST.dir/main.cpp.o
+In file included from /afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/Hamiltonian_Diagonalizer_Eigen.hpp:13:0,
+                 from /afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/main.cpp:29:
+/afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/Hamiltonian_Diagonalizer.hpp: In member function 'void Diagonalize_Hamiltonian<T>::Resolve()':
+/afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/Hamiltonian_Diagonalizer.hpp:173:52: error: there are no arguments to 'begin' that depend on a template parameter, so a declaration of 'begin' must be available [-fpermissive]
+                 for (auto a : All_EigenValues.col(k)) {
+                                                    ^
+/afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/Hamiltonian_Diagonalizer.hpp:173:52: note: (if you use '-fpermissive', G++ will accept your code, but allowing the use of an undeclared name is deprecated)
+/afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/Hamiltonian_Diagonalizer.hpp:173:52: error: there are no arguments to 'end' that depend on a template parameter, so a declaration of 'end' must be available [-fpermissive]
+/afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/Hamiltonian_Diagonalizer.hpp:202:31: error: no matching function for call to 'begin(Eigen::Matrix<std::complex<double>, -1, 1>&)'
+                 for (auto a : V) {
+                               ^
+In file included from /usr/include/c++/7/string:51:0,
+                 from /usr/include/c++/7/bits/locale_classes.h:40,
+                 from /usr/include/c++/7/bits/ios_base.h:41,
+                 from /usr/include/c++/7/ios:42,
+                 from /usr/include/c++/7/istream:38,
+                 from /usr/include/c++/7/sstream:38,
+                 from /usr/include/c++/7/complex:45,
+                 from /usr/include/eigen3/Eigen/Core:80,
+                 from /usr/include/eigen3/Eigen/Dense:1,
+                 from /afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/Hamiltonian_Matrix.hpp:13,
+                 from /afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/_1DTopSuperConMatrix.hpp:6,
+                 from /afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/main.cpp:12:
+/usr/include/c++/7/bits/range_access.h:105:37: note: candidate: template<class _Tp> const _Tp* std::begin(const std::valarray<_Tp>&)
+   template<typename _Tp> const _Tp* begin(const valarray<_Tp>&);
+                                     ^~~~~
+/usr/include/c++/7/bits/range_access.h:105:37: note:   template argument deduction/substitution failed:
+In file included from /afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/Hamiltonian_Diagonalizer_Eigen.hpp:13:0,
+                 from /afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/main.cpp:29:
+/afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/Hamiltonian_Diagonalizer.hpp:202:31: note:   'Eigen::Matrix<std::complex<double>, -1, 1>' is not derived from 'const std::valarray<_Tp>'
+                 for (auto a : V) {
+                               ^
+In file included from /usr/include/c++/7/string:51:0,
+                 from /usr/include/c++/7/bits/locale_classes.h:40,
+                 from /usr/include/c++/7/bits/ios_base.h:41,
+                 from /usr/include/c++/7/ios:42,
+                 from /usr/include/c++/7/istream:38,
+                 from /usr/include/c++/7/sstream:38,
+                 from /usr/include/c++/7/complex:45,
+                 from /usr/include/eigen3/Eigen/Core:80,
+                 from /usr/include/eigen3/Eigen/Dense:1,
+                 from /afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/Hamiltonian_Matrix.hpp:13,
+                 from /afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/_1DTopSuperConMatrix.hpp:6,
+                 from /afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/main.cpp:12:
+/usr/include/c++/7/bits/range_access.h:104:31: note: candidate: template<class _Tp> _Tp* std::begin(std::valarray<_Tp>&)
+   template<typename _Tp> _Tp* begin(valarray<_Tp>&);
+                               ^~~~~
+/usr/include/c++/7/bits/range_access.h:104:31: note:   template argument deduction/substitution failed:
+In file included from /afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/Hamiltonian_Diagonalizer_Eigen.hpp:13:0,
+                 from /afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/main.cpp:29:
+/afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/Hamiltonian_Diagonalizer.hpp:202:31: note:   'Eigen::Matrix<std::complex<double>, -1, 1>' is not derived from 'std::valarray<_Tp>'
+                 for (auto a : V) {
+                               ^
+In file included from /usr/include/c++/7/string:51:0,
+                 from /usr/include/c++/7/bits/locale_classes.h:40,
+                 from /usr/include/c++/7/bits/ios_base.h:41,
+                 from /usr/include/c++/7/ios:42,
+                 from /usr/include/c++/7/istream:38,
+                 from /usr/include/c++/7/sstream:38,
+                 from /usr/include/c++/7/complex:45,
+                 from /usr/include/eigen3/Eigen/Core:80,
+                 from /usr/include/eigen3/Eigen/Dense:1,
+                 from /afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/Hamiltonian_Matrix.hpp:13,
+                 from /afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/_1DTopSuperConMatrix.hpp:6,
+                 from /afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/main.cpp:12:
+/usr/include/c++/7/bits/range_access.h:87:5: note: candidate: template<class _Tp, long unsigned int _Nm> constexpr _Tp* std::begin(_Tp (&)[_Nm])
+     begin(_Tp (&__arr)[_Nm])
+     ^~~~~
+/usr/include/c++/7/bits/range_access.h:87:5: note:   template argument deduction/substitution failed:
+In file included from /afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/Hamiltonian_Diagonalizer_Eigen.hpp:13:0,
+                 from /afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/main.cpp:29:
+/afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/Hamiltonian_Diagonalizer.hpp:202:31: note:   mismatched types '_Tp [_Nm]' and 'Eigen::Matrix<std::complex<double>, -1, 1>'
+                 for (auto a : V) {
+                               ^
+In file included from /usr/include/c++/7/string:51:0,
+                 from /usr/include/c++/7/bits/locale_classes.h:40,
+                 from /usr/include/c++/7/bits/ios_base.h:41,
+                 from /usr/include/c++/7/ios:42,
+                 from /usr/include/c++/7/istream:38,
+                 from /usr/include/c++/7/sstream:38,
+                 from /usr/include/c++/7/complex:45,
+                 from /usr/include/eigen3/Eigen/Core:80,
+                 from /usr/include/eigen3/Eigen/Dense:1,
+                 from /afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/Hamiltonian_Matrix.hpp:13,
+                 from /afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/_1DTopSuperConMatrix.hpp:6,
+                 from /afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/main.cpp:12:
+/usr/include/c++/7/bits/range_access.h:58:5: note: candidate: template<class _Container> decltype (__cont.begin()) std::begin(const _Container&)
+     begin(const _Container& __cont) -> decltype(__cont.begin())
+     ^~~~~
+/usr/include/c++/7/bits/range_access.h:58:5: note:   template argument deduction/substitution failed:
+/usr/include/c++/7/bits/range_access.h: In substitution of 'template<class _Container> decltype (__cont.begin()) std::begin(const _Container&) [with _Container = Eigen::Matrix<std::complex<double>, -1, 1>]':
+/afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/Hamiltonian_Diagonalizer.hpp:202:31:   required from here
+/usr/include/c++/7/bits/range_access.h:58:56: error: 'const class Eigen::Matrix<std::complex<double>, -1, 1>' has no member named 'begin'
+     begin(const _Container& __cont) -> decltype(__cont.begin())
+                                                 ~~~~~~~^~~~~
+/usr/include/c++/7/bits/range_access.h:48:5: note: candidate: template<class _Container> decltype (__cont.begin()) std::begin(_Container&)
+     begin(_Container& __cont) -> decltype(__cont.begin())
+     ^~~~~
+/usr/include/c++/7/bits/range_access.h:48:5: note:   template argument deduction/substitution failed:
+/usr/include/c++/7/bits/range_access.h: In substitution of 'template<class _Container> decltype (__cont.begin()) std::begin(_Container&) [with _Container = Eigen::Matrix<std::complex<double>, -1, 1>]':
+/afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/Hamiltonian_Diagonalizer.hpp:202:31:   required from here
+/usr/include/c++/7/bits/range_access.h:48:50: error: 'class Eigen::Matrix<std::complex<double>, -1, 1>' has no member named 'begin'
+     begin(_Container& __cont) -> decltype(__cont.begin())
+                                           ~~~~~~~^~~~~
+In file included from /usr/include/c++/7/bits/range_access.h:36:0,
+                 from /usr/include/c++/7/string:51,
+                 from /usr/include/c++/7/bits/locale_classes.h:40,
+                 from /usr/include/c++/7/bits/ios_base.h:41,
+                 from /usr/include/c++/7/ios:42,
+                 from /usr/include/c++/7/istream:38,
+                 from /usr/include/c++/7/sstream:38,
+                 from /usr/include/c++/7/complex:45,
+                 from /usr/include/eigen3/Eigen/Core:80,
+                 from /usr/include/eigen3/Eigen/Dense:1,
+                 from /afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/Hamiltonian_Matrix.hpp:13,
+                 from /afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/_1DTopSuperConMatrix.hpp:6,
+                 from /afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/main.cpp:12:
+/usr/include/c++/7/initializer_list:89:5: note: candidate: template<class _Tp> constexpr const _Tp* std::begin(std::initializer_list<_Tp>)
+     begin(initializer_list<_Tp> __ils) noexcept
+     ^~~~~
+/usr/include/c++/7/initializer_list:89:5: note:   template argument deduction/substitution failed:
+In file included from /afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/Hamiltonian_Diagonalizer_Eigen.hpp:13:0,
+                 from /afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/main.cpp:29:
+/afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/Hamiltonian_Diagonalizer.hpp:202:31: note:   'Eigen::Matrix<std::complex<double>, -1, 1>' is not derived from 'std::initializer_list<_Tp>'
+                 for (auto a : V) {
+                               ^
+/afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/Hamiltonian_Diagonalizer.hpp:202:31: error: no matching function for call to 'end(Eigen::Matrix<std::complex<double>, -1, 1>&)'
+In file included from /usr/include/c++/7/string:51:0,
+                 from /usr/include/c++/7/bits/locale_classes.h:40,
+                 from /usr/include/c++/7/bits/ios_base.h:41,
+                 from /usr/include/c++/7/ios:42,
+                 from /usr/include/c++/7/istream:38,
+                 from /usr/include/c++/7/sstream:38,
+                 from /usr/include/c++/7/complex:45,
+                 from /usr/include/eigen3/Eigen/Core:80,
+                 from /usr/include/eigen3/Eigen/Dense:1,
+                 from /afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/Hamiltonian_Matrix.hpp:13,
+                 from /afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/_1DTopSuperConMatrix.hpp:6,
+                 from /afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/main.cpp:12:
+/usr/include/c++/7/bits/range_access.h:107:37: note: candidate: template<class _Tp> const _Tp* std::end(const std::valarray<_Tp>&)
+   template<typename _Tp> const _Tp* end(const valarray<_Tp>&);
+                                     ^~~
+/usr/include/c++/7/bits/range_access.h:107:37: note:   template argument deduction/substitution failed:
+In file included from /afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/Hamiltonian_Diagonalizer_Eigen.hpp:13:0,
+                 from /afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/main.cpp:29:
+/afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/Hamiltonian_Diagonalizer.hpp:202:31: note:   'Eigen::Matrix<std::complex<double>, -1, 1>' is not derived from 'const std::valarray<_Tp>'
+                 for (auto a : V) {
+                               ^
+In file included from /usr/include/c++/7/string:51:0,
+                 from /usr/include/c++/7/bits/locale_classes.h:40,
+                 from /usr/include/c++/7/bits/ios_base.h:41,
+                 from /usr/include/c++/7/ios:42,
+                 from /usr/include/c++/7/istream:38,
+                 from /usr/include/c++/7/sstream:38,
+                 from /usr/include/c++/7/complex:45,
+                 from /usr/include/eigen3/Eigen/Core:80,
+                 from /usr/include/eigen3/Eigen/Dense:1,
+                 from /afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/Hamiltonian_Matrix.hpp:13,
+                 from /afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/_1DTopSuperConMatrix.hpp:6,
+                 from /afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/main.cpp:12:
+/usr/include/c++/7/bits/range_access.h:106:31: note: candidate: template<class _Tp> _Tp* std::end(std::valarray<_Tp>&)
+   template<typename _Tp> _Tp* end(valarray<_Tp>&);
+                               ^~~
+/usr/include/c++/7/bits/range_access.h:106:31: note:   template argument deduction/substitution failed:
+In file included from /afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/Hamiltonian_Diagonalizer_Eigen.hpp:13:0,
+                 from /afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/main.cpp:29:
+/afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/Hamiltonian_Diagonalizer.hpp:202:31: note:   'Eigen::Matrix<std::complex<double>, -1, 1>' is not derived from 'std::valarray<_Tp>'
+                 for (auto a : V) {
+                               ^
+In file included from /usr/include/c++/7/string:51:0,
+                 from /usr/include/c++/7/bits/locale_classes.h:40,
+                 from /usr/include/c++/7/bits/ios_base.h:41,
+                 from /usr/include/c++/7/ios:42,
+                 from /usr/include/c++/7/istream:38,
+                 from /usr/include/c++/7/sstream:38,
+                 from /usr/include/c++/7/complex:45,
+                 from /usr/include/eigen3/Eigen/Core:80,
+                 from /usr/include/eigen3/Eigen/Dense:1,
+                 from /afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/Hamiltonian_Matrix.hpp:13,
+                 from /afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/_1DTopSuperConMatrix.hpp:6,
+                 from /afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/main.cpp:12:
+/usr/include/c++/7/bits/range_access.h:97:5: note: candidate: template<class _Tp, long unsigned int _Nm> constexpr _Tp* std::end(_Tp (&)[_Nm])
+     end(_Tp (&__arr)[_Nm])
+     ^~~
+/usr/include/c++/7/bits/range_access.h:97:5: note:   template argument deduction/substitution failed:
+In file included from /afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/Hamiltonian_Diagonalizer_Eigen.hpp:13:0,
+                 from /afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/main.cpp:29:
+/afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/Hamiltonian_Diagonalizer.hpp:202:31: note:   mismatched types '_Tp [_Nm]' and 'Eigen::Matrix<std::complex<double>, -1, 1>'
+                 for (auto a : V) {
+                               ^
+In file included from /usr/include/c++/7/string:51:0,
+                 from /usr/include/c++/7/bits/locale_classes.h:40,
+                 from /usr/include/c++/7/bits/ios_base.h:41,
+                 from /usr/include/c++/7/ios:42,
+                 from /usr/include/c++/7/istream:38,
+                 from /usr/include/c++/7/sstream:38,
+                 from /usr/include/c++/7/complex:45,
+                 from /usr/include/eigen3/Eigen/Core:80,
+                 from /usr/include/eigen3/Eigen/Dense:1,
+                 from /afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/Hamiltonian_Matrix.hpp:13,
+                 from /afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/_1DTopSuperConMatrix.hpp:6,
+                 from /afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/main.cpp:12:
+/usr/include/c++/7/bits/range_access.h:78:5: note: candidate: template<class _Container> decltype (__cont.end()) std::end(const _Container&)
+     end(const _Container& __cont) -> decltype(__cont.end())
+     ^~~
+/usr/include/c++/7/bits/range_access.h:78:5: note:   template argument deduction/substitution failed:
+/usr/include/c++/7/bits/range_access.h: In substitution of 'template<class _Container> decltype (__cont.end()) std::end(const _Container&) [with _Container = Eigen::Matrix<std::complex<double>, -1, 1>]':
+/afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/Hamiltonian_Diagonalizer.hpp:202:31:   required from here
+/usr/include/c++/7/bits/range_access.h:78:54: error: 'const class Eigen::Matrix<std::complex<double>, -1, 1>' has no member named 'end'
+     end(const _Container& __cont) -> decltype(__cont.end())
+                                               ~~~~~~~^~~
+/usr/include/c++/7/bits/range_access.h:68:5: note: candidate: template<class _Container> decltype (__cont.end()) std::end(_Container&)
+     end(_Container& __cont) -> decltype(__cont.end())
+     ^~~
+/usr/include/c++/7/bits/range_access.h:68:5: note:   template argument deduction/substitution failed:
+/usr/include/c++/7/bits/range_access.h: In substitution of 'template<class _Container> decltype (__cont.end()) std::end(_Container&) [with _Container = Eigen::Matrix<std::complex<double>, -1, 1>]':
+/afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/Hamiltonian_Diagonalizer.hpp:202:31:   required from here
+/usr/include/c++/7/bits/range_access.h:68:48: error: 'class Eigen::Matrix<std::complex<double>, -1, 1>' has no member named 'end'
+     end(_Container& __cont) -> decltype(__cont.end())
+                                         ~~~~~~~^~~
+In file included from /usr/include/c++/7/bits/range_access.h:36:0,
+                 from /usr/include/c++/7/string:51,
+                 from /usr/include/c++/7/bits/locale_classes.h:40,
+                 from /usr/include/c++/7/bits/ios_base.h:41,
+                 from /usr/include/c++/7/ios:42,
+                 from /usr/include/c++/7/istream:38,
+                 from /usr/include/c++/7/sstream:38,
+                 from /usr/include/c++/7/complex:45,
+                 from /usr/include/eigen3/Eigen/Core:80,
+                 from /usr/include/eigen3/Eigen/Dense:1,
+                 from /afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/Hamiltonian_Matrix.hpp:13,
+                 from /afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/_1DTopSuperConMatrix.hpp:6,
+                 from /afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/main.cpp:12:
+/usr/include/c++/7/initializer_list:99:5: note: candidate: template<class _Tp> constexpr const _Tp* std::end(std::initializer_list<_Tp>)
+     end(initializer_list<_Tp> __ils) noexcept
+     ^~~
+/usr/include/c++/7/initializer_list:99:5: note:   template argument deduction/substitution failed:
+In file included from /afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/Hamiltonian_Diagonalizer_Eigen.hpp:13:0,
+                 from /afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/main.cpp:29:
+/afs/physnet.uni-hamburg.de/users/zoq_m/jteuffel/TST_MKL_Eigen/TST/Hamiltonian_Diagonalizer.hpp:202:31: note:   'Eigen::Matrix<std::complex<double>, -1, 1>' is not derived from 'std::initializer_list<_Tp>'
+                 for (auto a : V) {
+                               ^
+CMakeFiles/TST.dir/build.make:62: recipe for target 'CMakeFiles/TST.dir/main.cpp.o' failed
+make[2]: *** [CMakeFiles/TST.dir/main.cpp.o] Error 1
+CMakeFiles/Makefile2:67: recipe for target 'CMakeFiles/TST.dir/all' failed
+make[1]: *** [CMakeFiles/TST.dir/all] Error 2
+Makefile:83: recipe for target 'all' failed
+make: *** [all] Error 2
+Running Program
+/opt/sge-local/spool/obelix25/job_scripts/9076216: 15: /opt/sge-local/spool/obelix25/job_scripts/9076216: ./TST: not found
+finished

@@ -4,6 +4,7 @@
 #pragma once
 
 #include "Hamiltonian_Matrix.hpp"
+#include "Typedefs.hpp"
 #include <Eigen/Dense>
 /// This Class generates matrices representing the topological 1D Kitaev Hamiltonian
 class _1DTopSuperConMatrix : Hamiltonian_Matrix {
@@ -20,7 +21,7 @@ public:
         this->Delta = Delta_in / 2;
         this->param = param;
         Gsize = size_in / 2;
-        m = Eigen::MatrixXcd(size_in, size_in);
+        m = Mat_cd(size_in, size_in);
         m.setZero();
         Build_A();
         //Build_B();
@@ -28,7 +29,7 @@ public:
 
     /// Nessesary override to provide access to the Eigen Storage Matrix
     /// \return Eigen Matrix with coeffitents of Hamiltonian
-    Eigen::MatrixXcd get() override {
+    Mat_cd get() override {
         return m;
     }
 
@@ -52,6 +53,7 @@ private:
     }
     /// Build A submatrices
     void Build_A() {
+#pragma unroll
         for (size_t i = 0; i < Gsize - 1; i++) {
             double Mu_loc = mu * sigm(i + param - Gsize / 2);
             m(i, i) = Mu_loc + 2 * t;
