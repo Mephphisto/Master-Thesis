@@ -86,17 +86,19 @@ class Diagonalize_Hamiltonian_Eigen : public Diagonalize_Hamiltonian<T> {
                         majoranas[1] = t;
                     }
                 }
-#define MAJIZE
 #ifdef MAJIZE
                 auto tpl = Majoranaize(Solver.eigenvectors().col(majoranas[0]).normalized(),Solver.eigenvectors().col(majoranas[1]).normalized());
                 this->All_EigenVectors.push_back(std::get<0>(tpl));
                 this->All_EigenVectors.push_back(std::get<1>(tpl));
 #else
                 for (auto l : majoranas) {
+#pragma omp critical
                     std::cout << " EiVal[" << l << "] = " << this->All_EigenValues.col(k)[l];
                     this->All_EigenVectors.push_back(Solver.eigenvectors().col(l));
 #endif
+                    this->t_s(k) = t;
             }
+
 #if OMP_NUM_THREADS > 1
         }
 #endif
