@@ -40,7 +40,8 @@ private:
     /// Helper function to build the \f$ A \f$ submatrices
     void Build_A() {
 
-        double r = 4*pow(4 / (Gsize_d * 0.05), 2);
+        double r = 4 * pow(4 / (Gsize_d * 0.05), 2);
+#pragma unrollandfuse
         for (size_t k = 0; k < Msize; k++) {
             for (size_t j = 0; j < Msize; j++) {
                 size_t x_j = index_x(j);
@@ -93,6 +94,7 @@ private:
 
     /// Helper function to build the \f$ B \f$ submatrices
     void Build_B() {
+#pragma unrollandfuse
         for (size_t k = 0; k < Msize; k++) {
             for (size_t j = 0; j < Msize; j++) {
                 size_t x_j = index_x(j);
@@ -105,15 +107,15 @@ private:
 
                 phase = cd(1, 0);
                 phase *= cd(static_cast<double>(x_j + x_k) / 2 - (Gsize_d - 1) / 2 - Vort_x,
-                                              static_cast<double>(y_j + y_k) / 2 - (Gsize_d - 1) / 2 - Vort_y);
+                            static_cast<double>(y_j + y_k) / 2 - (Gsize_d - 1) / 2 - Vort_y);
                 phase *= cd(static_cast<double>(x_j + x_k) / 2 - (Gsize_d - 1) / 2 + Vort_x,
-                                              static_cast<double>(y_j + y_k) / 2 - (Gsize_d - 1) / 2 + Vort_y);
+                            static_cast<double>(y_j + y_k) / 2 - (Gsize_d - 1) / 2 + Vort_y);
                 {
                     double Abs = abs(phase);
                     if (Abs != 0.0) {
-                        phase = phase /Abs;
-                    }else{
-                    phase = 0.0;
+                        phase = phase / Abs;
+                    } else {
+                        phase = 0.0;
                     }
                 }
 #else
@@ -143,6 +145,7 @@ private:
             }
         }
     }
+
     /// Helper fuction to get the index from a x/y coordinate Pair
     /// \param index_x  x - Coordinate
     /// \param index_y  y - Coordinate
@@ -150,6 +153,7 @@ private:
     inline size_t at(size_t index_x, size_t index_y) {
         return index_x + Gsize * index_y;
     }
+
     /// Helper Function to get the X - Coordinate from a Index
     /// \param pos - Index
     /// \return X - Coordinate
@@ -187,18 +191,10 @@ public:
             this->Vort_x = sp * (Gsize_d - 1) / 4;
             this->Vort_y = cp * (Gsize_d - 1) / 4;
         }
-#pragma omp critical
-        std::cout << "phi=" << phi_in << "Vort_x= " << Vort_x << " Vort_y = " << Vort_y << std::endl;
-#ifdef DEBUG_ACTIVE
-        /*{
-            // send message in a unified Racecondition safe way
 
-            std::string thread_msg = (omp_get_num_threads() > 1) ? "of thread " + (std::to_string(omp_get_thread_num()))
-                                                                 : "";
-            std::string msg = "Vortex" + thread_msg +
-                              " at (" + std::to_string(Vort_x) + " , " + std::to_string(Vort_y) + " ) \n";
-            std::cout << msg;
-        }*/
+#ifdef DEBUG_ACTIVE
+#pragma omp critical
+        std::cout << "phi= " << phi_in << " Vort_x= " << Vort_x << "  Vort_y = " << Vort_y << std::endl;
 #endif
         m = Mat_cd(size_in, size_in);
         Build_A();
@@ -210,6 +206,7 @@ public:
     Mat_cd get() override {
         return m;
     }
+
     /// Nessesary override to provide access to the trace
     /// \return trace
     double trace_A() override {

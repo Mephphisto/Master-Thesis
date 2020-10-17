@@ -35,6 +35,8 @@ inline std::tuple<Vec_cd, Vec_cd, Vec_cd> Get_C_0_Majs(Vec eval, Mat_cd evec) {
     Vec_cd C_0 = Vec_cd(MATRIX_SIZE);
     // Summ up over Fermmie see and Majorana states
     size_t majoranas[2] = {0, 0};
+
+#pragma unroll
     for (size_t t = 0; t < eval.size(); t++) {
         if (abs(eval[t]) < abs(eval[majoranas[0]])) {
             majoranas[1] = majoranas[0];
@@ -43,6 +45,8 @@ inline std::tuple<Vec_cd, Vec_cd, Vec_cd> Get_C_0_Majs(Vec eval, Mat_cd evec) {
             majoranas[1] = t;
         }
     }
+
+#pragma unroll
     for (size_t k = 0; k < MATRIX_SIZE; k++) {
         if ((k != majoranas[0]) || k > (k != majoranas[1])) {
             C_0 += (eval[k] < 10e-7) ? evec.col(k).normalized() : Vec_cd::Zero(MATRIX_SIZE);
@@ -62,6 +66,8 @@ inline std::tuple<Vec_cd, Vec_cd, Vec_cd> Get_C_0_Majs(Vec eval, Mat_cd evec) {
 inline double Get_C_final_Overlap(Vec_cd const &C_f, Vec eval, Mat_cd evec) {
     double res = 0;
     // Summ up over Fermmie see and Majorana states
+
+#pragma unroll
     for (size_t k = 0; k < MATRIX_SIZE; k++) {
         res += (eval[k] < 10e-7) ? std::abs(evec.col(k).dot(C_f)) : 0.0;
     }

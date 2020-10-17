@@ -15,7 +15,7 @@
 #ifdef TIME_EVOLUTION
 #include "Time_Evolution.hpp"
 #endif
-#include <math.h>
+#include <cmath>
 
 
 #ifdef USE_MAGMA

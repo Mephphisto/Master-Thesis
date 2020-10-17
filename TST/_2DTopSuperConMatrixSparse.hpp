@@ -22,9 +22,10 @@ private:
         m.insert((k + Msize) % MS, (j + Msize) % MS) = -std::conj(val);
     }
 
-    void Build_A() {
+    inline void Build_A() {
 
         double r = pow(4/(Gsize_d*0.05),2);
+#pragma unrollandfuse
         for (size_t k = 0; k < Msize; k++) {
             for (size_t j = 0; j < Msize; j++) {
                 size_t x_j = index_x(j);
@@ -72,7 +73,8 @@ private:
         }
     }
 
-    void Build_B() {
+    inline void Build_B() {
+#pragma unroll
         for (size_t k = 0; k < Msize; k++) {
             for (size_t j = 0; j < Msize; j++) {
                 size_t x_j = index_x(j);

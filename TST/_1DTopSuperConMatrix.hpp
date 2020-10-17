@@ -53,6 +53,7 @@ private:
     }
     /// Build A submatrices
     void Build_A() {
+#pragma unroll
         for (size_t i = 0; i < Gsize - 1; i++) {
             double Mu_loc = mu * sigm(i + param - Gsize / 2);
             m(i, i) = Mu_loc + 2 * t;

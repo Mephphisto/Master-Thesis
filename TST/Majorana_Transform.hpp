@@ -11,34 +11,25 @@
 #include "Typedefs.hpp"
 
 inline cd MyDot(Vec_cd X, Vec_cd Y) {
-    cd res1 = 0, res2 = 0;
+    cd res = 0;
     size_t L = X.size() / 2;
     assert(Y.size() == 2 * L);
+#pragma unroll
     for (size_t k = 0; k < L / 2; k++) {
-        cd norm1 = X[k] * Y[k];
-        res1 += norm1;
+        res += X[k] * Y[k] + X[k + L] * Y[k + L];
     }
-    for (size_t k = L; k < 3 * L / 2; k++) {
-        cd norm2 = X[k] * Y[k];
-        res1 += norm2;
-    }
-    cd res = res1 + res2;
     return res;
 }
 
 inline std::tuple<Vec_cd, Vec_cd> Majoranaize(Vec_cd v, Vec_cd w) {
     Vec_cd X, Y;
     {
+        X = v - (MyDot(v, w) / MyDot(w, w)) * w;
+        X.normalize();
 
         {
-            X = v - (MyDot(v, w) / MyDot(w, w)) * w;
-            X.normalize();
-        }
-        {
-            cd dotXX = X.transpose() * X;
-            cd dotvX = (v.transpose() * X);
-            cd dotwX = (w.transpose() * X);
-            Y = v - dotvX / dotXX * X + w - dotwX / dotXX * X;
+            const cd dotXX = X.transpose() * X, dot_wX = w.transpose() * X, dot_vX = v.transpose() * X;
+            Y = v - dot_vX / dotXX * X + w - dot_wX / dotXX * X;
             Y.normalize();
         }
 #ifdef DEBUG_ACTIVE

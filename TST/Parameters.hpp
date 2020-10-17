@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include <math.h>
+#include <cmath>
 
 //ICL NEEDS THIS
 #define  _HAS_CONDITIONAL_EXPLICIT 0
@@ -30,15 +30,13 @@
 #define MAJIZE
 
 //Deine Matrix Parameters
-constexpr double pref  = 1.0/3.0;
+constexpr double pref = 1.0 / 3.0;
 //#define PERIODIC_BOUNDRY
 #define PHASE
-//constexpr int GRID = 35;
-//constexpr int  T_RES = 400;
 constexpr int MATRIX_SIZE = (2 * GRID * GRID);
 constexpr double T_START = 0.0;
-constexpr double T_END =  double(2.0*M_PI)*T_ROT + T_START;
-constexpr double T_COUPLE = T_C*pref;
-constexpr double MU =  pref*3;
-constexpr double DELTA = pref*3;
+constexpr double T_END = (M_PI * 2.0 * T_ROT + T_START);
+constexpr double T_COUPLE = T_C * pref;
+constexpr double MU = pref * 3;
+constexpr double DELTA = pref * 3;
 
