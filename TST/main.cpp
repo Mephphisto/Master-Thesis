@@ -32,6 +32,7 @@
 #endif
 
 int main() {
+    std::chrono::time_point<std::chrono::system_clock> start = std::chrono::system_clock::now();
 #ifndef TIME_EVOLUTION
 #ifdef USE_MAGMA
     Diagonalize_Hamiltonian_magma<HAMILTONIAN>().Do();
@@ -41,7 +42,7 @@ int main() {
     Diagonalize_Hamiltonian_Eigen<HAMILTONIAN>().Do();
 #endif
 #else
-    std::chrono::time_point<std::chrono::system_clock> start = std::chrono::system_clock::now();
+
 
     const size_t num_steps = W_RES;
     Vec omegas(num_steps);
@@ -63,13 +64,14 @@ int main() {
     } catch (...) {
         std::cout << "Error writing EigenValues CSV" << std::endl;
     }
+#endif
     std::cout << std::endl << std::endl << "Runtime = "
               <<
               std::chrono::duration_cast<std::chrono::milliseconds>(
                       std::chrono::system_clock::now() - start).count()
               << "ms" <<
               std::endl;
-#endif
+
     return 0;
 }
 

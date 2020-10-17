@@ -168,7 +168,7 @@ Mat Do_TE(Vec const &Omegas) {
                 (double) T_START,
 
                 (double) T_START + T_END,
-                double(2.00) * M_PI / T_RES,
+                double(2.00) * M_PI /T_RES,
                 last_observer(C_f));
         double norm = C_f.norm();
         double res = std::pow(std::abs(C_f.dot(Maj1 - Maj2)), 2) / norm / 2;
