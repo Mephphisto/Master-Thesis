@@ -24,7 +24,8 @@ private:
     std::complex<double> Delta;
     /// Grid  size
     size_t Gsize;
-
+    /// Phi
+    double phi;
     ///  Helper Funtion to set \f$ A , B |f$ and \f$ \epsilon B^* ,  \f$ simulataneously.
     /// \param k  k - Index
     /// \param j j - Index
@@ -38,7 +39,7 @@ private:
     /// Helper function to build the \f$ A \f$ submatrices
     void Build_A() {
 
-        double r = 4*pow(4 / (Gsize_d * 0.05), 2);
+        double r = 4*pow(4 / (Gsize_d * 0.05 * phi), 2);
         for (size_t k = 0; k < Msize; k++) {
             for (size_t j = 0; j < Msize; j++) {
                 size_t x_j = index_x(j);
@@ -173,9 +174,10 @@ public:
         this->Msize = size_in / 2;
         this->Gsize = sqrt(Msize);
         this->Gsize_d = static_cast<double>(Gsize);
+        this->phi =  phi_in;
         {
             //double sp = sin(phi_in), cp = cos(phi_in);
-            this->Vort_x = Gsize/4 * phi_in; //sp * (Gsize_d - 1) / 4;
+            this->Vort_x = Gsize/4; //sp * (Gsize_d - 1) / 4;
             this->Vort_y = 0.00; //cp * (Gsize_d - 1) / 4;
         }
 #pragma omp critical
