@@ -132,7 +132,7 @@ Mat Do_TE(Vec const &Omegas) {
 #ifdef DEBUG_ACTIVE
         std::cout << "Hermiticity Check" << std::endl;
         M.verify_hermitiity();
-        //std::cout << "Matrix Det " << M.get().determinant() << std::endl;
+        std::cout << "Matrix Det " << M.get().determinant() << std::endl;
         std::cout << "M*1= " << (M.get() * Vec_cd::Ones(MATRIX_SIZE)).norm() << std::endl;
 #endif
         double tr = M.trace_A();
