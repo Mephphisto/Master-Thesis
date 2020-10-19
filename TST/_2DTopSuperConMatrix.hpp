@@ -183,10 +183,10 @@ public:
                          const double &Delta_in) :
             t(t_in),
             mu(mu_in),
-            Delta(static_cast<cd>(Delta_in / 2)),
-            Gsize(),
-            Gsize_d(static_cast<double>(Gsize)) {
-        this->Msize = sqrt(Msize);
+            Delta(static_cast<cd>(Delta_in / 2)) {
+        this->Msize = size_in / 2;
+        this->Gsize = sqrt(Msize);
+        this->Gsize_d = static_cast<double>(Gsize);
         {
             double sp = sin(phi_in), cp = cos(phi_in);
             this->Vort_x = sp * (Gsize_d - 1) / 4;
