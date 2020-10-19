@@ -406,7 +406,7 @@ MigrationBackup/
 /TST/.idea/
 /TST/build/
 /TST/build_teerm/
-/TST/cmake-build-debug/
+/TST/cmake-*/
 /Eval/py/Majoranas/
 /Eval/py/Majoranas2D/
 /Eval/py/interpret/
@@ -415,3 +415,7 @@ MigrationBackup/
 /Eval/py/Majoranas/
 /Eval/py/Majoranas_+Mu/
 /Eval/py/Modes/
+/TST/rune_**/
+/TST/job_TST.sh.o*
+/Eval/.idea/
+/Eval/Swp*

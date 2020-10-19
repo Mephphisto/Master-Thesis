@@ -34,7 +34,7 @@ protected:
     std::chrono::time_point<std::chrono::system_clock>  start;
 #endif
     /// Prepare to do computation
-    void Preppare() {
+    inline void Preppare() {
 #ifdef SHOW_MATRIX_AND_QUIT
         //Build Matrix shom Matrix in CMD and Quit
         T M = T(MATRIX_SIZE, T_COUPLE ,T_START, MU, DELTA);
@@ -146,7 +146,7 @@ protected:
 
     virtual void Compute() = 0;
 
-    void Resolve() {
+    void virtual Resolve() {
 #ifdef EVAL_BY_CMD
         //print Eigenvalues to CMD
             std::cout << "eigenvalues:" << std::endl << All_EigenValues << std::endl;
@@ -230,8 +230,8 @@ protected:
     }
 
 public:
-     void Do() {
-        All_EigenValues.resize(MATRIX_SIZE,T_RES);
+    virtual void Do() {
+        All_EigenValues.resize(MATRIX_SIZE, T_RES);
         t_s.resize(T_RES);
         //All_EigenVectors.resize(T_RES);
         Preppare();

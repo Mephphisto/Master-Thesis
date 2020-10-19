@@ -29,7 +29,7 @@
 
 template<class T>
 class Diagonalize_Hamiltonian_Eigen : public Diagonalize_Hamiltonian<T> {
-    virtual void Compute() override {
+    inline void Compute() override {
 #if OMP_NUM_THREADS > 1
 #pragma omp parallel num_threads(OMP_NUM_THREADS)
 
@@ -40,7 +40,7 @@ class Diagonalize_Hamiltonian_Eigen : public Diagonalize_Hamiltonian<T> {
 #else
         int tid = 0;
 #endif
-        Eigen::SelfAdjointEigenSolver<decltype(((T *) nullptr)->get())> Solver(MATRIX_SIZE);
+        Eigen::SelfAdjointEigenSolver<Mat_cd> Solver(MATRIX_SIZE);
 
 #pragma unroll
         for (auto k = tid; k < T_RES; k += OMP_NUM_THREADS) {

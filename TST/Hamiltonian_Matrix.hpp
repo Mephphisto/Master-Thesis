@@ -37,30 +37,28 @@ protected:
     /// The "Eigen" Matrix that holds the entries.
     Mat_cd m;
 public:
-    Hamiltonian_Matrix(){} //Do I Need this
+    Hamiltonian_Matrix() {} //Do I Need this
     /// Constructor
     /// \return Hamiltonian_Matrix Opbject need to extract Eigen Mat_cd with "get()"
-    Hamiltonian_Matrix(size_t size, double t, double mu, double delta){};
+    Hamiltonian_Matrix(const size_t &size, const double &t, const double &mu, const double &delta) {};
 
     /// All derived classes need a trace funtion as the trace represents a necceccary
     /// Energy shift. from the commutator Relation \f$c^+_j  c_i = 1/2 ( c^+_i c_i + c_i c^+_i - [c_i, c^+_i])\f$
     virtual double trace_A() = 0;
 
     /// All derived classes need to be able to return the Eigen Storage Mat_cd for computations
-    virtual Mat_cd get() = 0;
+    virtual Mat_cd &get() = 0;
 
     /// This Function checks Hermiticity fot all derived Classes
     /// \return True if Matrix is Non Hermitian
-    virtual bool verify_hermitiity(){
+    virtual bool verify_hermitiity() {
         bool res = false; /// Result of chek false coresponds to a corect hermitian Matrix
-        for (size_t k = 0; k < 2 * Msize; k++)
-        {
-            for (size_t j = k; j < 2 * Msize; j++)
-            {
+        for (size_t k = 0; k < 2 * Msize; k++) {
+            for (size_t j = k; j < 2 * Msize; j++) {
                 auto diff = abs(m(j, k) - conj(m(k, j)));
-                if ( diff > __DBL_EPSILON__)
-                {
-                    std::cout << "Hermitiity error m( " << k << " , " << j << " ) = " << m(k, j) << " m( " << j << " , " << k << " ) = " << m(j, k) << " diff = " << diff << std::endl;
+                if (diff > __DBL_EPSILON__) {
+                    std::cout << "Hermitiity error m( " << k << " , " << j << " ) = " << m(k, j) << " m( " << j << " , "
+                              << k << " ) = " << m(j, k) << " diff = " << diff << std::endl;
                     res = true;
                 }
             }

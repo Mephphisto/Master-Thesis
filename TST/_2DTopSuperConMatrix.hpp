@@ -26,27 +26,22 @@ private:
     cd Delta;
     /// Grid  size
     size_t Gsize;
-    /// Phi
-    double phi;
+
     ///  Helper Funtion to set \f$ A , B |f$ and \f$ \epsilon B^* ,  \f$ simulataneously.
     /// \param k  k - Index
     /// \param j j - Index
     /// \param val New Value of the Submatrix
-    inline void set(size_t k, size_t j, cd val) {
+    inline void set(const size_t &k, const size_t &j, const cd &val) {
         auto MS = 2 * Msize;
         m(k, j) = val;
         m((k + Msize) % MS, (j + Msize) % MS) = -std::conj(val);
     }
 
     /// Helper function to build the \f$ A \f$ submatrices
-    void Build_A() {
+    inline void Build_A() {
 
-<<<<<<< HEAD
-        double r = 4*pow(4 / (Gsize_d * 0.05 * phi), 2);
-=======
         double r = 4 * pow(4 / (Gsize_d * 0.05), 2);
 #pragma unrollandfuse
->>>>>>> 681774e4aadd278002bf4b37513dab9bf4d6039b
         for (size_t k = 0; k < Msize; k++) {
             for (size_t j = 0; j < Msize; j++) {
                 size_t x_j = index_x(j);
@@ -98,7 +93,7 @@ private:
     }
 
     /// Helper function to build the \f$ B \f$ submatrices
-    void Build_B() {
+    inline void Build_B() {
 #pragma unrollandfuse
         for (size_t k = 0; k < Msize; k++) {
             for (size_t j = 0; j < Msize; j++) {
@@ -151,18 +146,19 @@ private:
         }
     }
 
+public:
     /// Helper fuction to get the index from a x/y coordinate Pair
     /// \param index_x  x - Coordinate
     /// \param index_y  y - Coordinate
     /// \return Index
-    inline size_t at(size_t index_x, size_t index_y) {
+    inline size_t at(const size_t &index_x, const size_t &index_y) {
         return index_x + Gsize * index_y;
     }
 
     /// Helper Function to get the X - Coordinate from a Index
     /// \param pos - Index
     /// \return X - Coordinate
-    inline size_t index_x(size_t pos) {
+    inline size_t index_x(const size_t &pos) {
         return pos % Gsize;
     }
 
@@ -173,35 +169,28 @@ private:
         return pos / Gsize;
     }
 
-public:
+
     /// Constructor to create Matrices
     /// \param size_in  Matrix Size
     /// \param t_in tunneling energy
     /// \param phi_in Rotation Angel of Vortice pair
     /// \param mu_in Chemical Potential Amplitude
     /// \param Delta_in Pairing potential
-    _2DTopSuperConMatrix(size_t size_in,
-                         double t_in,
-                         double phi_in,
-                         double mu_in,
-                         double Delta_in) {
-        this->t = t_in;
-        this->mu = mu_in;
-        this->Delta = static_cast<cd>(Delta_in / 2);
-        this->Msize = size_in / 2;
-        this->Gsize = sqrt(Msize);
-        this->Gsize_d = static_cast<double>(Gsize);
-        this->phi =  phi_in;
+    _2DTopSuperConMatrix(const size_t &size_in,
+                         const double &t_in,
+                         const double &phi_in,
+                         const double &mu_in,
+                         const double &Delta_in) :
+            t(t_in),
+            mu(mu_in),
+            Delta(static_cast<cd>(Delta_in / 2)),
+            Gsize(),
+            Gsize_d(static_cast<double>(Gsize)) {
+        this->Msize = sqrt(Msize);
         {
-<<<<<<< HEAD
-            //double sp = sin(phi_in), cp = cos(phi_in);
-            this->Vort_x = Gsize/4; //sp * (Gsize_d - 1) / 4;
-            this->Vort_y = 0.00; //cp * (Gsize_d - 1) / 4;
-=======
             double sp = sin(phi_in), cp = cos(phi_in);
             this->Vort_x = sp * (Gsize_d - 1) / 4;
             this->Vort_y = cp * (Gsize_d - 1) / 4;
->>>>>>> 681774e4aadd278002bf4b37513dab9bf4d6039b
         }
 
 #ifdef DEBUG_ACTIVE
@@ -215,7 +204,7 @@ public:
 
     /// Nessesary override to provide access to the Eigen Storage Matrix
     /// \return Eigen Matrix with coeffitents of Hamiltonian
-    Mat_cd get() override {
+    Mat_cd &get() override {
         return m;
     }
 

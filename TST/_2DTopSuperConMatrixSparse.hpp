@@ -117,38 +117,39 @@ private:
         }
     }
 
-    inline size_t at(size_t index_x, size_t index_y) {
+    inline size_t at(const size_t &index_x, const size_t &index_y) {
         return index_x + Gsize * index_y;
     }
 
-    inline size_t index_x(size_t pos) {
+    inline size_t index_x(const size_t &pos) {
         return pos % Gsize;
     }
 
-    inline size_t index_y(size_t pos) {
+    inline size_t index_y(const size_t &pos) {
         return pos / Gsize;
     }
 
 public:
-    _2DTopSuperConMatrixSparse(size_t size_in,
-                         double t_in,
-                         double phi_in,
-                         double mu_in,
-                         double Delta_in) {
-        this->t = t_in;
-        this->mu = mu_in;
-        this->Delta = static_cast<cd>(Delta_in / 2);
+    _2DTopSuperConMatrixSparse(const size_t &size_in,
+                               const double &t_in,
+                               const double &phi_in,
+                               const double &mu_in,
+                               const double &Delta_in) :
+            t(t_in),
+            mu(mu_in),
+            Delta(static_cast<cd>(Delta_in / 2)),
+            Gsize(sqrt(Msize)),
+            Gsize_d(static_cast<double>(Gsize)),
+            Vort_x(sin(phi_in) * (Gsize_d - 1) / 4),
+            Vort_y(cos(phi_in) * (Gsize_d - 1) / 4) {
         this->Msize = size_in / 2;
-        this->Gsize = sqrt(Msize);
-        this->Gsize_d = static_cast<double>(Gsize);
-        this->Vort_x = sin(phi_in) * (Gsize_d - 1) / 4;
-        this->Vort_y = cos(phi_in) * (Gsize_d - 1) / 4;
         {
             // send message in a unified Racecondition safe way
-            std::string thread_msg = (omp_get_num_threads()>1) ? "of thread "+ (std::to_string(omp_get_thread_num())): "";
+            std::string thread_msg = (omp_get_num_threads() > 1) ? "of thread " + (std::to_string(omp_get_thread_num()))
+                                                                 : "";
             std::string msg = "Vortex" + thread_msg +
                               " at (" + std::to_string(Vort_x) + " , " + std::to_string(Vort_y) + " ) \n";
-            std::cout << msg ;
+            std::cout << msg;
         }
         m.resize(size_in, size_in);
         m.reserve(size_in * 9);
@@ -156,7 +157,7 @@ public:
         Build_B();
     }
 
-    Eigen::SparseMatrix<cd> get() override {
+    Eigen::SparseMatrix<cd> &get() override {
         return m;
     }
 

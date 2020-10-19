@@ -10,7 +10,7 @@
 #include <omp.h>
 #include "Typedefs.hpp"
 
-inline cd MyDot(Vec_cd X, Vec_cd Y) {
+inline cd MyDot(const Vec_cd &X, const Vec_cd &Y) {
     cd res = 0;
     size_t L = X.size() / 2;
     assert(Y.size() == 2 * L);
@@ -21,7 +21,7 @@ inline cd MyDot(Vec_cd X, Vec_cd Y) {
     return res;
 }
 
-inline std::tuple<Vec_cd, Vec_cd> Majoranaize(Vec_cd v, Vec_cd w) {
+inline std::tuple<Vec_cd, Vec_cd> Majoranaize(const Vec_cd &v, const Vec_cd &w) {
     Vec_cd X, Y;
     {
         X = v - (MyDot(v, w) / MyDot(w, w)) * w;

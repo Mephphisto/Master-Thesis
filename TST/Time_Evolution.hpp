@@ -31,7 +31,7 @@ typedef magma::SelfAdjointEigenSolver<Mat_cd> MSolver;
 typedef Eigen::SelfAdjointEigenSolver<Mat_cd> MSolver;
 #endif
 
-inline std::tuple<Vec_cd, Vec_cd, Vec_cd> Get_C_0_Majs(Vec eval, Mat_cd evec) {
+inline std::tuple<Vec_cd, Vec_cd, Vec_cd> Get_C_0_Majs(const Vec &eval, const Mat_cd &evec) {
     Vec_cd C_0 = Vec_cd(MATRIX_SIZE);
     // Summ up over Fermmie see and Majorana states
     size_t majoranas[2] = {0, 0};
@@ -63,7 +63,7 @@ inline std::tuple<Vec_cd, Vec_cd, Vec_cd> Get_C_0_Majs(Vec eval, Mat_cd evec) {
     return std::make_tuple(C_0, std::get<0>(tpl), std::get<1>(tpl));
 }
 
-inline double Get_C_final_Overlap(Vec_cd const &C_f, Vec eval, Mat_cd evec) {
+inline double Get_C_final_Overlap(Vec_cd const &C_f, const Vec &eval, const Mat_cd &evec) {
     double res = 0;
     // Summ up over Fermmie see and Majorana states
 
@@ -74,7 +74,7 @@ inline double Get_C_final_Overlap(Vec_cd const &C_f, Vec eval, Mat_cd evec) {
     return res;
 }
 
-inline Vec Energys(Vec_cd eval, double tr) {
+inline Vec Energys(const Vec_cd &eval, const double &tr) {
     Vec res = eval.col(0).real() - Vec::Constant(MATRIX_SIZE, 0.5 * (tr - eval.col(0).real().sum()));
     return res;
 }
@@ -86,7 +86,7 @@ struct Schroedinger_of_cs {
 private:
     double w;
 public:
-    explicit Schroedinger_of_cs(double omega) : w(omega) {}
+    explicit Schroedinger_of_cs(const double &omega) : w(omega) {}
 
     /// This is the ODE to be solved
     inline void operator()(const Vec_cd &c, Vec_cd &dcdt, const Time theta) {
@@ -113,10 +113,10 @@ public:
 struct last_observer {
     Vec_cd &m_state;
 
-    explicit last_observer(Eigen::Matrix<std::complex<double>, -1, 1> &state) : m_state(state) {
+    explicit last_observer(Vec_cd &state) : m_state(state) {
     }
 
-    void operator()(const Vec_cd &x, double t) {
+    void operator()(const Vec_cd &x, const double &t) {
         m_state = x;
     }
 };
@@ -159,16 +159,15 @@ Mat Do_TE(Vec const &Omegas) {
     for (size_t k = 0; k < Omegas.size(); k++) {
 
         Vec_cd C_f(MATRIX_SIZE);
-        Vec_cd C = C_0;
         boost::numeric::odeint::bulirsch_stoer<Vec_cd> state;
         boost::numeric::odeint::integrate_const(
                 state,
                 Schroedinger_of_cs<HAMILTONIAN>(Omegas[k]),
-                C,
+                C_0,
                 (double) T_START,
 
                 (double) T_START + T_END,
-                double(2.00) * M_PI /T_RES,
+                double(2.00) * M_PI / T_RES,
                 last_observer(C_f));
         double norm = C_f.norm();
         double res = std::pow(std::abs(C_f.dot(Maj1 - Maj2)), 2) / norm / 2;

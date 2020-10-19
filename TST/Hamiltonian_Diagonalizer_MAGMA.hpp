@@ -21,7 +21,7 @@
 
 template<class T>
 class Diagonalize_Hamiltonian_magma : public Diagonalize_Hamiltonian<T> {
-    virtual void Compute() override {
+    virtual inline void Compute() override {
 
 #ifdef USE_GPU
         magma::SelfAdjointEigenSolver<Mat_cd> Solver(MATRIX_SIZE);

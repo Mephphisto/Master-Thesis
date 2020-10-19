@@ -17,21 +17,23 @@ protected:
     size_t Msize;
     Eigen::SparseMatrix<std::complex<double>> m;
 public:
-    Hamiltonian_MatrixSparse(){}
-    Hamiltonian_MatrixSparse(size_t size, double t, double mu, double delta){}
+    Hamiltonian_MatrixSparse() {}
+
+    Hamiltonian_MatrixSparse(const size_t &size, const double &t, const double &mu, const double &delta) {}
+
     virtual double trace_A() = 0;
-    virtual Eigen::SparseMatrix<std::complex<double>> get() = 0;
-    virtual bool verify_hermitiity()
-    {
+
+    virtual Eigen::SparseMatrix<std::complex<double>> &get() = 0;
+
+    virtual bool verify_hermitiity() {
         bool res = false;
-        for (size_t k = 0; k < 2 * Msize; k++)
-        {
-            for (size_t j = k; j < 2 * Msize; j++)
-            {
-                auto diff = abs( m.coeffRef(j, k) - std::conj( m.coeffRef(k, j)));
-                if ( diff > __DBL_EPSILON__)
-                {
-                    std::cout << "Hermitiity error m( " << k << " , " << j << " ) = " << m.coeffRef(k, j) << " m.coeffRef( " << j << " , " << k << " ) = " << m.coeffRef(j, k) << " diff = " << diff << std::endl;
+        for (size_t k = 0; k < 2 * Msize; k++) {
+            for (size_t j = k; j < 2 * Msize; j++) {
+                auto diff = abs(m.coeffRef(j, k) - std::conj(m.coeffRef(k, j)));
+                if (diff > __DBL_EPSILON__) {
+                    std::cout << "Hermitiity error m( " << k << " , " << j << " ) = " << m.coeffRef(k, j)
+                              << " m.coeffRef( " << j << " , " << k << " ) = " << m.coeffRef(j, k) << " diff = " << diff
+                              << std::endl;
                     res = true;
                 }
             }
