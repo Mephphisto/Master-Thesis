@@ -193,7 +193,7 @@ public:
             this->Vort_y = cp * (Gsize_d - 1) / 4;
         }
 
-#ifdef DEBUG_ACTIVE
+#ifdef DEBUG_ACTIVE2
 #pragma omp critical
         std::cout << "phi= " << phi_in << " Vort_x= " << Vort_x << "  Vort_y = " << Vort_y << std::endl;
 #endif

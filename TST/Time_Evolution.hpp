@@ -152,12 +152,27 @@ Mat Do_TE(Vec const &Omegas) {
 
         auto tpl = Get_C_0_Majs(Energys(eval, tr), evec);
         C_0 = std::get<0>(tpl);
+
+
         Maj1 = std::get<1>(tpl), Maj2 = std::get<2>(tpl);
     }
-
-#pragma omp parallel for shared(Rho_t, C_0, eval, evec, Omegas, std::cout, Maj1, Maj2) default(none)
+    mkl_set_dynamic(0);
+    mkl_set_num_threads(MKL_NUM_THREADS);
+    omp_set_nested(1);
+#ifdef DEBUG_ACTIVE
+#pragma omp critical
+    {
+        std::cout << "Treads = " << OMP_NUM_THREADS << std::endl;
+    }
+#endif
+#pragma omp parallel for shared(Rho_t, C_0, eval, evec, Omegas, std::cout, Maj1, Maj2) default(none) num_threads(OMP_NUM_THREADS)
     for (size_t k = 0; k < Omegas.size(); k++) {
-
+#ifdef DEBUG_ACTIVE
+#pragma omp critical
+        {
+            std::cout << "Tread ID = " << omp_get_thread_num() << std::endl;
+        }
+#endif
         Vec_cd C_f(MATRIX_SIZE);
         boost::numeric::odeint::bulirsch_stoer<Vec_cd> state;
         boost::numeric::odeint::integrate_const(
