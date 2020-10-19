@@ -43,18 +43,10 @@ int main() {
 #endif
 #else
 
-<<<<<<< HEAD
-    const size_t num_steps = 85*4;
-    Vec omegas(num_steps);
-    for (int k = 0; k < num_steps; k++) {
-        double aux = std::pow(2.0, 15*(k-.5*num_steps)/num_steps-1);
-=======
-
     const size_t num_steps = W_RES;
     Vec omegas(num_steps);
     for (int k = 0; k < num_steps; k++) {
         double aux = std::pow(10.0, W_START + (W_END - W_START) * (double(k) / double(W_RES)));
->>>>>>> 681774e4aadd278002bf4b37513dab9bf4d6039b
         omegas[k] = aux;
     }
     Mat out = Do_TE(omegas);
