@@ -43,6 +43,13 @@ public:
         m = Mat_cd::Zero(size, size);
     };
 
+    /// Copy constructor
+    /// \param H Hamiltonian Matrix to be copied
+    Hamiltonian_Matrix(const Hamiltonian_Matrix &H) {
+        this->Msize = H.Msize;
+        m = H.m;
+    };
+
     /// All derived classes need a trace funtion as the trace represents a necceccary
     /// Energy shift. from the commutator Relation \f$c^+_j  c_i = 1/2 ( c^+_i c_i + c_i c^+_i - [c_i, c^+_i])\f$
     virtual double trace_A() = 0;

@@ -41,7 +41,11 @@ private:
     inline void Build_A() {
         double r = 4 * pow(4 / (Gsize_d * 0.05), 2);
 
-
+#ifdef ICC
+#pragma unroll_and_jam
+#else
+#pragma unrollandfuse
+#endif
         for (size_t x = 0; x < Gsize; x++) {
             double E1x = exp(-r * (pow(x - Gsize_d / 2 - Vort_x, 2))),
                     E2x = exp(-r * (pow(x - Gsize_d / 2 + Vort_x, 2)));
@@ -87,7 +91,11 @@ private:
 /// Helper function to build the \f$ B \f$ submatrices
     inline void Build_B() {
 
-        NESTED_UNROLL
+#ifdef ICC
+#pragma unroll_and_jam
+#else
+#pragma unrollandfuse
+#endif
         for (size_t x = 0; x < Gsize; x++) {
             for (size_t y = 0; y < Gsize - 1; y++) {
 
@@ -150,6 +158,12 @@ public:
 
         Build_A();
         Build_B();
+    }
+
+    _2DTopSuperConMatrix(const _2DTopSuperConMatrix &H) : Hamiltonian_Matrix(H),
+                                                          t(H.t), mu(H.mu), Delta(H.Delta) {
+        this->Gsize = H.Gsize;
+        this->Gsize_d = H.Gsize_d;
     }
 
 /// Update Matrix

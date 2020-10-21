@@ -56,11 +56,10 @@ class Diagonalize_Hamiltonian_magma : public Diagonalize_Hamiltonian<T> {
             // Fetch  Eigenvalues from Solver
 #pragma omp critical
             {
-                auto status = Solver.info();
-                if (status != Eigen::Success) {
+                if (Solver.info() != Eigen::Success) {
                     if (status == Eigen::ComputationInfo::NoConvergence) std::cerr << "NoConvergence" << std::endl;
-                    if (status == Eigen::ComputationInfo::InvalidInput) std::cerr << "InvalidInput"<< std::endl;
-                    if (status == Eigen::ComputationInfo::NumericalIssue) std::cerr << "NumericalIssue"<< std::endl;
+                    if (status == Eigen::ComputationInfo::InvalidInput) std::cerr << "InvalidInput" << std::endl;
+                    if (status == Eigen::ComputationInfo::NumericalIssue) std::cerr << "NumericalIssue" << std::endl;
                 }
             }
             this->All_EigenValues.col(k) = Solver.eigenvalues().col(0).real() +

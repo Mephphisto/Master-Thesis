@@ -24,8 +24,12 @@ private:
 
     inline void Build_A() {
 
-        double r = pow(4/(Gsize_d*0.05),2);
-NESTED_UNROLL
+        double r = pow(4 / (Gsize_d * 0.05), 2);
+#ifdef ICC
+#pragma unroll_and_jam
+#else
+#pragma unrollandfuse
+#endif
         for (size_t k = 0; k < Msize; k++) {
             for (size_t j = 0; j < Msize; j++) {
                 size_t x_j = index_x(j);
@@ -35,7 +39,7 @@ NESTED_UNROLL
 
                 if ((x_k == x_j) && (y_k == y_j)) {
                     double Ex = exp(-r * (pow(x_j - Gsize_d / 2 - Vort_x, 2)
-                                          +  pow(y_j - Gsize_d / 2 - Vort_y, 2)))
+                                          + pow(y_j - Gsize_d / 2 - Vort_y, 2)))
                                 + exp(-r * (pow(x_j - Gsize_d / 2 + Vort_x, 2)
                                             +  pow(y_j - Gsize_d / 2 + Vort_y, 2)));
                     set(k, j, mu - 2 * mu * Ex);

@@ -87,7 +87,7 @@ private:
     double w;
     T M;
 public:
-    explicit Schroedinger_of_cs(const double &omega, T H) : w(omega), M(H) {}
+    explicit Schroedinger_of_cs(const double &omega, T &H) : w(omega), M(H) {}
 
     /// This is the ODE to be solved
     inline void operator()(const Vec_cd &c, Vec_cd &dcdt, const Time theta) {
@@ -160,7 +160,7 @@ Mat Do_TE(Vec const &Omegas) {
 
         Maj1 = std::get<1>(tpl), Maj2 = std::get<2>(tpl);
     }
-    double norm = std::abs(C_0.dot(Maj1 + Maj2));
+    double norm = std::pow(std::abs(C_0.dot(Maj1 + Maj2)), 2);
     /*mkl_set_dynamic(0);
     mkl_set_num_threads(MKL_NUM_THREADS);
     omp_set_max_active_levels(2);*/
@@ -181,9 +181,8 @@ Mat Do_TE(Vec const &Omegas) {
                 Schroedinger_of_cs<HAMILTONIAN>(Omegas[k], M),
                 C_0,
                 (double) T_START,
-
-                (double) T_START + T_END,
-                double(2.00) * M_PI,
+                (double) T_END,
+                double(2.00) * M_PI / T_RES,
                 last_observer(C_f));
 
         Rho_t.col(k) = Eigen::Vector3d({(std::pow(std::abs(C_f.dot(Maj1 - Maj2)), 2) / norm),

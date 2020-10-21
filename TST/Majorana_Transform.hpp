@@ -11,7 +11,7 @@
 #include "Typedefs.hpp"
 
 inline cd MyDot(const Vec_cd &X, const Vec_cd &Y) {
-    cd res = 0;
+    cd res = 0.0;
     size_t L = X.size() / 2;
     assert(Y.size() == 2 * L);
 #pragma unroll

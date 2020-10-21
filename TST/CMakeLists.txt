@@ -28,10 +28,9 @@ set(CMAKE_CXX_STANDARD 14)
 add_executable(TST main.cpp)
 
 if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Intel")
-    target_compile_definitions(TST PUBLIC NESTED_UNROLL= "_Pragma(unroll_and_jam)")
-    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ")
+    target_compile_definitions(TST PUBLIC ICC)
 elseif ("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU")
-    target_compile_definitions(TST PUBLIC NESTED_UNROLL= "_Pragma(unrollandfuse)")
+    target_compile_definitions(TST PUBLIC GCC)
 endif ()
 
 target_compile_definitions(TST PUBLIC MKL_NUM_THREADS=${THREADS})

@@ -6,9 +6,6 @@
 
 #include <cmath>
 
-//ICL NEEDS THIS
-#define  _HAS_CONDITIONAL_EXPLICIT 0
-
 //Choose a Solver
 
 //#undef USE_OpenCL
