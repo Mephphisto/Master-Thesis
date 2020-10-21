@@ -16,13 +16,17 @@ public:
     /// \param param Parameter to be sweapt
     /// \param mu_in Chemical Potential
     /// \param Delta_in Pairing Potential
-    _1DTopSuperConMatrix(size_t size_in, double t_con, double param, double mu_in, double Delta_in) :
+    _1DTopSuperConMatrix(size_t size_in,
+                         double t_con,
+                         double param,
+                         double mu_in,
+                         double Delta_in) :
+            Hamiltonian_Matrix(size_in),
             t(-t_con),
             mu(-mu_in),
             Delta(Delta_in / 2),
             param(param),
             Gsize(size_in / 2) {
-        m = Mat_cd::Zero(size_in, size_in);
         Build_A();
     }
 

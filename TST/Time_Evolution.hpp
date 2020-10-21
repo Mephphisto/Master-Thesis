@@ -85,12 +85,14 @@ template<typename T>
 struct Schroedinger_of_cs {
 private:
     double w;
+    T M;
 public:
-    explicit Schroedinger_of_cs(const double &omega) : w(omega) {}
+    explicit Schroedinger_of_cs(const double &omega, T H) : w(omega), M(H) {}
 
     /// This is the ODE to be solved
     inline void operator()(const Vec_cd &c, Vec_cd &dcdt, const Time theta) {
-        dcdt = T(MATRIX_SIZE, T_COUPLE, theta, MU, DELTA).get() * c;
+        M.Update(MATRIX_SIZE, T_COUPLE, theta, MU, DELTA);
+        dcdt = M.get() * c;
         dcdt *= cd(0, -1 / w);
     }
 };
@@ -127,8 +129,10 @@ Mat Do_TE(Vec const &Omegas) {
     Mat Rho_t(3, Omegas.size());
     Vec_cd C_0, eval, Maj1, Maj2;
     Mat_cd evec;
+
+    auto M = HAMILTONIAN(MATRIX_SIZE, T_COUPLE,
+                         T_START, MU, DELTA);
     {
-        auto M = HAMILTONIAN(MATRIX_SIZE, T_COUPLE, T_START, MU, DELTA);
 #ifdef DEBUG_ACTIVE
         std::cout << "Hermiticity Check" << std::endl;
         M.verify_hermitiity();
@@ -156,38 +160,34 @@ Mat Do_TE(Vec const &Omegas) {
 
         Maj1 = std::get<1>(tpl), Maj2 = std::get<2>(tpl);
     }
-    mkl_set_dynamic(0);
+    double norm = std::abs(C_0.dot(Maj1 + Maj2));
+    /*mkl_set_dynamic(0);
     mkl_set_num_threads(MKL_NUM_THREADS);
-    omp_set_nested(1);
+    omp_set_max_active_levels(2);*/
 #ifdef DEBUG_ACTIVE
 #pragma omp critical
     {
         std::cout << "Treads = " << OMP_NUM_THREADS << std::endl;
     }
 #endif
-#pragma omp parallel for shared(Rho_t, C_0, eval, evec, Omegas, std::cout, Maj1, Maj2) default(none) num_threads(OMP_NUM_THREADS)
+#pragma omp parallel for shared(Rho_t, C_0, eval, evec, Omegas, std::cout, Maj1, Maj2, norm, M) default(none) num_threads(OMP_NUM_THREADS)
     for (size_t k = 0; k < Omegas.size(); k++) {
 #ifdef DEBUG_ACTIVE
-#pragma omp critical
-        {
-            std::cout << "Tread ID = " << omp_get_thread_num() << std::endl;
-        }
 #endif
         Vec_cd C_f(MATRIX_SIZE);
         boost::numeric::odeint::bulirsch_stoer<Vec_cd> state;
         boost::numeric::odeint::integrate_const(
                 state,
-                Schroedinger_of_cs<HAMILTONIAN>(Omegas[k]),
+                Schroedinger_of_cs<HAMILTONIAN>(Omegas[k], M),
                 C_0,
                 (double) T_START,
 
                 (double) T_START + T_END,
-                double(2.00) * M_PI / T_RES,
+                double(2.00) * M_PI,
                 last_observer(C_f));
-        double norm = C_f.norm();
-        double res = std::pow(std::abs(C_f.dot(Maj1 - Maj2)), 2) / norm / 2;
-        double res2 = std::pow(std::abs(C_f.dot(Maj1 + Maj2)), 2) / norm / 2;
-        Rho_t.col(k) = Eigen::Vector3d({res, res2, norm});
+
+        Rho_t.col(k) = Eigen::Vector3d({(std::pow(std::abs(C_f.dot(Maj1 - Maj2)), 2) / norm),
+                                        (std::pow(std::abs(C_f.dot(Maj1 + Maj2)), 2) / norm), norm});
     }
     return Rho_t;
 }

@@ -9,8 +9,10 @@
 #include "Hamiltonian_Matrix.hpp"
 #include "Typedefs.hpp"
 
-/// This Class generates matrices representing the topological chiral 2D p-Wave Superconducter Hamiltonian
-class _2DTopSuperConMatrix : public Hamiltonian_Matrix {
+/// DEPRECATED Version of _2DTopSuperConMatrix cn be used to verify Optimized / obfuctaded new code
+[deprecated]
+
+class _2DTopSuperConMatrix_DEPR : public Hamiltonian_Matrix {
 private:
     /// Tunneling Energy
     double t;
@@ -32,31 +34,61 @@ private:
     /// \param j j - Index
     /// \param val New Value of the Submatrix
     inline void set(const size_t &k, const size_t &j, const cd &val) {
+        size_t MS = 2 * Msize;
+        size_t j2 = (j + Msize) % MS;
+        size_t k2 = (k + Msize) % MS;
+        cd val2 = -std::conj(val);
         m(k, j) = val;
-        const size_t Msize2 = 2 * Msize;
-        m((k + Msize) % Msize2, (j + Msize) % Msize2) = -std::conj(val);
+        m(k2, j2) = val2;
     }
 
     /// Helper function to build the \f$ A \f$ submatrices
     inline void Build_A() {
         double r = 4 * pow(4 / (Gsize_d * 0.05), 2);
 
+        NESTED_UNROLL
+        for (size_t k = 0; k < Msize; k++) {
+            for (size_t j = 0; j < Msize; j++) {
+                size_t x_j = index_x(j);
+                size_t y_j = index_y(j);
+                size_t x_k = index_x(k);
+                size_t y_k = index_y(k);
 
-        for (size_t x = 0; x < Gsize; x++) {
-            double E1x = exp(-r * (pow(x - Gsize_d / 2 - Vort_x, 2))),
-                    E2x = exp(-r * (pow(x - Gsize_d / 2 + Vort_x, 2)));
-            for (size_t y = 1; y < Gsize; y++) {
-                double Ex = E1x * exp(-r * pow(y - Gsize_d / 2 - Vort_y, 2))
-                            + E2x * exp(-r * pow(y - Gsize_d / 2 + Vort_y, 2));
-                set(at(x, y), at(x, y), mu - 2 * mu * Ex);
-                set(at(x, y - 1), at(x, y), t);
-                set(at(x, y), at(x, y - 1), t);
-                set(at(y, x), at(y - 1, x), t);
-                set(at(y - 1, x), at(y, x), t);
+                if (x_k == x_j) {
+                    if (y_k == y_j) {
+                        double Ex = exp(-r * (pow(x_j - Gsize_d / 2 - Vort_x, 2)
+                                              + pow(y_j - Gsize_d / 2 - Vort_y, 2)))
+                                    + exp(-r * (pow(x_j - Gsize_d / 2 + Vort_x, 2)
+                                                + pow(y_j - Gsize_d / 2 + Vort_y, 2)));
+                        set(k, j, mu - 2 * mu * Ex);
+
+                    } else if (y_k == y_j + 1) {
+                        set(k, j, t);
+                    } else if (y_k == y_j - 1) {
+                        set(k, j, t);
+                    }
+                } else if (y_k == y_j) {
+                    if (x_k == x_j + 1) {
+                        set(k, j, t);
+                    } else if (x_k == x_j - 1) {
+                        set(k, j, t);
+                    }
+                }
+#ifdef PERIODIC_BOUNDRY
+                } else if ((x_k == x_j) && (y_k == Gsize - 1) && (y_j == 0)) {
+                    set(k, j, t);
+                } else if ((x_k == x_j) && (y_k == 0) && (y_j == Gsize - 1)) {
+                    set(k, j, t);
+                } else if ((x_k == Gsize - 1) && (x_j == 0) && (y_k == y_j)) {
+                    set(k, j, t);
+                } else if ((x_k == 0) && (x_j == Gsize - 1) && (y_k == y_j)) {
+                    set(k, j, t);
+#endif
+                /*else {
+                   set(k, j, 0);
+                   set(k, j + Msize, 0);
+               }*/
             }
-            double Ex = E1x * exp(-r * pow(-Gsize_d / 2 - Vort_y, 2))
-                        + E2x * exp(-r * pow(-Gsize_d / 2 + Vort_y, 2));
-            set(at(x, 0), at(x, 0), mu - 2 * mu * Ex);
         }
 
     }
@@ -88,13 +120,39 @@ private:
     inline void Build_B() {
 
         NESTED_UNROLL
-        for (size_t x = 0; x < Gsize; x++) {
-            for (size_t y = 0; y < Gsize - 1; y++) {
+        for (size_t k = 0; k < Msize; k++) {
+            for (size_t j = 0; j < Msize; j++) {
+                size_t x_j = index_x(j);
+                size_t y_j = index_y(j);
+                size_t x_k = index_x(k);
+                size_t y_k = index_y(k);
 
-                set(at(x, y + 1), at(x, y) + Msize, cd(0, 1) * Delta * getPhase(x, y, x, y + 1));
-                set(at(x, y), at(x, y + 1) + Msize, cd(0, -1) * Delta * getPhase(x, y + 1, x, y));
-                set(at(y + 1, x), at(y, x) + Msize, cd(1, 0) * Delta * getPhase(y, x, y + 1, x));
-                set(at(y, x), at(y + 1, x) + Msize, cd(-1, 0) * Delta * getPhase(y + 1, x, y, x));
+                if (x_k == x_j) {
+                    if (y_k == y_j + 1) {
+                        set(k, j + Msize, cd(0, 1) * Delta * getPhase(x_j, y_j, x_k, y_k));
+                    } else if (1 + y_k == y_j) {
+                        set(k, j + Msize, cd(0, -1) * Delta * getPhase(x_j, y_j, x_k, y_k));
+                    }
+                } else if (y_k == y_j) {
+                    if (x_k == x_j + 1) {
+                        set(k, j + Msize, cd(1, 0) * Delta * getPhase(x_j, y_j, x_k, y_k));
+                    } else if (1 + x_k == x_j) {
+                        set(k, j + Msize, cd(-1, 0) * Delta * getPhase(x_j, y_j, x_k, y_k));
+                    }
+                }
+#ifdef PERIODIC_BOUNDRY
+                } else if ((x_k == x_j) && (y_k == Gsize - 1) && (y_j == 0)) {
+                    set(k, j + Msize, cd(0, -1) * Delta * phase);
+                } else if ((x_k == x_j) && (y_k == 0) && (y_j == Gsize - 1)) {
+                    set(k, j + Msize, cd(0, 1) * Delta * phase);
+                } else if ((x_k == Gsize - 1) && (x_j == 0) && (y_k == y_j)) {
+                    set(k, j + Msize, cd(-1, 0) * Delta * phase);
+                } else if ((x_k == 0) && (x_j == Gsize - 1) && (y_k == y_j)) {
+                    set(k, j + Msize, cd(1, 0) * Delta * phase);
+#endif
+                /* else {
+                set(k, j + Msize, 0);
+            }*/
             }
         }
     }
@@ -109,16 +167,16 @@ public:
     }
 
     /// Helper Function to get the X - Coordinate from a Index
-    /// \param po_NEWs - Index
+    /// \param pos - Index
     /// \return X - Coordinate
-    inline size_t index_x(const size_t &pos) const {
+    inline size_t index_x(const size_t &pos) {
         return pos % Gsize;
     }
 
     /// Helper Function to get the Y - Coordinate from a Index
     /// \param pos - Index
     /// \return Y - Coordinate
-    inline size_t index_y(size_t pos) const {
+    inline size_t index_y(size_t pos) {
         return pos / Gsize;
     }
 
@@ -129,12 +187,16 @@ public:
     /// \param phi_in Rotation Angel of Vortice pair
     /// \param mu_in Chemical Potential Amplitude
     /// \param Delta_in Pairing potential
-    _2DTopSuperConMatrix(const size_t &size_in, const double &t_in, const double &phi_in, const double &mu_in,
-                         const double &Delta_in) :
-            Hamiltonian_Matrix(size_in),
+    _2DTopSuperConMatrix_DEPR(
+            const size_t &size_in,
+            const double &t_in,
+            const double &phi_in,
+            const double &mu_in,
+            const double &Delta_in) :
             t(t_in),
             mu(mu_in),
             Delta(static_cast<cd>(Delta_in / 2)) {
+        this->Msize = size_in / 2;
         this->Gsize = sqrt(Msize);
         this->Gsize_d = static_cast<double>(Gsize);
         {
@@ -147,12 +209,12 @@ public:
 #pragma omp critical
         std::cout << "phi= " << phi_in << " Vort_x= " << Vort_x << "  Vort_y = " << Vort_y << std::endl;
 #endif
-
+        m = Mat_cd::Zero(size_in, size_in);
         Build_A();
         Build_B();
     }
 
-/// Update Matrix
+    /// Update Matrix
     /// \param size_in  Matrix Size
     /// \param t_in tunneling energy
     /// \param phi_in Rotation Angel of Vortice pair
@@ -198,3 +260,4 @@ public:
         return 0;
     }
 };
+

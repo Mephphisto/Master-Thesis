@@ -25,7 +25,7 @@ private:
     inline void Build_A() {
 
         double r = pow(4/(Gsize_d*0.05),2);
-#pragma unrollandfuse
+NESTED_UNROLL
         for (size_t k = 0; k < Msize; k++) {
             for (size_t j = 0; j < Msize; j++) {
                 size_t x_j = index_x(j);
