@@ -4,10 +4,10 @@
 #$ -pe smp 85
 #$-M j.teuffel@icloud.com -m ase
 #$ -cwd
-#$ -l h=!obelix11,!obelix12
+#$ -l h=!obelix11,
+# $-l h!=!obelix12
 
 path="run_Time_Eval_Release_G85_Res500_Th2pi"
-# shellcheck disable=SC2088
 export BOOST_ROOT="$HOME/boost_1_72_0/"
 echo $path
 module load intel/2020
