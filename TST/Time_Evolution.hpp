@@ -92,7 +92,8 @@ public:
     /// This is the ODE to be solved
     inline void operator()(const Vec_cd &c, Vec_cd &dcdt, const Time theta) {
         M.Update(MATRIX_SIZE, T_COUPLE, theta, MU, DELTA);
-        dcdt = M.get() * c;
+        Mat_cd & Mat = M.get();
+        dcdt = Mat.selfadjointView<Eigen::Lower>() * c;
         dcdt *= cd(0, -1 / w);
     }
 };
@@ -137,7 +138,7 @@ Mat Do_TE(Vec const &Omegas) {
         std::cout << "Hermiticity Check" << std::endl;
         M.verify_hermitiity();
         std::cout << "Matrix Det " << M.get().determinant() << std::endl;
-        std::cout << "M*1= " << (M.get() * Vec_cd::Ones(MATRIX_SIZE)).norm() << std::endl;
+        std::cout << "M*1= " << (M.get().selfadjointView<Eigen::Lower>() * Vec_cd::Ones(MATRIX_SIZE)).norm() << std::endl;
 #endif
         double tr = M.trace_A();
         MSolver Solver(MATRIX_SIZE);
@@ -147,7 +148,7 @@ Mat Do_TE(Vec const &Omegas) {
         evec = Solver.eigenvectors();
 #ifdef DEBUG_ACTIVE
         std::cout << " Debug Test Diagonalizeing Well?" << std::endl;
-        Mat_cd D = (evec.adjoint() * M.get() * evec);
+        Mat_cd D = (evec.adjoint() * M.get().selfadjointView<Eigen::Lower>() * evec);
         D -= eval.asDiagonal();
         std::cout << "|THT^ -D| = " << D.norm() << std::endl;
         std::cout << "|(THT^ -D)*1| = " << (D * Vec_cd::Ones(MATRIX_SIZE)).norm() << std::endl;
