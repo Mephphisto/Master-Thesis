@@ -85,9 +85,11 @@ template<typename T>
 struct Schroedinger_of_cs {
 private:
     double w;
-    T M;
+    T & M;
 public:
-    explicit Schroedinger_of_cs(const double &omega, T &H) : w(omega), M(H) {}
+    explicit Schroedinger_of_cs(const double &omega, T &H) : w(omega) {
+        M = H;
+}
 
     /// This is the ODE to be solved
     inline void operator()(const Vec_cd &c, Vec_cd &dcdt, const Time theta) {
@@ -171,7 +173,7 @@ Mat Do_TE(Vec const &Omegas) {
         std::cout << "Treads = " << OMP_NUM_THREADS << std::endl;
     }
 #endif
-#pragma omp parallel for shared(Rho_t, C_0, eval, evec, Omegas, std::cout, Maj1, Maj2, norm, M) default(none) num_threads(OMP_NUM_THREADS)
+#pragma omp parallel for shared(Rho_t, C_0, eval, evec, Omegas, std::cout, Maj1, Maj2, norm) firstprivate(M) default(none) num_threads(OMP_NUM_THREADS)
     for (size_t k = 0; k < Omegas.size(); k++) {
 #ifdef DEBUG_ACTIVE
 #endif
