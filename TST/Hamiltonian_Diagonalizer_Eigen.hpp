@@ -35,6 +35,7 @@ class Diagonalize_Hamiltonian_Eigen : public Diagonalize_Hamiltonian<T> {
 
         {
             // Get Thread ID
+            int tid = omp_get_thread_num();
             // Create Solver
 #else
             int tid = 0;
@@ -42,7 +43,6 @@ class Diagonalize_Hamiltonian_Eigen : public Diagonalize_Hamiltonian<T> {
             Eigen::SelfAdjointEigenSolver<Mat_cd> Solver(MATRIX_SIZE);
 
 
-            int tid = omp_get_thread_num();
             for (auto k = tid; k < T_RES; k += OMP_NUM_THREADS) {
 #ifdef DEBUG_ACTIVE
                 //verify accurate stride through sample space

@@ -30,12 +30,6 @@ public:
         Build_A();
     }
 
-    /// Nessesary override to provide access to the Eigen Storage Matrix
-    /// \return Eigen Matrix with coeffitents of Hamiltonian
-    Mat_cd &get() override {
-        return m;
-    }
-
     /// Nessesary override to provide access to the trace
     /// \return trace
     inline double trace_A() override {

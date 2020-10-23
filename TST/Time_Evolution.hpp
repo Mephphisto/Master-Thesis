@@ -80,22 +80,19 @@ inline Vec Energys(const Vec_cd &eval, const double &tr) {
 }
 
 
-/// This is the ODE to be solved
-template<typename T>
 struct Schroedinger_of_cs {
 private:
     double w;
-    T & M;
+    HAMILTONIAN *H;
 public:
-    explicit Schroedinger_of_cs(const double &omega, T &H) : w(omega) {
-        M = H;
-}
+    explicit Schroedinger_of_cs(const double &omega, HAMILTONIAN *H_in) : w(omega) {
+        H = H_in;
+    }
 
     /// This is the ODE to be solved
     inline void operator()(const Vec_cd &c, Vec_cd &dcdt, const Time theta) {
-        M.Update(MATRIX_SIZE, T_COUPLE, theta, MU, DELTA);
-        Mat_cd & Mat = M.get();
-        dcdt = Mat.selfadjointView<Eigen::Lower>() * c;
+        H->Update(MATRIX_SIZE, T_COUPLE, theta, MU, DELTA);
+        dcdt = H->getH() * c;
         dcdt *= cd(0, -1 / w);
     }
 };
@@ -133,14 +130,15 @@ Mat Do_TE(Vec const &Omegas) {
     Vec_cd C_0, eval, Maj1, Maj2;
     Mat_cd evec;
 
-    auto M = HAMILTONIAN(MATRIX_SIZE, T_COUPLE,
-                         T_START, MU, DELTA);
+    HAMILTONIAN M = HAMILTONIAN(MATRIX_SIZE, T_COUPLE,
+                                T_START, MU, DELTA);
     {
 #ifdef DEBUG_ACTIVE
         std::cout << "Hermiticity Check" << std::endl;
         M.verify_hermitiity();
         std::cout << "Matrix Det " << M.get().determinant() << std::endl;
-        std::cout << "M*1= " << (M.get().selfadjointView<Eigen::Lower>() * Vec_cd::Ones(MATRIX_SIZE)).norm() << std::endl;
+        std::cout << "M*1= " << (M.get().selfadjointView<Eigen::Lower>() * Vec_cd::Ones(MATRIX_SIZE)).norm()
+                  << std::endl;
 #endif
         double tr = M.trace_A();
         MSolver Solver(MATRIX_SIZE);
@@ -176,12 +174,14 @@ Mat Do_TE(Vec const &Omegas) {
 #pragma omp parallel for shared(Rho_t, C_0, eval, evec, Omegas, std::cout, Maj1, Maj2, norm) firstprivate(M) default(none) num_threads(OMP_NUM_THREADS)
     for (size_t k = 0; k < Omegas.size(); k++) {
 #ifdef DEBUG_ACTIVE
+#pragma omp critical
+        std::cout << "HL_Thread " << omp_get_thread_num() << " of " << omp_get_num_threads() << std::endl;
 #endif
         Vec_cd C_f(MATRIX_SIZE);
         boost::numeric::odeint::bulirsch_stoer<Vec_cd> state;
         boost::numeric::odeint::integrate_const(
                 state,
-                Schroedinger_of_cs<HAMILTONIAN>(Omegas[k], M),
+                Schroedinger_of_cs(Omegas[k], &M),
                 C_0,
                 (double) T_START,
                 (double) T_END,

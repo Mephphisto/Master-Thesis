@@ -55,11 +55,34 @@ public:
     virtual double trace_A() = 0;
 
     /// All derived classes need to be able to return the Eigen Storage Mat_cd for computations
-    virtual Mat_cd &get() = 0;
+    /// Nessesary override to provide access to the Eigen Storage Matrix
+    /// \return Eigen Matrix with coeffitents of Hamiltonian
+    Mat_cd &get() {
+        return m;
+    }
+
+    /// Nessesary override to provide access to the Eigen Storage Matrix in Hermitian form
+    /// \return Eigen Matrix with coeffitents of Hamiltonian
+    auto getH() {
+        return m.selfadjointView<Eigen::Lower>();
+    }
+
+    /// All derived classes need to be able to return the Eigen Storage Mat_cd for computations
+    /// Nessesary override to provide access to the Eigen Storage Matrix
+    /// \return Eigen Matrix with coeffitents of Hamiltonian
+    const Mat_cd &get() const {
+        return m;
+    }
+
+    /// Nessesary override to provide access to the Eigen Storage Matrix in Hermitian form
+    /// \return Eigen Matrix with coeffitents of Hamiltonian
+    const auto getH() const {
+        return m.selfadjointView<Eigen::Lower>();
+    }
 
     /// This Function checks Hermiticity fot all derived Classes
     /// \return True if Matrix is Non Hermitian
-    virtual bool verify_hermitiity() {
+    virtual bool verify_hermitiity() const {
         bool res = false; /// Result of chek false coresponds to a corect hermitian Matrix
         for (size_t k = 0; k < 2 * Msize; k++) {
             for (size_t j = k; j < 2 * Msize; j++) {
@@ -76,7 +99,7 @@ public:
 
     /// Verifies, that the the \f$ A \f$ and \f$ \epsilon A^* \f$ submatrices are indeed related as desired.
     /// \return True if Mat_cd is incorrect
-    virtual bool verify_AMatrices() {
+    virtual bool verify_AMatrices() const {
 
         bool res = false;
         for (size_t k = 0; k < Msize; k++) {
@@ -95,7 +118,7 @@ public:
 
     /// Verifies, that the the \f$ B \f$ and \f$ \epsilon B^* \f$ submatrices are indeed related as desired.
     /// \return True if Mat_cd is incorrect
-    virtual bool verify_BMatrices() {
+    virtual bool verify_BMatrices() const {
         bool res = false;
         for (size_t k = Msize; k < 2 * Msize; k++) {
             for (size_t j = 0; j < Msize; j++) {

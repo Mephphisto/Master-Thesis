@@ -162,6 +162,10 @@ public:
 
     _2DTopSuperConMatrix(const _2DTopSuperConMatrix &H) : Hamiltonian_Matrix(H),
                                                           t(H.t), mu(H.mu), Delta(H.Delta) {
+#ifdef DEBUG_ACTIVE
+#pragma omp critical
+        std::cout << " Copy _2DTopSuperConMatrix " << std::endl;
+#endif
         this->Gsize = H.Gsize;
         this->Gsize_d = H.Gsize_d;
     }
@@ -196,13 +200,6 @@ public:
 #endif
         Build_A();
         Build_B();
-    }
-
-    /// Nessesary override to provide access to the Eigen Storage Matrix
-    /// \return Eigen Matrix with coeffitents of Hamiltonian
-    Mat_cd &get()
-    override {
-        return m;
     }
 
     /// Nessesary override to provide access to the trace
