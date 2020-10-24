@@ -74,8 +74,8 @@ int main() {
          csv_file << "}";
          csv_file.close();
      } catch (...) {
-        std::cout << "Error writing EigenValues CSV" << std::endl;
-    }
+         std::cout << "Error writing EigenValues CSV" << std::endl;
+     }
 #endif
     std::cout << std::endl << std::endl << "Runtime = "
               <<

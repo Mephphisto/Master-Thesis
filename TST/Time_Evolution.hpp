@@ -6,7 +6,6 @@
 #ifdef ITT_ACTIVE
 #include <ittnotify.h>
 #endif //ITT_ACTIVE
-
 #include <Eigen/Dense>
 #include <iostream>
 #include <boost/numeric/odeint.hpp>
@@ -94,6 +93,11 @@ private:
 public:
     explicit Schroedinger_of_cs(const double &omega, HAMILTONIAN *H_in) : w(omega) {
         H = H_in;
+#ifdef DEBUG_ACTIVE
+        _2DTopSuperConMatrix_DEPR Mcheck(MATRIX_SIZE, T_COUPLE, T_START, MU, DELTA);
+#pragma omp critical
+        std::cout << "Diff old new Mat" << (H->get() - Mcheck.get()).norm() << std::endl;
+#endif
     }
 
     /// This is the ODE to be solved
@@ -137,7 +141,7 @@ Mat Do_TE(Vec const &Omegas) {
     static_assert(std::is_base_of<Hamiltonian_Matrix, HAMILTONIAN>::value,
                   "Given Class is not derived from Hamiltonian_Matrix");
 #ifdef DEBUG_ACTIVE
-    std::cout << "MATRIX_SIZE= " << MATRIX_SIZE << std::endl;
+    std::cout << "MATRIX_SIZE= "  << MATRIX_SIZE << std::endl;
 #endif
     Mat Rho_t(3, Omegas.size());
     Vec_cd C_0, eval, Maj1, Maj2;
