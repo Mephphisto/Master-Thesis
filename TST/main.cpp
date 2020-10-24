@@ -12,7 +12,6 @@
 #include "_1DTopSuperConMatrix.hpp"
 #include "_2DTopSuperConMatrix.hpp"
 #include "_2DTopSuperConMatrixSparse.hpp"
-
 #ifdef ITT_ACTIVE
 #include <ittnotify.h>
 #endif //ITT_ACTIVE
@@ -64,17 +63,17 @@ int main() {
     Mat out = Do_TE(omegas);
 
 
-    try {
-        std::fstream csv_file("Rho_Decay.csv",
-                              std::fstream::out);
-        assert(csv_file.is_open());
+     try {
+         std::fstream csv_file("Rho_Decay.csv",
+                               std::fstream::out);
+         assert(csv_file.is_open());
          csv_file << "{{w, maj1-m1j2, maj1+m1j2,norm},";
-        for (auto k = 0; k < omegas.size(); k++) {
-            csv_file << "{" << omegas[k] << "," << out(0,k) << "," << out(1,k) << "," << out(2,k) << "},";
-        }
-        csv_file << "}" ;
-        csv_file.close();
-    } catch (...) {
+         for (auto k = 0; k < omegas.size(); k++) {
+             csv_file << "{" << omegas[k] << "," << out(0, k) << "," << out(1, k) << "," << out(2, k) << "},";
+         }
+         csv_file << "}";
+         csv_file.close();
+     } catch (...) {
         std::cout << "Error writing EigenValues CSV" << std::endl;
     }
 #endif

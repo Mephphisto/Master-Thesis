@@ -2,7 +2,11 @@
 // Created by Jakob Teuffel on 08.04.20.
 //
 #pragma once
-#include "/opt/intel/vtune_profiler/include/ittnotify.h"
+
+#ifdef ITT_ACTIVE
+#include <ittnotify.h>
+#endif //ITT_ACTIVE
+
 #include <Eigen/Dense>
 #include <iostream>
 #include <boost/numeric/odeint.hpp>
@@ -86,14 +90,16 @@ inline Vec Energys(const Vec_cd &eval, const double &tr) {
 struct Schroedinger_of_cs {
 private:
     double w;
-    HAMILTONIAN H;
+    HAMILTONIAN *H;
 public:
-    explicit Schroedinger_of_cs(const double &omega) : H(MATRIX_SIZE, T_COUPLE, T_START, MU, DELTA) {}
+    explicit Schroedinger_of_cs(const double &omega, HAMILTONIAN *H_in) : w(omega) {
+        H = H_in;
+    }
 
     /// This is the ODE to be solved
     inline void operator()(const Vec_cd &c, Vec_cd &dcdt, const Time theta) {
-        H.Update(MATRIX_SIZE, T_COUPLE, theta, MU, DELTA);
-        dcdt = H.getH() * c;
+        H->Update(MATRIX_SIZE, T_COUPLE, theta, MU, DELTA);
+        dcdt = H->getH() * c;
         dcdt *= cd(0, -1 / w);
     }
 };
@@ -130,12 +136,14 @@ Mat Do_TE(Vec const &Omegas) {
 #endif //ITT
     static_assert(std::is_base_of<Hamiltonian_Matrix, HAMILTONIAN>::value,
                   "Given Class is not derived from Hamiltonian_Matrix");
+#ifdef DEBUG_ACTIVE
+    std::cout << "MATRIX_SIZE= " << MATRIX_SIZE << std::endl;
+#endif
     Mat Rho_t(3, Omegas.size());
     Vec_cd C_0, eval, Maj1, Maj2;
     Mat_cd evec;
 
-    HAMILTONIAN M = HAMILTONIAN(MATRIX_SIZE, T_COUPLE,
-                                T_START, MU, DELTA);
+    HAMILTONIAN M(MATRIX_SIZE, T_COUPLE, T_START, MU, DELTA);
 
     {
 #ifdef DEBUG_ACTIVE
@@ -179,7 +187,7 @@ Mat Do_TE(Vec const &Omegas) {
 #ifdef ITT_ACTIVE
     __itt_resume();
 #endif //ITT_ACTIVE
-#pragma omp parallel for shared(Rho_t, C_0, eval, evec, Omegas, std::cout, Maj1, Maj2, norm) default(none) num_threads(OMP_NUM_THREADS)
+#pragma omp parallel for shared(Rho_t, C_0, eval, evec, Omegas, std::cout, Maj1, Maj2, norm) firstprivate(M) default(none) num_threads(OMP_NUM_THREADS)
     for (size_t k = 0; k < Omegas.size(); k++) {
 #ifdef DEBUG_ACTIVE
 #pragma omp critical
@@ -189,7 +197,7 @@ Mat Do_TE(Vec const &Omegas) {
         boost::numeric::odeint::bulirsch_stoer<Vec_cd> state;
         boost::numeric::odeint::integrate_const(
                 state,
-                Schroedinger_of_cs(Omegas[k]),
+                Schroedinger_of_cs(Omegas[k], &M),
                 C_0,
                 (double) T_START,
                 (double) T_END,
