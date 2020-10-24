@@ -10,7 +10,7 @@
 #include "Typedefs.hpp"
 
 /// DEPRECATED Version of _2DTopSuperConMatrix cn be used to verify Optimized / obfuctaded new code
-[deprecated]
+
 
 class _2DTopSuperConMatrix_DEPR : public Hamiltonian_Matrix {
 private:
@@ -46,7 +46,11 @@ private:
     inline void Build_A() {
         double r = 4 * pow(4 / (Gsize_d * 0.05), 2);
 
-        NESTED_UNROLL
+#ifdef ICC
+#pragma unroll_and_jam
+#else
+#pragma unrollandfuse
+#endif
         for (size_t k = 0; k < Msize; k++) {
             for (size_t j = 0; j < Msize; j++) {
                 size_t x_j = index_x(j);
@@ -119,7 +123,11 @@ private:
 /// Helper function to build the \f$ B \f$ submatrices
     inline void Build_B() {
 
-        NESTED_UNROLL
+#ifdef ICC
+#pragma unroll_and_jam
+#else
+#pragma unrollandfuse
+#endif
         for (size_t k = 0; k < Msize; k++) {
             for (size_t j = 0; j < Msize; j++) {
                 size_t x_j = index_x(j);
@@ -195,6 +203,7 @@ public:
             const double &Delta_in) :
             t(t_in),
             mu(mu_in),
+            Hamiltonian_Matrix(size_in),
             Delta(static_cast<cd>(Delta_in / 2)) {
         this->Msize = size_in / 2;
         this->Gsize = sqrt(Msize);
@@ -246,12 +255,6 @@ public:
         Build_B();
     }
 
-    /// Nessesary override to provide access to the Eigen Storage Matrix
-    /// \return Eigen Matrix with coeffitents of Hamiltonian
-    Mat_cd &get()
-    override {
-        return m;
-    }
 
     /// Nessesary override to provide access to the trace
     /// \return trace

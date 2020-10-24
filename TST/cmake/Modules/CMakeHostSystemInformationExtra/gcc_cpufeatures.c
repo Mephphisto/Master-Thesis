@@ -5,7 +5,6 @@
 #include <stdio.h>
 
 #define PRINT_CPU_FEATURE(a) if(__builtin_cpu_supports(a)){printf("%s\n", a);}
-
 int main() {
 #if defined(GCC_VERSION)
     __builtin_cpu_init ();

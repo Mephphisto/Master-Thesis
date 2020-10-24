@@ -13,6 +13,10 @@
 #include "_2DTopSuperConMatrix.hpp"
 #include "_2DTopSuperConMatrixSparse.hpp"
 
+#ifdef ITT_ACTIVE
+#include <ittnotify.h>
+#endif //ITT_ACTIVE
+
 #ifdef TIME_EVOLUTION
 
 #include "Time_Evolution.hpp"
@@ -36,6 +40,9 @@
 #endif
 
 int main() {
+#ifdef ITT_ACTIVE
+    __itt_pause();
+#endif //ITT_ACTIVE
     std::chrono::time_point<std::chrono::system_clock> start = std::chrono::system_clock::now();
 #ifndef TIME_EVOLUTION
 #ifdef USE_MAGMA
@@ -53,8 +60,11 @@ int main() {
         double aux = std::pow(10.0, W_START + (W_END - W_START) * (double(k) / double(W_RES)));
         omegas[k] = aux;
     }
+
     Mat out = Do_TE(omegas);
-     try {
+
+
+    try {
         std::fstream csv_file("Rho_Decay.csv",
                               std::fstream::out);
         assert(csv_file.is_open());
@@ -74,7 +84,6 @@ int main() {
                       std::chrono::system_clock::now() - start).count()
               << "ms" <<
               std::endl;
-
     return 0;
 }
 

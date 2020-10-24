@@ -26,22 +26,22 @@ void cpuid(int result[4], int select) {
                           mov
         eax, select
         cpuid
-                _asm
+        _asm
         _emit
         0x0f
         _asm
-                _emit
+        _emit
         0xa2
         mov
         tmp[0 * TYPE
         int], eax
-                mov
+        mov
         tmp[1 * TYPE
         int], ebx
-                mov
+        mov
         tmp[2 * TYPE
         int], ecx
-                mov
+        mov
         tmp[3 * TYPE
         int], edx
         pop edx
