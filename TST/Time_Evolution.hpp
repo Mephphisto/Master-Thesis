@@ -6,6 +6,7 @@
 #ifdef ITT_ACTIVE
 #include <ittnotify.h>
 #endif //ITT_ACTIVE
+
 #include <Eigen/Dense>
 #include <iostream>
 #include <boost/numeric/odeint.hpp>
@@ -20,10 +21,6 @@
 #include <boost/phoenix/core.hpp>
 #include <boost/phoenix/core.hpp>
 #include <boost/phoenix/operator.hpp>
-
-#ifdef ITT_ACTIVE
-#include <ittnotify.h>
-#endif // ITT_ACTIVE
 
 #include "_2DTopSuperConMatrix_DEPRECATED.hpp"
 
@@ -129,14 +126,17 @@ struct last_observer {
     int &Threads, Threads_old;
     double offset;
 
-    explicit last_observer(Vec_cd &state, double &Prog, int &Thread, int Steps, int Step) : m_state(state), Progress(Prog), Threads(Thread),Threads_old(Thread) {
-        offset = static_cast<double>(Steps)/Step;
+    explicit last_observer(Vec_cd &state, double &Prog, int &Thread, int Steps, int Step) : m_state(state),
+                                                                                            Progress(Prog),
+                                                                                            Threads(Thread),
+                                                                                            Threads_old(Thread) {
+        offset = static_cast<double>(Steps) / Step;
         Progress = offset;
     }
 
     void operator()(const Vec_cd &x, const double &t) {
         m_state = x;
-        Progress = t /T_END + offset;
+        Progress = t / T_END + offset;
         if (Threads != Threads_old) {
             mkl_set_num_threads_local(Threads);
             Threads_old = Threads;
@@ -153,7 +153,7 @@ Mat Do_TE(Vec const &Omegas) {
 #ifdef DEBUG_ACTIVE
     std::cout << "MATRIX_SIZE= " << MATRIX_SIZE << std::endl;
 #endif
-    Mat Rho_t(3, Omegas.size());
+    Mat Rho_t(6, Omegas.size());
     Vec_cd C_0, eval, Maj1, Maj2;
     Mat_cd evec;
 
@@ -191,7 +191,6 @@ Mat Do_TE(Vec const &Omegas) {
     }
     double norm = std::pow(std::abs(C_0.dot(Maj1 + Maj2)), 2);
     mkl_set_dynamic(0);
-    mkl_set_num_threads(MKL_NUM_THREADS);
     omp_set_max_active_levels(2);
 #ifdef DEBUG_ACTIVE
 #pragma omp critical
@@ -206,36 +205,45 @@ Mat Do_TE(Vec const &Omegas) {
     Eigen::VectorXi Threads = (MKL_NUM_THREADS / OMP_NUM_THREADS) * Eigen::VectorXi::Ones(OMP_NUM_THREADS);
     mkl_set_dynamic(0);
     omp_set_max_active_levels(2);
-#pragma omp parallel shared(Rho_t, C_0, Threads, Progress, eval, evec, Omegas, std::cout, Maj1, Maj2, norm) firstprivate(M) default(none) num_threads(OMP_NUM_THREADS)
+#pragma omp parallel shared(Rho_t, Threads, Progress, std::cout) firstprivate(M, C_0, Omegas, eval, evec, Maj1, Maj2, norm) default(none) num_threads(OMP_NUM_THREADS)
     {
-    int tid = omp_get_thread_num();
-    for (size_t k = tid; k < Omegas.size()/OMP_NUM_THREADS; k += tid) {
-        mkl_set_num_threads_local(Threads[k]);
+        int tid = omp_get_thread_num();
+        for (size_t k = tid; k < Omegas.size() / OMP_NUM_THREADS; k += tid) {
+            mkl_set_num_threads_local(Threads[k]);
 #ifdef DEBUG_ACTIVE
 #pragma omp critical
-        std::cout << "HL_Thread " << omp_get_thread_num() << " of " << omp_get_num_threads() << std::endl;
+            std::cout << "HL_Thread " << omp_get_thread_num() << " of " << omp_get_num_threads() << std::endl;
 #endif
-        Vec_cd C_f(MATRIX_SIZE);
-        boost::numeric::odeint::bulirsch_stoer<Vec_cd> state;
-        boost::numeric::odeint::integrate_const(
-                state,
-                Schroedinger_of_cs(Omegas[k], &M),
-                C_0,
-                (double) T_START,
-                (double) T_END,
-                double(2.00) * M_PI / T_RES,
-                last_observer(C_f, Progress[k], Threads[k], Omegas.size()/OMP_NUM_THREADS,k));
+            Vec_cd C_f(MATRIX_SIZE);
+            boost::numeric::odeint::bulirsch_stoer<Vec_cd> state;
+            boost::numeric::odeint::integrate_const(
+                    state,
+                    Schroedinger_of_cs(Omegas[k], &M),
+                    C_0,
+                    (double) T_START,
+                    (double) T_END,
+                    double(2.00) * M_PI / T_RES,
+                    last_observer(C_f, Progress[k], Threads[k], Omegas.size() / OMP_NUM_THREADS, k));
+            Eigen::VectorXd res(6);
+            res << Omegas[k],
+                    std::pow(std::abs(C_f.dot(Maj1 - Maj2)), 2) / norm,
+                    std::pow(std::abs(C_f.dot(Maj1 + Maj2)), 2) / norm,
+                    norm,
+                    std::arg(static_cast<cd>(C_f.transpose() * Maj1)),
+                    std::arg(static_cast<cd>(C_f.transpose() * Maj2));
 
-        Rho_t.col(k) = Eigen::Vector3d({(std::pow(std::abs(C_f.dot(Maj1 - Maj2)), 2) / norm),
-                                        (std::pow(std::abs(C_f.dot(Maj1 + Maj2)), 2) / norm), norm});
-    }
-    int j;
+            for (size_t j = 0; j < 5; j++) {
+#pragma omp atomic write
+                Rho_t(j, k) = res[j];
+            }
+        }
+        int j;
 #pragma atomic
-    Progress.minCoeff(&j);
+        Progress.minCoeff(&j);
 #pragma atomic write copyprivate(Threads)
-    Threads[j]++;
-    mkl_set_num_threads_local(0);
-}
+        Threads[j]++;
+        mkl_set_num_threads_local(0);
+    }
 #ifdef ITT_ACTIVE
     __itt_detach();
 #endif //ITT_ACTIVE

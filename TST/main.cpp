@@ -63,19 +63,20 @@ int main() {
     Mat out = Do_TE(omegas);
 
 
-     try {
-         std::fstream csv_file("Rho_Decay.csv",
-                               std::fstream::out);
-         assert(csv_file.is_open());
-         csv_file << "{{w, maj1-m1j2, maj1+m1j2,norm},";
-         for (auto k = 0; k < omegas.size(); k++) {
-             csv_file << "{" << omegas[k] << "," << out(0, k) << "," << out(1, k) << "," << out(2, k) << "},";
-         }
-         csv_file << "}";
-         csv_file.close();
-     } catch (...) {
-         std::cout << "Error writing EigenValues CSV" << std::endl;
-     }
+    try {
+        std::fstream csv_file("Rho_Decay.csv",
+                              std::fstream::out);
+        assert(csv_file.is_open());
+        csv_file << "{{w, maj1-m1j2, maj1+m1j2,norm,pahse_Maj1,phase_Maj2},";
+        for (auto k = 0; k < omegas.size(); k++) {
+            csv_file << "{" << out(0, k) << "," << out(1, k) << "," << out(2, k) << "," << out(3, k) << "," << out(3, k)
+                     << "," << out(5, k) << "},";
+        }
+        csv_file << "}";
+        csv_file.close();
+    } catch (...) {
+        std::cout << "Error writing EigenValues CSV" << std::endl;
+    }
 #endif
     std::cout << std::endl << std::endl << "Runtime = "
               <<
