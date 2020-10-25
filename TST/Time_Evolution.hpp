@@ -125,12 +125,22 @@ public:
 */
 struct last_observer {
     Vec_cd &m_state;
+    double &Progress;
+    int &Threads, Threads_old;
+    double offset;
 
-    explicit last_observer(Vec_cd &state) : m_state(state) {
+    explicit last_observer(Vec_cd &state, double &Prog, int &Thread, int Steps, int Step) : m_state(state), Progress(Prog), Threads(Thread),Threads_old(Thread) {
+        offset = static_cast<double>(Steps)/Step;
+        Progress = offset;
     }
 
     void operator()(const Vec_cd &x, const double &t) {
         m_state = x;
+        Progress = t /T_END + offset;
+        if (Threads != Threads_old) {
+            mkl_set_num_threads_local(Threads);
+            Threads_old = Threads;
+        }
     }
 };
 
@@ -141,7 +151,7 @@ Mat Do_TE(Vec const &Omegas) {
     static_assert(std::is_base_of<Hamiltonian_Matrix, HAMILTONIAN>::value,
                   "Given Class is not derived from Hamiltonian_Matrix");
 #ifdef DEBUG_ACTIVE
-    std::cout << "MATRIX_SIZE= "  << MATRIX_SIZE << std::endl;
+    std::cout << "MATRIX_SIZE= " << MATRIX_SIZE << std::endl;
 #endif
     Mat Rho_t(3, Omegas.size());
     Vec_cd C_0, eval, Maj1, Maj2;
@@ -168,7 +178,8 @@ Mat Do_TE(Vec const &Omegas) {
         Mat_cd D = (evec.adjoint() * M.get().selfadjointView<Eigen::Lower>() * evec);
         D -= eval.asDiagonal();
         std::cout << "|THT^ -D| = " << D.norm() << std::endl;
-        std::cout << "|(THT^ -D)*1| = " << (D * Vec_cd::Ones(MATRIX_SIZE)).norm() << std::endl;
+        std::cout << "|(THT^ -D)*1| = " << (D.selfadjointView<Eigen::Lower>() * Vec_cd::Ones(MATRIX_SIZE)).norm()
+                  << std::endl;
         std::cout << "Debug end" << std::endl;
 #endif
 
@@ -179,9 +190,9 @@ Mat Do_TE(Vec const &Omegas) {
         Maj1 = std::get<1>(tpl), Maj2 = std::get<2>(tpl);
     }
     double norm = std::pow(std::abs(C_0.dot(Maj1 + Maj2)), 2);
-    /*mkl_set_dynamic(0);
+    mkl_set_dynamic(0);
     mkl_set_num_threads(MKL_NUM_THREADS);
-    omp_set_max_active_levels(2);*/
+    omp_set_max_active_levels(2);
 #ifdef DEBUG_ACTIVE
 #pragma omp critical
     {
@@ -191,8 +202,15 @@ Mat Do_TE(Vec const &Omegas) {
 #ifdef ITT_ACTIVE
     __itt_resume();
 #endif //ITT_ACTIVE
-#pragma omp parallel for shared(Rho_t, C_0, eval, evec, Omegas, std::cout, Maj1, Maj2, norm) firstprivate(M) default(none) num_threads(OMP_NUM_THREADS)
-    for (size_t k = 0; k < Omegas.size(); k++) {
+    Vec Progress = Vec::Zero(OMP_NUM_THREADS);
+    Eigen::VectorXi Threads = (MKL_NUM_THREADS / OMP_NUM_THREADS) * Eigen::VectorXi::Ones(OMP_NUM_THREADS);
+    mkl_set_dynamic(0);
+    omp_set_max_active_levels(2);
+#pragma omp parallel shared(Rho_t, C_0, Threads, Progress, eval, evec, Omegas, std::cout, Maj1, Maj2, norm) firstprivate(M) default(none) num_threads(OMP_NUM_THREADS)
+    {
+    int tid = omp_get_thread_num();
+    for (size_t k = tid; k < Omegas.size()/OMP_NUM_THREADS; k += tid) {
+        mkl_set_num_threads_local(Threads[k]);
 #ifdef DEBUG_ACTIVE
 #pragma omp critical
         std::cout << "HL_Thread " << omp_get_thread_num() << " of " << omp_get_num_threads() << std::endl;
@@ -206,11 +224,18 @@ Mat Do_TE(Vec const &Omegas) {
                 (double) T_START,
                 (double) T_END,
                 double(2.00) * M_PI / T_RES,
-                last_observer(C_f));
+                last_observer(C_f, Progress[k], Threads[k], Omegas.size()/OMP_NUM_THREADS,k));
 
         Rho_t.col(k) = Eigen::Vector3d({(std::pow(std::abs(C_f.dot(Maj1 - Maj2)), 2) / norm),
                                         (std::pow(std::abs(C_f.dot(Maj1 + Maj2)), 2) / norm), norm});
     }
+    int j;
+#pragma atomic
+    Progress.minCoeff(&j);
+#pragma atomic write copyprivate(Threads)
+    Threads[j]++;
+    mkl_set_num_threads_local(0);
+}
 #ifdef ITT_ACTIVE
     __itt_detach();
 #endif //ITT_ACTIVE
