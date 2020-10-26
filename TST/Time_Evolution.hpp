@@ -6,7 +6,6 @@
 #ifdef ITT_ACTIVE
 #include <ittnotify.h>
 #endif //ITT_ACTIVE
-
 #include <Eigen/Dense>
 #include <iostream>
 #include <boost/numeric/odeint.hpp>
@@ -90,7 +89,7 @@ private:
 public:
     explicit Schroedinger_of_cs(const double &omega, HAMILTONIAN *H_in) : w(omega) {
         H = H_in;
-#ifdef DEBUG_ACTIVE
+#ifdef DEBUG_ACTIVE2
         _2DTopSuperConMatrix_DEPR Mcheck(MATRIX_SIZE, T_COUPLE, T_START, MU, DELTA);
 #pragma omp critical
         std::cout << "Diff old new Mat" << (H->get() - Mcheck.get()).norm() << std::endl;
@@ -128,9 +127,8 @@ struct last_observer {
 
     explicit last_observer(Vec_cd &state, double &Prog, int &Thread, int Steps, int Step) : m_state(state),
                                                                                             Progress(Prog),
-                                                                                            Threads(Thread),
-                                                                                            Threads_old(Thread) {
-        offset = static_cast<double>(Steps) / Step;
+                                                                                            Threads(Thread) {
+        offset = static_cast<double> (Step)/ Steps;
         Progress = offset;
     }
 
@@ -140,6 +138,9 @@ struct last_observer {
         if (Threads != Threads_old) {
             mkl_set_num_threads_local(Threads);
             Threads_old = Threads;
+#pragma omp critical
+            std::cout << "Thread " << omp_get_thread_num() << " recived thread and is now using " << Threads
+                      << std::endl;
         }
     }
 };
@@ -170,7 +171,7 @@ Mat Do_TE(Vec const &Omegas) {
         double tr = M.trace_A();
         MSolver Solver(MATRIX_SIZE);
         Solver.compute(M.get());
-        assert(("Demoralisation :: No Success ", Solver.info() == Eigen::Success));
+        assert(("Diagonalilisation :: No Success ", Solver.info() == Eigen::Success));
         eval = Solver.eigenvalues();
         evec = Solver.eigenvectors();
 #ifdef DEBUG_ACTIVE
@@ -208,11 +209,11 @@ Mat Do_TE(Vec const &Omegas) {
 #pragma omp parallel shared(Rho_t, Threads, Progress, std::cout) firstprivate(M, C_0, Omegas, eval, evec, Maj1, Maj2, norm) default(none) num_threads(OMP_NUM_THREADS)
     {
         int tid = omp_get_thread_num();
-        for (size_t k = tid; k < Omegas.size() / OMP_NUM_THREADS; k += tid) {
+        for (size_t k = tid; k < Omegas.size() / OMP_NUM_THREADS; k += tid+1) {
             mkl_set_num_threads_local(Threads[k]);
 #ifdef DEBUG_ACTIVE
 #pragma omp critical
-            std::cout << "HL_Thread " << omp_get_thread_num() << " of " << omp_get_num_threads() << std::endl;
+        std::cout << "HL_Thread " << omp_get_thread_num() << " of " << omp_get_num_threads() << std::endl;
 #endif
             Vec_cd C_f(MATRIX_SIZE);
             boost::numeric::odeint::bulirsch_stoer<Vec_cd> state;
@@ -222,8 +223,8 @@ Mat Do_TE(Vec const &Omegas) {
                     C_0,
                     (double) T_START,
                     (double) T_END,
-                    double(2.00) * M_PI / T_RES,
-                    last_observer(C_f, Progress[k], Threads[k], Omegas.size() / OMP_NUM_THREADS, k));
+                    double(2.00) * M_PI / T_RES * Omegas[k],
+                    last_observer(C_f, Progress[k], Threads[k], Omegas.size() / OMP_NUM_THREADS+1, (k-tid)/(tid+1)));
             Eigen::VectorXd res(6);
             res << Omegas[k],
                     std::pow(std::abs(C_f.dot(Maj1 - Maj2)), 2) / norm,
@@ -243,6 +244,8 @@ Mat Do_TE(Vec const &Omegas) {
 #pragma atomic write copyprivate(Threads)
         Threads[j]++;
         mkl_set_num_threads_local(0);
+#pragma omp critical
+        std::cout << "Thread " << tid << " Prog " << Progress.transpose() << "retired and moved core to " << j << std::endl;
     }
 #ifdef ITT_ACTIVE
     __itt_detach();
