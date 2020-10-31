@@ -4,8 +4,11 @@
 #pragma once
 
 #ifdef ITT_ACTIVE
+
 #include <ittnotify.h>
+
 #endif //ITT_ACTIVE
+
 #include <Eigen/Dense>
 #include <iostream>
 #include <boost/numeric/odeint.hpp>
@@ -20,6 +23,7 @@
 #include <boost/phoenix/core.hpp>
 #include <boost/phoenix/core.hpp>
 #include <boost/phoenix/operator.hpp>
+#include <string>
 
 #include "_2DTopSuperConMatrix_DEPRECATED.hpp"
 
@@ -65,17 +69,6 @@ inline std::tuple<Vec_cd, Vec_cd, Vec_cd> Get_C_0_Majs(const Vec &eval, const Ma
     return std::make_tuple(C_0, std::get<0>(tpl), std::get<1>(tpl));
 }
 
-inline double Get_C_final_Overlap(Vec_cd const &C_f, const Vec &eval, const Mat_cd &evec) {
-    double res = 0;
-    // Summ up over Fermmie see and Majorana states
-
-#pragma unroll
-    for (size_t k = 0; k < MATRIX_SIZE; k++) {
-        res += (eval[k] < 10e-7) ? std::abs(evec.col(k).dot(C_f)) : 0.0;
-    }
-    return res;
-}
-
 inline Vec Energys(const Vec_cd &eval, const double &tr) {
     Vec res = eval.col(0).real() - Vec::Constant(MATRIX_SIZE, 0.5 * (tr - eval.col(0).real().sum()));
     return res;
@@ -99,48 +92,51 @@ public:
     /// This is the ODE to be solved
     inline void operator()(const Vec_cd &c, Vec_cd &dcdt, const Time theta) {
         H->Update(MATRIX_SIZE, T_COUPLE, theta, MU, DELTA);
-        dcdt = H->getH() * c;
+        /*Mat_cd M = _2DTopSuperConMatrix_DEPR(MATRIX_SIZE, T_COUPLE, theta, MU, DELTA).get();
+        if (std::cout << "Diff Vec " << ((H->get()*c).eval() - (M * c).eval()).norm() << std::numeric_limits<double>::epsilon()){
+            std::cout << std::endl << "tid " << omp_get_thread_num << "\t theta " << theta << " \t |c| " << c.norm() << std::endl;
+        }
+        dcdt = H->getH() * c;*/
+        dcdt = H->get() * c;
+        //dcdt = M * c;
         dcdt *= cd(0, -1 / w);
     }
 };
 
-/*
-template<typename T>
-struct Schroedinger_of_cs_Jacobi {
-private:
-    double w;
-public:
-    explicit Schroedinger_of_cs_Jacobi(double omega) : w(omega) {}
-
-    /// This is the ODE to be solved
-    inline void operator()(const State &c, Jacobi &Jacobi, Time theta) {Vec_cd
-        auto M (T(MATRIX_SIZE, T_COUPLE, theta, MU, DELTA).get());
-        Jacobi = T(MATRIX_SIZE, T_COUPLE, theta, MU, DELTA).get();
-    }
-};
-*/
 struct last_observer {
     Vec_cd &m_state;
-    double &Progress;
-    int &Threads, Threads_old;
+    Vec &Progress;
+    Eigen::VectorXi &Threads;
+    int Threads_old, tid;
     double offset;
 
-    explicit last_observer(Vec_cd &state, double &Prog, int &Thread, int Steps, int Step) : m_state(state),
-                                                                                            Progress(Prog),
-                                                                                            Threads(Thread) {
-        offset = static_cast<double> (Step)/ Steps;
-        Progress = offset;
+    explicit last_observer(Vec_cd &state, Vec &Prog, Eigen::VectorXi &Thread, double offset_in) :
+            m_state(state), Threads(Thread), Progress(Prog), offset(offset_in) {
+        tid = omp_get_thread_num();
+        int Tr_aux;
+#pragma omp atomic read
+        Tr_aux = Threads[tid];
+        Threads_old = Tr_aux;
+        mkl_set_num_threads_local(Tr_aux);
     }
 
     void operator()(const Vec_cd &x, const double &t) {
         m_state = x;
-        Progress = t / T_END + offset;
-        if (Threads != Threads_old) {
-            mkl_set_num_threads_local(Threads);
-            Threads_old = Threads;
-#pragma omp critical
-            std::cout << "Thread " << omp_get_thread_num() << " recived thread and is now using " << Threads
-                      << std::endl;
+
+#pragma omp single nowait
+        {
+            std::cout << "\r Running " << Progress.size() << " Progress " << Progress.transpose();
+        }
+        {
+#pragma omp atomic write
+            Progress[tid] = t / T_END + offset;
+            int Tr_aux;
+#pragma omp atomic read
+            Tr_aux = Threads[tid];
+            if (Tr_aux != Threads_old) {
+                mkl_set_num_threads_local(Tr_aux);
+                Threads_old = Tr_aux;
+            }
         }
     }
 };
@@ -192,7 +188,7 @@ Mat Do_TE(Vec const &Omegas) {
     }
     double norm = std::pow(std::abs(C_0.dot(Maj1 + Maj2)), 2);
     mkl_set_dynamic(0);
-    omp_set_max_active_levels(2);
+    omp_set_max_active_levels(4);
 #ifdef DEBUG_ACTIVE
 #pragma omp critical
     {
@@ -202,53 +198,94 @@ Mat Do_TE(Vec const &Omegas) {
 #ifdef ITT_ACTIVE
     __itt_resume();
 #endif //ITT_ACTIVE
-    Vec Progress = Vec::Zero(OMP_NUM_THREADS);
     Eigen::VectorXi Threads = (MKL_NUM_THREADS / OMP_NUM_THREADS) * Eigen::VectorXi::Ones(OMP_NUM_THREADS);
+    Vec Progress = Vec::Zero(OMP_NUM_THREADS);
     mkl_set_dynamic(0);
     omp_set_max_active_levels(2);
-#pragma omp parallel shared(Rho_t, Threads, Progress, std::cout) firstprivate(M, C_0, Omegas, eval, evec, Maj1, Maj2, norm) default(none) num_threads(OMP_NUM_THREADS)
+#pragma omp parallel shared(Rho_t, Threads, Progress, C_0, M, std::cout) firstprivate(Omegas, eval, evec, Maj1, Maj2, norm) default(none) num_threads(OMP_NUM_THREADS)
     {
         int tid = omp_get_thread_num();
-        for (size_t k = tid; k < Omegas.size() / OMP_NUM_THREADS; k += tid+1) {
-            mkl_set_num_threads_local(Threads[k]);
+        for (size_t k = tid; k < Omegas.size() / 2; k += OMP_NUM_THREADS) {
+
 #ifdef DEBUG_ACTIVE
 #pragma omp critical
-        std::cout << "HL_Thread " << omp_get_thread_num() << " of " << omp_get_num_threads() << std::endl;
+            std::cout << "HL_Thread " << omp_get_thread_num() << " of " << omp_get_num_threads() << std::endl;
 #endif
+            Vec_cd myC_0 = C_0;
+            HAMILTONIAN myM(M);
             Vec_cd C_f(MATRIX_SIZE);
             boost::numeric::odeint::bulirsch_stoer<Vec_cd> state;
             boost::numeric::odeint::integrate_const(
                     state,
-                    Schroedinger_of_cs(Omegas[k], &M),
-                    C_0,
-                    (double) T_START,
-                    (double) T_END,
-                    double(2.00) * M_PI / T_RES * Omegas[k],
-                    last_observer(C_f, Progress[k], Threads[k], Omegas.size() / OMP_NUM_THREADS+1, (k-tid)/(tid+1)));
-            Eigen::VectorXd res(6);
-            res << Omegas[k],
-                    std::pow(std::abs(C_f.dot(Maj1 - Maj2)), 2) / norm,
-                    std::pow(std::abs(C_f.dot(Maj1 + Maj2)), 2) / norm,
-                    norm,
-                    std::arg(static_cast<cd>(C_f.transpose() * Maj1)),
-                    std::arg(static_cast<cd>(C_f.transpose() * Maj2));
+                    Schroedinger_of_cs(Omegas[k], &myM),
+                    myC_0,
+                    static_cast<double>(T_START),
+                    static_cast<double>(T_END),
+                    static_cast<double>(2.00) * M_PI / T_RES,
+                    last_observer(C_f, Progress, Threads, static_cast<double>(k - tid) * 2 / Omegas.size()));
+            {
+                Eigen::VectorXd res(6);
+                res << Omegas[k],
+                        std::pow(std::abs(C_f.dot(Maj1 - Maj2)), 2) / norm,
+                        std::pow(std::abs(C_f.dot(Maj1 + Maj2)), 2) / norm,
+                        C_f.norm(),
+                        std::arg((C_f.transpose() * Maj1)[0]),
+                        std::arg((C_f.transpose() * Maj2)[0]);
 
-            for (size_t j = 0; j < 5; j++) {
+                for (size_t j = 0; j < 5; j++) {
 #pragma omp atomic write
-                Rho_t(j, k) = res[j];
+                    Rho_t(j, k) = res[j];
+                }
+            }
+            myC_0 = C_0;
+            myM = M;
+            C_f(MATRIX_SIZE);
+            boost::numeric::odeint::integrate_const(
+                    state,
+                    Schroedinger_of_cs(Omegas[Omegas.size() - k], &myM),
+                    myC_0,
+                    static_cast<double>(T_START),
+                    static_cast<double>(T_END),
+                    static_cast<double>(2.00) * M_PI / T_RES,
+                    last_observer(C_f, Progress, Threads, (static_cast<double>(k - tid) * 2 + 1) / (Omegas.size())));
+            {
+                Eigen::VectorXd res(6);
+                res << Omegas[Omegas.size() - k],
+                        std::pow(std::abs(C_f.dot(Maj1 - Maj2)), 2) / norm,
+                        std::pow(std::abs(C_f.dot(Maj1 + Maj2)), 2) / norm,
+                        C_f.norm(),
+                        std::arg((C_f.transpose() * Maj1)[0]),
+                        std::arg((C_f.transpose() * Maj2)[0]);
+
+                for (size_t j = 0; j < 5; j++) {
+#pragma omp atomic write
+                    Rho_t(j, Omegas.size() - k) = res[j];
+                }
             }
         }
-        int j;
-#pragma atomic
-        Progress.minCoeff(&j);
-#pragma atomic write copyprivate(Threads)
-        Threads[j]++;
         mkl_set_num_threads_local(0);
-#pragma omp critical
-        std::cout << "Thread " << tid << " Prog " << Progress.transpose() << "retired and moved core to " << j << std::endl;
+        {
+            int tr;
+#pragma atomic read
+            tr = Threads[tid];
+#pragma atomic write
+            Threads[tid] = 0;
+            {
+                size_t j;
+#pragma atomic
+                Threads.minCoeff(&j);
+#pragma atomic write
+                Threads[j] += tr;
+#pragma atomic write
+                Threads[tid] = std::numeric_limits<int>::infinity();
+            }
+        }
     }
+
+
 #ifdef ITT_ACTIVE
     __itt_detach();
 #endif //ITT_ACTIVE
-    return Rho_t;
+    return
+            Rho_t;
 }

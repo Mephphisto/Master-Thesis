@@ -12,8 +12,11 @@
 #include "_1DTopSuperConMatrix.hpp"
 #include "_2DTopSuperConMatrix.hpp"
 #include "_2DTopSuperConMatrixSparse.hpp"
+
 #ifdef ITT_ACTIVE
+
 #include <ittnotify.h>
+
 #endif //ITT_ACTIVE
 
 #ifdef TIME_EVOLUTION
@@ -69,7 +72,7 @@ int main() {
         assert(csv_file.is_open());
         csv_file << "{{w, maj1-m1j2, maj1+m1j2,norm,pahse_Maj1,phase_Maj2},";
         for (auto k = 0; k < omegas.size(); k++) {
-            csv_file << "{" << out(0, k) << "," << out(1, k) << "," << out(2, k) << "," << out(3, k) << "," << out(3, k)
+            csv_file << "{" << out(0, k) << "," << out(1, k) << "," << out(2, k) << "," << out(3, k) << "," << out(4, k)
                      << "," << out(5, k) << "},";
         }
         csv_file << "}";
