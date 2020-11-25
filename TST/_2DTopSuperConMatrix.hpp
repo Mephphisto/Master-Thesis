@@ -116,7 +116,7 @@ public:
     /// \param index_x  x - Coordinate
     /// \param index_y  y - Coordinate
     /// \return Index
-#pragma omp declarte simd
+#pragma omp declare simd
     inline size_t at(const size_t &index_x, const size_t &index_y) {
         return index_x + Gsize * index_y;
     }
@@ -211,6 +211,6 @@ public:
     /// \return trace
     double trace_A()
     override {
-        return 0;
+        return std::abs(m.topLeftCorner<MATRIX_SIZE / 2, MATRIX_SIZE / 2>().trace());
     }
 };

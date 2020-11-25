@@ -37,11 +37,12 @@ typedef magma::SelfAdjointEigenSolver<Mat_cd> MSolver;
 typedef Eigen::SelfAdjointEigenSolver<Mat_cd> MSolver;
 #endif
 
-inline std::tuple<Vec_cd, Vec_cd, Vec_cd> Get_C_0_Majs(const Vec &eval, const Mat_cd &evec) {
+inline std::tuple<Vec_cd, Vec_cd, Vec_cd> Get_C_0_Majs(const Vec_cd &eval, const Mat_cd &evec, double tr) {
     Vec_cd C_0 = Vec_cd(MATRIX_SIZE);
     // Summ up over Fermmie see and Majorana states
+    HAMILTONIAN M(MATRIX_SIZE, T_COUPLE, T_START, MU, DELTA);
     size_t majoranas[2] = {0, 0};
-
+    //Find Majoranas
 #pragma unroll
     for (size_t t = 0; t < eval.size(); t++) {
         if (abs(eval[t]) < abs(eval[majoranas[0]])) {
@@ -51,20 +52,37 @@ inline std::tuple<Vec_cd, Vec_cd, Vec_cd> Get_C_0_Majs(const Vec &eval, const Ma
             majoranas[1] = t;
         }
     }
-
+#ifdef DEBUG_ACTIVE
+    double E = 0;
+#endif
 #pragma unroll
-    for (size_t k = 0; k < MATRIX_SIZE; k++) {
+    for (size_t k = 0; k < eval.size(); k++) {
         if ((k != majoranas[0]) || k > (k != majoranas[1])) {
-            C_0 += (eval[k] < 10e-7) ? evec.col(k).normalized() : Vec_cd::Zero(MATRIX_SIZE);
+            const double e_k = eval[k].real();
+            if (std::signbit(e_k)) {
+                C_0 += evec.col(k);
+#ifdef DEBUG_ACTIVE
+                E += e_k;
+#endif
+            }
+
         }
     }
 #ifdef DEBUG_ACTIVE
     std::cout << "E_maj1 = " << eval[majoranas[0]] << " E_maj2 = " << eval[majoranas[1]] << std::endl;
 #endif
     auto tpl = Majoranaize(evec.col(majoranas[0]).normalized(), evec.col(majoranas[1]).normalized());
-    C_0 += std::get<0>(tpl) + std::get<1>(tpl);
 #ifdef DEBUG_ACTIVE
     std::cout << "|C_0| = " << C_0.norm() << std::endl;
+#endif
+    C_0 = (C_0 + ((0 < eval[majoranas[0]].real()) ? evec.col(majoranas[1]) : evec.col(majoranas[0]))).eval();
+    //C_0 += evec.col(majoranas[0]).normalized() + evec.col(majoranas[1]).normalized();
+    //C_0 += std::get<0>(tpl) ; //+ std::get<1>(tpl);
+#ifdef DEBUG_ACTIVE
+    E += std::max(eval[majoranas[0]].real(), eval[majoranas[1]].real());
+    std::cout << "E_0 = " << E << std::endl;
+    double a = std::abs(E - (C_0.dot(M.get() * C_0) / C_0.squaredNorm()));
+    if (a > 1e-12) std::cout << " E-Hv/vv = " << a << " E= "<<E << " Hv/vv= " << (C_0.dot(M.get() * C_0)) <<  std::endl;
 #endif
     return std::make_tuple(C_0, std::get<0>(tpl), std::get<1>(tpl));
 }
@@ -97,7 +115,7 @@ public:
             std::cout << std::endl << "tid " << omp_get_thread_num << "\t theta " << theta << " \t |c| " << c.norm() << std::endl;
         }
         dcdt = H->getH() * c;*/
-        dcdt = H->get() * c;
+        dcdt = H->get() * c + H->trace_A() * c;
         //dcdt = M * c;
         dcdt *= cd(0, -1 / w);
     }
@@ -125,7 +143,7 @@ struct last_observer {
 
 #pragma omp single nowait
         {
-            std::cout << "\r Running " << Progress.size() << " Progress " << Progress.transpose();
+            std::cout << " Running " << Progress.size() << " Progress " << Progress.transpose() << std::endl;
         }
         {
 #pragma omp atomic write
@@ -178,11 +196,15 @@ Mat Do_TE(Vec const &Omegas) {
         std::cout << "|(THT^ -D)*1| = " << (D.selfadjointView<Eigen::Lower>() * Vec_cd::Ones(MATRIX_SIZE)).norm()
                   << std::endl;
         std::cout << "Debug end" << std::endl;
+
+
 #endif
 
-        auto tpl = Get_C_0_Majs(Energys(eval, tr), evec);
+        auto tpl = Get_C_0_Majs(eval, evec, tr);
         C_0 = std::get<0>(tpl);
-
+#ifdef DEBUG_ACTIVE
+        std::cout << "<c_0|H|c_0> = " << C_0.dot(M.get() * C_0) + tr << std::endl;
+#endif
 
         Maj1 = std::get<1>(tpl), Maj2 = std::get<2>(tpl);
     }
@@ -239,10 +261,10 @@ Mat Do_TE(Vec const &Omegas) {
             }
             myC_0 = C_0;
             myM = M;
-            C_f(MATRIX_SIZE);
+            //C_f(MATRIX_SIZE);
             boost::numeric::odeint::integrate_const(
                     state,
-                    Schroedinger_of_cs(Omegas[Omegas.size() - k], &myM),
+                    Schroedinger_of_cs(Omegas[Omegas.size() - k - 1], &myM),
                     myC_0,
                     static_cast<double>(T_START),
                     static_cast<double>(T_END),
@@ -250,7 +272,7 @@ Mat Do_TE(Vec const &Omegas) {
                     last_observer(C_f, Progress, Threads, (static_cast<double>(k - tid) * 2 + 1) / (Omegas.size())));
             {
                 Eigen::VectorXd res(6);
-                res << Omegas[Omegas.size() - k],
+                res << Omegas[Omegas.size() - k - 1],
                         std::pow(std::abs(C_f.dot(Maj1 - Maj2)), 2) / norm,
                         std::pow(std::abs(C_f.dot(Maj1 + Maj2)), 2) / norm,
                         C_f.norm(),
@@ -259,7 +281,7 @@ Mat Do_TE(Vec const &Omegas) {
 
                 for (size_t j = 0; j < 5; j++) {
 #pragma omp atomic write
-                    Rho_t(j, Omegas.size() - k) = res[j];
+                    Rho_t(j, Omegas.size() - k - 1) = res[j];
                 }
             }
         }
