@@ -52,6 +52,7 @@ inline std::tuple<Vec_cd, Vec_cd, Vec_cd> Get_C_0_Majs(const Vec_cd &eval, const
             majoranas[1] = t;
         }
     }
+    /*
 #ifdef DEBUG_ACTIVE
     double E = 0;
 #endif
@@ -84,7 +85,9 @@ inline std::tuple<Vec_cd, Vec_cd, Vec_cd> Get_C_0_Majs(const Vec_cd &eval, const
     double a = std::abs(E - (C_0.dot(M.get() * C_0) / C_0.squaredNorm()));
     if (a > 1e-12) std::cout << " E-Hv/vv = " << a << " E= "<<E << " Hv/vv= " << (C_0.dot(M.get() * C_0)) <<  std::endl;
 #endif
-    return std::make_tuple(C_0, std::get<0>(tpl), std::get<1>(tpl));
+    return std::make_tuple(C_0, std::get<0>(tpl), std::get<1>(tpl));*/
+    C_0 = evec.col(majoranas[0]);
+    return std::make_tuple(C_0, evec.col(majoranas[0]), evec.col(majoranas[1]));
 }
 
 inline Vec Energys(const Vec_cd &eval, const double &tr) {
@@ -95,10 +98,11 @@ inline Vec Energys(const Vec_cd &eval, const double &tr) {
 
 struct Schroedinger_of_cs {
 private:
-    double w;
+    double w, E_offset;
     HAMILTONIAN *H;
 public:
-    explicit Schroedinger_of_cs(const double &omega, HAMILTONIAN *H_in) : w(omega) {
+    explicit Schroedinger_of_cs(const double &omega, const double &E_ofs, HAMILTONIAN *H_in) : w(omega),
+                                                                                               E_offset(E_ofs) {
         H = H_in;
 #ifdef DEBUG_ACTIVE2
         _2DTopSuperConMatrix_DEPR Mcheck(MATRIX_SIZE, T_COUPLE, T_START, MU, DELTA);
@@ -115,7 +119,7 @@ public:
             std::cout << std::endl << "tid " << omp_get_thread_num << "\t theta " << theta << " \t |c| " << c.norm() << std::endl;
         }
         dcdt = H->getH() * c;*/
-        dcdt = H->get() * c + H->trace_A() * c;
+        dcdt = H->get() * c + E_offset;//+ H->trace_A() * c;
         //dcdt = M * c;
         dcdt *= cd(0, -1 / w);
     }
@@ -171,6 +175,7 @@ Mat Do_TE(Vec const &Omegas) {
     Mat Rho_t(6, Omegas.size());
     Vec_cd C_0, eval, Maj1, Maj2;
     Mat_cd evec;
+    double E_offset;
 
     HAMILTONIAN M(MATRIX_SIZE, T_COUPLE, T_START, MU, DELTA);
 
@@ -188,6 +193,7 @@ Mat Do_TE(Vec const &Omegas) {
         assert(("Diagonalilisation :: No Success ", Solver.info() == Eigen::Success));
         eval = Solver.eigenvalues();
         evec = Solver.eigenvectors();
+        E_offset = std::abs(eval.maxCoeff()) * (R_STIFF + 1.0) / (R_STIFF - 1.0);
 #ifdef DEBUG_ACTIVE
         std::cout << " Debug Test Diagonalizeing Well?" << std::endl;
         Mat_cd D = (evec.adjoint() * M.get().selfadjointView<Eigen::Lower>() * evec);
@@ -224,7 +230,7 @@ Mat Do_TE(Vec const &Omegas) {
     Vec Progress = Vec::Zero(OMP_NUM_THREADS);
     mkl_set_dynamic(0);
     omp_set_max_active_levels(2);
-#pragma omp parallel shared(Rho_t, Threads, Progress, C_0, M, std::cout) firstprivate(Omegas, eval, evec, Maj1, Maj2, norm) default(none) num_threads(OMP_NUM_THREADS)
+#pragma omp parallel shared(Rho_t, Threads, Progress, C_0, M, std::cout) firstprivate(Omegas, eval, evec, Maj1, Maj2, norm, E_offset) default(none) num_threads(OMP_NUM_THREADS)
     {
         int tid = omp_get_thread_num();
         for (size_t k = tid; k < Omegas.size() / 2; k += OMP_NUM_THREADS) {
@@ -239,11 +245,11 @@ Mat Do_TE(Vec const &Omegas) {
             boost::numeric::odeint::bulirsch_stoer<Vec_cd> state;
             boost::numeric::odeint::integrate_const(
                     state,
-                    Schroedinger_of_cs(Omegas[k], &myM),
+                    Schroedinger_of_cs(Omegas[k], E_offset, &myM),
                     myC_0,
                     static_cast<double>(T_START),
                     static_cast<double>(T_END),
-                    static_cast<double>(2.00) * M_PI / T_RES,
+                    static_cast<double>(2.00) * M_PI / T_RES / (R_STIFF + 1.0),//* Omegas[k],
                     last_observer(C_f, Progress, Threads, static_cast<double>(k - tid) * 2 / Omegas.size()));
             {
                 Eigen::VectorXd res(6);
@@ -264,17 +270,18 @@ Mat Do_TE(Vec const &Omegas) {
             //C_f(MATRIX_SIZE);
             boost::numeric::odeint::integrate_const(
                     state,
-                    Schroedinger_of_cs(Omegas[Omegas.size() - k - 1], &myM),
+                    Schroedinger_of_cs(Omegas[Omegas.size() - k - 1], E_offset, &myM),
                     myC_0,
                     static_cast<double>(T_START),
                     static_cast<double>(T_END),
-                    static_cast<double>(2.00) * M_PI / T_RES,
+                    static_cast<double>(2.00) * M_PI / T_RES / (R_STIFF + 1.0),//* Omegas[k],
                     last_observer(C_f, Progress, Threads, (static_cast<double>(k - tid) * 2 + 1) / (Omegas.size())));
             {
                 Eigen::VectorXd res(6);
                 res << Omegas[Omegas.size() - k - 1],
                         std::pow(std::abs(C_f.dot(Maj1 - Maj2)), 2) / norm,
                         std::pow(std::abs(C_f.dot(Maj1 + Maj2)), 2) / norm,
+
                         C_f.norm(),
                         std::arg((C_f.transpose() * Maj1)[0]),
                         std::arg((C_f.transpose() * Maj2)[0]);

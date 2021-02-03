@@ -72,8 +72,12 @@ int main() {
         assert(csv_file.is_open());
         csv_file << "{{w, maj1-m1j2, maj1+m1j2,norm,pahse_Maj1,phase_Maj2},";
         for (auto k = 0; k < omegas.size(); k++) {
-            csv_file << "{" << out(0, k) << "," << out(1, k) << "," << out(2, k) << "," << out(3, k) << "," << out(4, k)
-                     << "," << out(5, k) << "},";
+            csv_file << "{";
+            for (auto a : out.col(k)) {
+                csv_file << a << ",";
+            }
+
+            csv_file << "lol},";
         }
         csv_file << "}";
         csv_file.close();

@@ -36,3 +36,4 @@ constexpr double T_END = (M_PI * 2.0 * T_ROT + T_START);
 constexpr double T_COUPLE = pref * T_C;
 constexpr double MU = pref * 3;
 constexpr double DELTA = pref * 3;
+constexpr double R_STIFF = 2;
