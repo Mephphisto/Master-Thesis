@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/TST_MKL_Eigen.iml" filepath="$PROJECT_DIR$/.idea/TST_MKL_Eigen.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/TST.iml" filepath="$PROJECT_DIR$/.idea/TST.iml" />
     </modules>
   </component>
 </project>

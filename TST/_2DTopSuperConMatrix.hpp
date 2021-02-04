@@ -31,6 +31,7 @@ private:
     /// \param k  k - Index
     /// \param j j - Index
     /// \param val New Value of the Submatrix
+#pragma declare simd
     inline void set(const size_t &k, const size_t &j, const cd &val) {
         m(k, j) = val;
         const size_t Msize2 = 2 * Msize;
@@ -49,6 +50,7 @@ private:
         for (size_t x = 0; x < Gsize; x++) {
             double E1x = exp(-r * (pow(x - Gsize_d / 2 - Vort_x, 2))),
                     E2x = exp(-r * (pow(x - Gsize_d / 2 + Vort_x, 2)));
+#pragma omp simd
             for (size_t y = 1; y < Gsize; y++) {
                 double Ex = E1x * exp(-r * pow(y - Gsize_d / 2 - Vort_y, 2))
                             + E2x * exp(-r * pow(y - Gsize_d / 2 + Vort_y, 2));
@@ -65,6 +67,7 @@ private:
 
     }
 
+#pragma omp declare simd
     cd inline getPhase(const size_t &x_j, const size_t &y_j, const size_t &x_k, const size_t &y_k) const {
         cd phase;
 #ifdef PHASE
@@ -97,6 +100,7 @@ private:
 #pragma unrollandfuse
 #endif
         for (size_t x = 0; x < Gsize; x++) {
+#pragma omp simd
             for (size_t y = 0; y < Gsize - 1; y++) {
 
                 set(at(x, y + 1), at(x, y) + Msize, cd(0, 1) * Delta * getPhase(x, y, x, y + 1));
@@ -112,6 +116,7 @@ public:
     /// \param index_x  x - Coordinate
     /// \param index_y  y - Coordinate
     /// \return Index
+#pragma omp declare simd
     inline size_t at(const size_t &index_x, const size_t &index_y) {
         return index_x + Gsize * index_y;
     }
@@ -206,6 +211,6 @@ public:
     /// \return trace
     double trace_A()
     override {
-        return 0;
+        return std::abs(m.topLeftCorner<MATRIX_SIZE / 2, MATRIX_SIZE / 2>().trace());
     }
 };

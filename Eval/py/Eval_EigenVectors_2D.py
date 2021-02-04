@@ -29,8 +29,8 @@ def colorize(z):
     return c
 
 
-FileName = "EigenVectors_M14450_Tres2"
-Path = "/home/jakob/CLionProjects/TST_MKL_Eigen/TST/cmake-build-debug/"
+FileName = "EigenVectorss_M2450_Tres500"
+Path = "/home/jakob/Desktop/"
 a = []
 with open(Path + FileName + '.csv', newline='') as csvfile:
     spamreader = csv.reader(csvfile, delimiter=',')
@@ -121,12 +121,12 @@ for i in majoranas:
         for k in range(gsize):
             x = b[k + gsize * j]
             y = b[k + gsize * j + l2]
-            aux.append(x + y)
+            aux.append(x + y.conjugate())
         img.append(aux)
 
     # 'nearest' interpolation - faithful but blocky
     plt.imshow(colorize(img), interpolation='none')
-    plt.savefig("Majoranas/2D_Modes_x+y" + str(i) + ".png", quality=90, optimize=True)
+    plt.savefig("Majoranas/2D_Modes_x+ycon" + str(i) + ".png", quality=90, optimize=True)
     plt.clf()
     del b1, k, img, aux
 
@@ -168,11 +168,11 @@ for i in majoranas:
         for k in range(gsize):
             x = b[k + gsize * j]
             y = b[k + gsize * j + l2]
-            aux.append(x * x.conjugate() + y * y.conjugate())
+            aux.append((x * x.conjugate() - y * y.conjugate()) / 2 + 1)
         img.append(aux)
 
     # 'nearest' interpolation - faithful but blocky
     plt.imshow(colorize(img), interpolation='none')
-    plt.savefig("Majoranas/2D_Modes_maj1" + str(i) + ".png", quality=90, optimize=True)
+    plt.savefig("Majoranas/2D_Modes_maj_new" + str(i) + ".png", quality=90, optimize=True)
     plt.clf()
     del b1, k, img, aux
