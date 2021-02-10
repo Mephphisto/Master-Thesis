@@ -66,8 +66,7 @@ inline std::tuple<Vec_cd, Vec_cd, Vec_cd> Get_C_0_Majs(const Vec_cd &eval, const
                 E += e_k;
 #endif
             }
-
-        }
++
     }
 #ifdef DEBUG_ACTIVE
     std::cout << "E_maj1 = " << eval[majoranas[0]] << " E_maj2 = " << eval[majoranas[1]] << std::endl;
@@ -193,7 +192,7 @@ Mat Do_TE(Vec const &Omegas) {
         assert(("Diagonalilisation :: No Success ", Solver.info() == Eigen::Success));
         eval = Solver.eigenvalues();
         evec = Solver.eigenvectors();
-        E_offset = std::abs(eval.maxCoeff()) * (R_STIFF + 1.0) / (R_STIFF - 1.0);
+        E_offset = eval.cwiseAbs().maxCoeff() * (R_STIFF + 1.0) / (R_STIFF - 1.0);
 #ifdef DEBUG_ACTIVE
         std::cout << " Debug Test Diagonalizeing Well?" << std::endl;
         Mat_cd D = (evec.adjoint() * M.get().selfadjointView<Eigen::Lower>() * evec);
@@ -254,8 +253,8 @@ Mat Do_TE(Vec const &Omegas) {
             {
                 Eigen::VectorXd res(6);
                 res << Omegas[k],
-                        std::pow(std::abs(C_f.dot(Maj1 - Maj2)), 2) / norm,
-                        std::pow(std::abs(C_f.dot(Maj1 + Maj2)), 2) / norm,
+                        std::norm(C_f.dot(Maj1)) / norm,
+                        std::norm(C_f.dot(Maj2)) / norm,
                         C_f.norm(),
                         std::arg((C_f.transpose() * Maj1)[0]),
                         std::arg((C_f.transpose() * Maj2)[0]);
