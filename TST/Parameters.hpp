@@ -24,7 +24,7 @@
 //#define MATRIX_TO_CSV
 //#define MU_TO_CSV
 //#define DELTA_To_CSV
-#define MAJIZE
+//#define MAJIZE
 
 //Deine Matrix Parameters
 constexpr double pref = 1.0 / 3.0;

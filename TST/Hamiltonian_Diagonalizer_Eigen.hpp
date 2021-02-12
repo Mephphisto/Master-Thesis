@@ -16,7 +16,9 @@
 #include <chrono>
 #include <fstream>
 #include <vector>
+#ifdef MAJIZE
 #include "Majoranize.hpp"
+#endif
 
 #if OMP_NUM_THREADS > 1
 
@@ -61,7 +63,7 @@ class Diagonalize_Hamiltonian_Eigen : public Diagonalize_Hamiltonian<T> {
                     //Build Matrix to be Solved by MKL
                     T M = T(MATRIX_SIZE, T_COUPLE, t, MU, DELTA);
                     m = M.get();
-                    tr = M.trace_A();
+                    tr = 0.0;//M.trace_A();
                 }
                 //Solve the Matrix
                 Solver.compute(m);

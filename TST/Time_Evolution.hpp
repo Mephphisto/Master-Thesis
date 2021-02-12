@@ -15,7 +15,7 @@
 #include <boost/numeric/odeint/external/eigen/eigen.hpp>
 #include "Hamiltonian_Matrix.hpp"
 #include "Parameters.hpp"
-#include "Majorana_Transform.hpp"
+#include "Majoranize.hpp"
 #include "Typedefs.hpp"
 #include <cmath>
 #include <omp.h>
@@ -37,7 +37,8 @@ typedef magma::SelfAdjointEigenSolver<Mat_cd> MSolver;
 typedef Eigen::SelfAdjointEigenSolver<Mat_cd> MSolver;
 #endif
 
-inline std::tuple<Vec_cd, Vec_cd, Vec_cd> Get_C_0_Majs(const Vec_cd &eval, const Mat_cd &evec, double tr) {
+inline std::tuple<Vec_cd, Vec_cd, Vec_cd, Vec_cd, Vec_cd>
+Get_C_0_Majs(const Vec_cd &eval, const Mat_cd &evec, double tr) {
     Vec_cd C_0 = Vec_cd(MATRIX_SIZE);
     // Summ up over Fermmie see and Majorana states
     HAMILTONIAN M(MATRIX_SIZE, T_COUPLE, T_START, MU, DELTA);
@@ -52,41 +53,9 @@ inline std::tuple<Vec_cd, Vec_cd, Vec_cd> Get_C_0_Majs(const Vec_cd &eval, const
             majoranas[1] = t;
         }
     }
-    /*
-#ifdef DEBUG_ACTIVE
-    double E = 0;
-#endif
-#pragma unroll
-    for (size_t k = 0; k < eval.size(); k++) {
-        if ((k != majoranas[0]) || k > (k != majoranas[1])) {
-            const double e_k = eval[k].real();
-            if (std::signbit(e_k)) {
-                C_0 += evec.col(k);
-#ifdef DEBUG_ACTIVE
-                E += e_k;
-#endif
-            }
-+
-    }
-#ifdef DEBUG_ACTIVE
-    std::cout << "E_maj1 = " << eval[majoranas[0]] << " E_maj2 = " << eval[majoranas[1]] << std::endl;
-#endif
-    auto tpl = Majoranaize(evec.col(majoranas[0]).normalized(), evec.col(majoranas[1]).normalized());
-#ifdef DEBUG_ACTIVE
-    std::cout << "|C_0| = " << C_0.norm() << std::endl;
-#endif
-    C_0 = (C_0 + ((0 < eval[majoranas[0]].real()) ? evec.col(majoranas[1]) : evec.col(majoranas[0]))).eval();
-    //C_0 += evec.col(majoranas[0]).normalized() + evec.col(majoranas[1]).normalized();
-    //C_0 += std::get<0>(tpl) ; //+ std::get<1>(tpl);
-#ifdef DEBUG_ACTIVE
-    E += std::max(eval[majoranas[0]].real(), eval[majoranas[1]].real());
-    std::cout << "E_0 = " << E << std::endl;
-    double a = std::abs(E - (C_0.dot(M.get() * C_0) / C_0.squaredNorm()));
-    if (a > 1e-12) std::cout << " E-Hv/vv = " << a << " E= "<<E << " Hv/vv= " << (C_0.dot(M.get() * C_0)) <<  std::endl;
-#endif
-    return std::make_tuple(C_0, std::get<0>(tpl), std::get<1>(tpl));*/
-    C_0 = evec.col(majoranas[0]);
-    return std::make_tuple(C_0, evec.col(majoranas[0]), evec.col(majoranas[1]));
+    auto tpl = FermiiMajize(evec.col(majoranas[0]), evec.col(majoranas[1]));
+    C_0 = std::get<2>(tpl);
+    return std::make_tuple(C_0, std::get<0>(tpl), std::get<1>(tpl), std::get<2>(tpl), std::get<3>(tpl));
 }
 
 inline Vec Energys(const Vec_cd &eval, const double &tr) {
@@ -172,7 +141,7 @@ Mat Do_TE(Vec const &Omegas) {
     std::cout << "MATRIX_SIZE= " << MATRIX_SIZE << std::endl;
 #endif
     Mat Rho_t(6, Omegas.size());
-    Vec_cd C_0, eval, Maj1, Maj2;
+    Vec_cd C_0, eval, Ferm1, Ferm2, Maj1, Maj2;
     Mat_cd evec;
     double E_offset;
 
@@ -211,7 +180,10 @@ Mat Do_TE(Vec const &Omegas) {
         std::cout << "<c_0|H|c_0> = " << C_0.dot(M.get() * C_0) + tr << std::endl;
 #endif
 
-        Maj1 = std::get<1>(tpl), Maj2 = std::get<2>(tpl);
+        Ferm1 = std::get<1>(tpl);
+        Ferm2 = std::get<2>(tpl);
+        Maj1 = std::get<3>(tpl);
+        Maj2 = std::get<4>(tpl);
     }
     double norm = std::pow(std::abs(C_0.dot(Maj1 + Maj2)), 2);
     mkl_set_dynamic(0);
@@ -229,7 +201,7 @@ Mat Do_TE(Vec const &Omegas) {
     Vec Progress = Vec::Zero(OMP_NUM_THREADS);
     mkl_set_dynamic(0);
     omp_set_max_active_levels(2);
-#pragma omp parallel shared(Rho_t, Threads, Progress, C_0, M, std::cout) firstprivate(Omegas, eval, evec, Maj1, Maj2, norm, E_offset) default(none) num_threads(OMP_NUM_THREADS)
+#pragma omp parallel shared(Rho_t, Threads, Progress, C_0, M, std::cout) firstprivate(Omegas, eval, evec, Ferm1, Ferm2, Maj1, Maj2, norm, E_offset) default(none) num_threads(OMP_NUM_THREADS)
     {
         int tid = omp_get_thread_num();
         for (size_t k = tid; k < Omegas.size() / 2; k += OMP_NUM_THREADS) {
@@ -253,11 +225,11 @@ Mat Do_TE(Vec const &Omegas) {
             {
                 Eigen::VectorXd res(6);
                 res << Omegas[k],
-                        std::norm(C_f.dot(Maj1)) / norm,
-                        std::norm(C_f.dot(Maj2)) / norm,
+                        std::abs(Ferm1.dot(C_f)) / norm,
+                        std::abs(Ferm2.dot(C_f)) / norm,
                         C_f.norm(),
-                        std::arg((C_f.transpose() * Maj1)[0]),
-                        std::arg((C_f.transpose() * Maj2)[0]);
+                        std::abs(Maj1.dot(C_f)),
+                        std::abs(Maj2.dot(C_f));
 
                 for (size_t j = 0; j < 5; j++) {
 #pragma omp atomic write
@@ -278,12 +250,11 @@ Mat Do_TE(Vec const &Omegas) {
             {
                 Eigen::VectorXd res(6);
                 res << Omegas[Omegas.size() - k - 1],
-                        std::pow(std::abs(C_f.dot(Maj1 - Maj2)), 2) / norm,
-                        std::pow(std::abs(C_f.dot(Maj1 + Maj2)), 2) / norm,
-
+                        std::abs(Ferm1.dot(C_f)) / norm,
+                        std::abs(Ferm2.dot(C_f)) / norm,
                         C_f.norm(),
-                        std::arg((C_f.transpose() * Maj1)[0]),
-                        std::arg((C_f.transpose() * Maj2)[0]);
+                        std::abs(Maj1.dot(C_f)),
+                        std::abs(Maj2.dot(C_f));
 
                 for (size_t j = 0; j < 5; j++) {
 #pragma omp atomic write

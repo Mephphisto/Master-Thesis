@@ -21,14 +21,14 @@ def colorize(z):
     l = 1.0 - 1.0 / (1.0 + r ** 0.3)
     s = 0.8
 
-    c = np.vectorize(hls_to_rgb)(h,l ,s)  # --> tuple
+    c = np.vectorize(hls_to_rgb)(h, l, s)  # --> tuple
     c = np.array(c)  # -->  array of (3,n,m) shape, but need (n,m,3)
     c = c.swapaxes(0, 2)
     return c
 
 
-FileName = "Matrix1922_Tres32"
-Path = "/home/jakob/Downloads/TST_MKL_Eigen/TST/cmake-build-release-intel-2019/"
+FileName = "Matrix7200_Tres2"
+Path = "/home/jakob/CLionProjects/TST_MKL_Eigen/TST/cmake-build-debug-gcc/"
 a = []
 with open(Path + FileName + '.csv', newline='') as csvfile:
     spamreader = csv.reader(csvfile, delimiter=',')
@@ -45,8 +45,8 @@ with open(Path + FileName + '.csv', newline='') as csvfile:
             print(row)
 
 # 'nearest' interpolation - faithful but blocky
-plt.figure(figsize = (len(a)/100,len(a[0])/100))
+plt.figure(figsize=(len(a) / 100, len(a[0]) / 100))
 plt.imshow(colorize(a), interpolation='nearest')
 
-plt.show(dpi=1200)
-# plt.savefig(FileName + ".jpg", quality=100, optimize=True, dpi=600)
+# plt.show(dpi=1200)
+plt.savefig(FileName + ".png")
