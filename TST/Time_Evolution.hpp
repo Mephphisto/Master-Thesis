@@ -37,9 +37,8 @@ typedef magma::SelfAdjointEigenSolver<Mat_cd> MSolver;
 typedef Eigen::SelfAdjointEigenSolver<Mat_cd> MSolver;
 #endif
 
-inline std::tuple<Vec_cd, Vec_cd, Vec_cd, Vec_cd, Vec_cd>
+inline std::tuple<Vec_cd, Vec_cd, Vec_cd, Vec_cd>
 Get_C_0_Majs(const Vec_cd &eval, const Mat_cd &evec, double tr) {
-    Vec_cd C_0 = Vec_cd(MATRIX_SIZE);
     // Summ up over Fermmie see and Majorana states
     HAMILTONIAN M(MATRIX_SIZE, T_COUPLE, T_START, MU, DELTA);
     size_t majoranas[2] = {0, 0};
@@ -54,8 +53,7 @@ Get_C_0_Majs(const Vec_cd &eval, const Mat_cd &evec, double tr) {
         }
     }
     auto tpl = FermiiMajize(evec.col(majoranas[0]), evec.col(majoranas[1]));
-    C_0 = std::get<2>(tpl);
-    return std::make_tuple(C_0, std::get<0>(tpl), std::get<1>(tpl), std::get<2>(tpl), std::get<3>(tpl));
+    return std::make_tuple(std::get<0>(tpl), std::get<1>(tpl), std::get<2>(tpl), std::get<3>(tpl));
 }
 
 inline Vec Energys(const Vec_cd &eval, const double &tr) {
@@ -87,7 +85,7 @@ public:
             std::cout << std::endl << "tid " << omp_get_thread_num << "\t theta " << theta << " \t |c| " << c.norm() << std::endl;
         }
         dcdt = H->getH() * c;*/
-        dcdt = H->get() * c + E_offset;//+ H->trace_A() * c;
+        dcdt = H->get() * c;//+ E_offset;//+ H->trace_A() * c;
         //dcdt = M * c;
         dcdt *= cd(0, -1 / w);
     }
@@ -143,7 +141,7 @@ Mat Do_TE(Vec const &Omegas) {
     Mat Rho_t(6, Omegas.size());
     Vec_cd C_0, eval, Ferm1, Ferm2, Maj1, Maj2;
     Mat_cd evec;
-    double E_offset;
+    double E_offset, norm;
 
     HAMILTONIAN M(MATRIX_SIZE, T_COUPLE, T_START, MU, DELTA);
 
@@ -175,17 +173,28 @@ Mat Do_TE(Vec const &Omegas) {
 #endif
 
         auto tpl = Get_C_0_Majs(eval, evec, tr);
-        C_0 = std::get<0>(tpl);
-#ifdef DEBUG_ACTIVE
-        std::cout << "<c_0|H|c_0> = " << C_0.dot(M.get() * C_0) + tr << std::endl;
-#endif
 
-        Ferm1 = std::get<1>(tpl);
-        Ferm2 = std::get<2>(tpl);
-        Maj1 = std::get<3>(tpl);
-        Maj2 = std::get<4>(tpl);
+
+        Maj1 = std::get<0>(tpl).normalized();
+        Maj2 = std::get<1>(tpl).normalized();
+        Ferm1 = std::get<2>(tpl).normalized();
+        Ferm2 = std::get<3>(tpl).normalized();
+        C_0 = Ferm1;
+        norm = C_0.norm();
+#ifdef DEBUG_ACTIVE
+        std::cout << "< Fermi1|C_0>" << std::norm(Ferm1.dot(C_0)) / norm << std::endl <<
+                  "< Fermi2|C_0>" << std::norm(Ferm2.dot(C_0)) / norm << std::endl <<
+                  "< C_0|C_0>" << C_0.norm() << std::endl <<
+                  "< Maj1|C_0>" << std::norm(Maj1.dot(C_0)) / norm << std::endl <<
+                  "< Maj2|C_0>" << std::norm(Maj2.dot(C_0)) / norm << std::endl <<
+                  "< Fermi1|Fermi2>" << std::norm(Ferm1.dot(Ferm2)) / norm << std::endl <<
+                  "< Maj1|Maj2>" << std::norm(Maj1.dot(Maj2)) / norm << std::endl;
+
+#endif
+#ifdef DEBUG_ACTIVE
+        std::cout << "<C__0|M | C_0> = " << C_0.dot(M.get() * C_0) + tr << std::endl;
+#endif
     }
-    double norm = std::pow(std::abs(C_0.dot(Maj1 + Maj2)), 2);
     mkl_set_dynamic(0);
     omp_set_max_active_levels(4);
 #ifdef DEBUG_ACTIVE
@@ -225,11 +234,11 @@ Mat Do_TE(Vec const &Omegas) {
             {
                 Eigen::VectorXd res(6);
                 res << Omegas[k],
-                        std::abs(Ferm1.dot(C_f)) / norm,
-                        std::abs(Ferm2.dot(C_f)) / norm,
+                        std::norm(Ferm1.dot(C_f)) / norm,
+                        std::norm(Ferm2.dot(C_f)) / norm,
                         C_f.norm(),
-                        std::abs(Maj1.dot(C_f)),
-                        std::abs(Maj2.dot(C_f));
+                        std::norm(Maj1.dot(C_f)) / norm,
+                        std::norm(Maj2.dot(C_f)) / norm;
 
                 for (size_t j = 0; j < 5; j++) {
 #pragma omp atomic write
@@ -250,11 +259,11 @@ Mat Do_TE(Vec const &Omegas) {
             {
                 Eigen::VectorXd res(6);
                 res << Omegas[Omegas.size() - k - 1],
-                        std::abs(Ferm1.dot(C_f)) / norm,
-                        std::abs(Ferm2.dot(C_f)) / norm,
+                        std::norm(Ferm1.dot(C_f)) / norm,
+                        std::norm(Ferm2.dot(C_f)) / norm,
                         C_f.norm(),
-                        std::abs(Maj1.dot(C_f)),
-                        std::abs(Maj2.dot(C_f));
+                        std::norm(Maj1.dot(C_f)) / norm,
+                        std::norm(Maj2.dot(C_f)) / norm;
 
                 for (size_t j = 0; j < 5; j++) {
 #pragma omp atomic write

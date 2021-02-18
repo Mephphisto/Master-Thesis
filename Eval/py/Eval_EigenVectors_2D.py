@@ -29,7 +29,7 @@ def colorize(z):
     return c
 
 
-FileName = "EigenVectors_M7200_Tres1"
+FileName = "EigenVectors_M1800_Tres1"
 Path = "/home/jakob/CLionProjects/TST_MKL_Eigen/TST/cmake-build-release-gcc/"
 a = []
 with open(Path + FileName + '.csv', newline='') as csvfile:

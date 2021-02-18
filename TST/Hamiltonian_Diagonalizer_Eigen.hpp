@@ -99,7 +99,7 @@ class Diagonalize_Hamiltonian_Eigen : public Diagonalize_Hamiltonian<T> {
                     }
                 }
 #ifdef MAJIZE
-                auto tpl = Fermiize(Solver.eigenvectors().col(majoranas[0]).normalized(),
+                auto tpl = Majoranize(Solver.eigenvectors().col(majoranas[0]).normalized(),
                                     Solver.eigenvectors().col(majoranas[1]).normalized());
                 this->All_EigenVectors.push_back(std::get<0>(tpl));
                 this->All_EigenVectors.push_back(std::get<1>(tpl));
