@@ -125,7 +125,7 @@ inline double upd_2Pi(double X, double dX, double lambda) {
 /// \param Y Input Vector
 /// \return tupel (A,B)
 std::tuple<Vec_cd, Vec_cd> Majoranize(const Vec_cd &X, const Vec_cd &Y) {
-    double lambda = std::numeric_limits<double>::max();
+    double lambda; // = std::numeric_limits<double>::max();
     double Phi = 0.0, Xi = 0.0, Zeta = 0.0, Theta = 0.0;
     assert(X.size() == Y.size());
     Vec_cd gX(GammaSwap(X)), gY(GammaSwap(Y));
@@ -147,6 +147,7 @@ std::tuple<Vec_cd, Vec_cd> Majoranize(const Vec_cd &X, const Vec_cd &Y) {
               << std::endl;
 #endif
     for (size_t k = 0; k < 1000; k++) {
+        lambda = 1e6;
         double Error_Old = Error(gxx, gyy, re_gxy, Phi, Xi, Zeta, Theta);
         dEdP = dEdPhi(gxx, gyy, re_gxy, Phi, Xi, Zeta, Theta);
         dEdX = dEdXi(gxx, gyy, re_gxy, Phi, Xi, Zeta, Theta);
@@ -158,6 +159,7 @@ std::tuple<Vec_cd, Vec_cd> Majoranize(const Vec_cd &X, const Vec_cd &Y) {
                                   upd_2Pi(Zeta, dEdZ, lambda),
                                   upd_2Pi(Theta, dEdT, lambda))) {
             lambda /= 2;
+
             if (lambda < std::numeric_limits<double>::epsilon()) {
                 k = 1000;
 #ifdef DEBUG_ACTIVE
@@ -167,6 +169,7 @@ std::tuple<Vec_cd, Vec_cd> Majoranize(const Vec_cd &X, const Vec_cd &Y) {
             }
         }
 #ifdef DEBUG_ACTIVE
+        std::cout << "Lambda = " << lambda << std::endl;
         std::cout << "Error Improvement " << Error_Old - Error(gxx, gyy, re_gxy,
                                                                upd_2Pi(Phi, dEdP, lambda),
                                                                upd_2Pi(Xi, dEdX, lambda),

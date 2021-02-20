@@ -129,7 +129,48 @@ struct last_observer {
     }
 };
 
-Mat Do_TE(Vec const &Omegas) {
+inline void Write_Output_atomic(Mat_cd &Rho_t, size_t k, const Eigen::VectorXcd &res) {
+    for (size_t j = 0; j < res.size(); j++) {
+#pragma omp atomic write
+        reinterpret_cast<double (&)[2]>(Rho_t(j, k))[0] = res[j].real();
+#pragma omp atomic write
+        reinterpret_cast<double (&)[2]>(Rho_t(j, k))[1] = res[j].imag();
+    }
+}
+
+inline Eigen::VectorXcd
+Prepare_Output(const double Omega, const Vec_cd &Ferm1, const Vec_cd &Ferm2, const Vec_cd &Maj1, const Vec_cd &Maj2,
+               double norm, size_t k, const Vec_cd &C_f) {
+    Eigen::VectorXcd res(6);
+    res << Omega,
+            Ferm1.dot(C_f) / norm,
+            Ferm2.dot(C_f) / norm,
+            C_f.norm(),
+            Maj1.dot(C_f) / norm,
+            Maj2.dot(C_f) / norm;
+    return res;
+}
+
+inline void Integrate_Schroedinger(const Vec &Omegas, Mat_cd &Rho_t, const Vec_cd &Ferm1, const Vec_cd &Ferm2,
+                                   const Vec_cd &Maj1, const Vec_cd &Maj2, double E_offset, double norm, int tid,
+                                   size_t k,
+                                   _2DTopSuperConMatrix &myM, Vec_cd &myC_0,
+                                   boost::numeric::odeint::bulirsch_stoer<Vec_cd> &state, Eigen::VectorXi &Threads,
+                                   Vec &Progress, Vec_cd &C_f) {
+    boost::numeric::odeint::integrate_const(
+            state,
+            Schroedinger_of_cs(Omegas[k], E_offset, &myM),
+            myC_0,
+            static_cast<double>(T_START),
+            static_cast<double>(T_END),
+            (T_END - T_START) / T_RES / (R_STIFF + 1.0),//* Omegas[k],
+            last_observer(C_f, Progress, Threads, static_cast<double>(k - tid) * 2 / Omegas.size()));
+    {
+        Write_Output_atomic(Rho_t, k, Prepare_Output(Omegas[k], Ferm1, Ferm2, Maj1, Maj2, norm, k, C_f));
+    }
+}
+
+Mat_cd Do_TE(Vec const &Omegas) {
 #ifdef ITT
     __itt_pause();
 #endif //ITT
@@ -138,7 +179,7 @@ Mat Do_TE(Vec const &Omegas) {
 #ifdef DEBUG_ACTIVE
     std::cout << "MATRIX_SIZE= " << MATRIX_SIZE << std::endl;
 #endif
-    Mat Rho_t(6, Omegas.size());
+    Mat_cd Rho_t(6, Omegas.size());
     Vec_cd C_0, eval, Ferm1, Ferm2, Maj1, Maj2;
     Mat_cd evec;
     double E_offset, norm;
@@ -219,57 +260,18 @@ Mat Do_TE(Vec const &Omegas) {
 #pragma omp critical
             std::cout << "HL_Thread " << omp_get_thread_num() << " of " << omp_get_num_threads() << std::endl;
 #endif
-            Vec_cd myC_0 = C_0;
             HAMILTONIAN myM(M);
+            Vec_cd myC_0 = C_0;
             Vec_cd C_f(MATRIX_SIZE);
             boost::numeric::odeint::bulirsch_stoer<Vec_cd> state;
-            boost::numeric::odeint::integrate_const(
-                    state,
-                    Schroedinger_of_cs(Omegas[k], E_offset, &myM),
-                    myC_0,
-                    static_cast<double>(T_START),
-                    static_cast<double>(T_END),
-                    static_cast<double>(2.00) * M_PI / T_RES / (R_STIFF + 1.0),//* Omegas[k],
-                    last_observer(C_f, Progress, Threads, static_cast<double>(k - tid) * 2 / Omegas.size()));
-            {
-                Eigen::VectorXd res(6);
-                res << Omegas[k],
-                        std::norm(Ferm1.dot(C_f)) / norm,
-                        std::norm(Ferm2.dot(C_f)) / norm,
-                        C_f.norm(),
-                        std::norm(Maj1.dot(C_f)) / norm,
-                        std::norm(Maj2.dot(C_f)) / norm;
-
-                for (size_t j = 0; j < 5; j++) {
-#pragma omp atomic write
-                    Rho_t(j, k) = res[j];
-                }
-            }
-            myC_0 = C_0;
+            Integrate_Schroedinger(Omegas, Rho_t, Ferm1, Ferm2, Maj1, Maj2, E_offset, norm, tid, k, myM, myC_0, state,
+                                   Threads, Progress, C_f);
             myM = M;
+            myC_0 = C_0;
             //C_f(MATRIX_SIZE);
-            boost::numeric::odeint::integrate_const(
-                    state,
-                    Schroedinger_of_cs(Omegas[Omegas.size() - k - 1], E_offset, &myM),
-                    myC_0,
-                    static_cast<double>(T_START),
-                    static_cast<double>(T_END),
-                    static_cast<double>(2.00) * M_PI / T_RES / (R_STIFF + 1.0),//* Omegas[k],
-                    last_observer(C_f, Progress, Threads, (static_cast<double>(k - tid) * 2 + 1) / (Omegas.size())));
-            {
-                Eigen::VectorXd res(6);
-                res << Omegas[Omegas.size() - k - 1],
-                        std::norm(Ferm1.dot(C_f)) / norm,
-                        std::norm(Ferm2.dot(C_f)) / norm,
-                        C_f.norm(),
-                        std::norm(Maj1.dot(C_f)) / norm,
-                        std::norm(Maj2.dot(C_f)) / norm;
-
-                for (size_t j = 0; j < 5; j++) {
-#pragma omp atomic write
-                    Rho_t(j, Omegas.size() - k - 1) = res[j];
-                }
-            }
+            Integrate_Schroedinger(Omegas, Rho_t, Ferm1, Ferm2, Maj1, Maj2, E_offset, norm, tid, Omegas.size() - k - 1,
+                                   myM, myC_0, state,
+                                   Threads, Progress, C_f);
         }
         mkl_set_num_threads_local(0);
         {
@@ -297,3 +299,6 @@ Mat Do_TE(Vec const &Omegas) {
     return
             Rho_t;
 }
+
+
+
