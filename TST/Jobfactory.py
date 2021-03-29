@@ -14,7 +14,7 @@ echo $path
 module load intel/2020
 mkdir $path
 cd $path
-cmake cmake .. -DCMAKE_BUILD_TYPE=Release  -DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++  -DTHREADS={0} -DMKL_PARALEL=TRUE -DTARGET_ARCHITECTURE=westmere -DGRID={1} -DT_RES={2} -DT_ROT=1.0 -DT_C=-2.0 -DW_START=-3 -DW_END=-3 -DW_RES=1 -DUSE_MAGMA=FALSE -DVERBOSE=FALSE  -DUSE_GPU=FALSE -DTIME_EVOLUTION=TRUE -DCMAKE_PREFIX_PATH="~/boost_1_72_0/"
+cmake cmake .. -DCMAKE_BUILD_TYPE=Release  -DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++  -DTHREADS={0} -DTHREADSHL={0} -DTARGET_ARCHITECTURE=westmere -DGRID=36 -DRAD=1.0/16.0 -DT_RES=500 -DT_ROT={1} -DT_C=-2.0 -DW_START=-4.0 -DW_END=2.0 -DW_RES=4 -DUSE_MAGMA=FALSE -DVERBOSE=FALSE  -DUSE_GPU=FALSE -DTIME_EVOLUTION=TRUE -DCMAKE_PREFIX_PATH="~/boost_1_72_0/" 
 make -j 8
 echo "running {0} threads" 
 echo "Running Program"
@@ -33,6 +33,6 @@ except:
     pass
 for i in range(7):
     file = open("Jobs/job" + str(i) + ".sh", "w+")
-    file.write(header.format(str(2 ** i), str(35), str(500)))
+    file.write(header.format(str(2 ** i), str(35), str(2 ** (i / 3.0))))
     file.close()
     os.system("qsub Jobs/job" + str(i) + ".sh")
