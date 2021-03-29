@@ -40,7 +40,7 @@ private:
 
     /// Helper function to build the \f$ A \f$ submatrices
     inline void Build_A() {
-        double r = 4 * pow(4 / (Gsize_d * 0.05), 2);
+         double r = -std::log(0.5) / RADIUS / RADIUS;
 
 #ifdef ICC
 #pragma unroll_and_jam

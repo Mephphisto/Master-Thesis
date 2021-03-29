@@ -26,6 +26,7 @@
 //#define DELTA_To_CSV
 //#define MAJIZE
 
+constexpr double RADIUS = GRID * RAD;
 //Deine Matrix Parameters
 constexpr double pref = 1.0 / 3.0;
 //#define PERIODIC_BOUNDRY
