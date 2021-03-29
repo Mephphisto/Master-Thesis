@@ -63,7 +63,7 @@ int main() {
         omegas[k] = aux;
     }
 
-    Mat out = Do_TE(omegas);
+    Mat_cd out = Do_TE(omegas);
 
 
     try {
@@ -71,13 +71,16 @@ int main() {
                               std::fstream::out);
         assert(csv_file.is_open());
         csv_file << "{{w, maj1-m1j2, maj1+m1j2,norm,pahse_Maj1,phase_Maj2},";
+        const long out_row_size = out.col(0).size();
         for (auto k = 0; k < omegas.size(); k++) {
             csv_file << "{";
-            for (auto a : out.col(k)) {
-                csv_file << a << ",";
+            for (auto j = 0; j < out_row_size; j++) {
+                csv_file << out.col(k)[j].real() << " + I* " << out.col(k)[j].imag();
+                if (j < out_row_size - 1) {
+                    csv_file << ",";
+                }
             }
-
-            csv_file << "lol},";
+            csv_file << "},";
         }
         csv_file << "}";
         csv_file.close();
@@ -91,6 +94,7 @@ int main() {
                       std::chrono::system_clock::now() - start).count()
               << "ms" <<
               std::endl;
+
     return 0;
 }
 

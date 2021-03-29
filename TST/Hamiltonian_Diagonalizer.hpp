@@ -197,7 +197,7 @@ protected:
             csv_file << "M" << "," << std::to_string(MATRIX_SIZE) << " Eigenvalues  ... " << std::endl;
 #ifdef DEBUG_ACTIVE
             //write Eigenvalues
-            std::cout << "Min Eval " << All_EigenValues.minCoeff() << std::endl;
+            std::cout << "Min Eval " << All_EigenValues.cwiseAbs().minCoeff() << std::endl;
 #endif
             for (auto V : All_EigenVectors) {
                 for (auto a : V) {

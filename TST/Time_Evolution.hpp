@@ -15,7 +15,7 @@
 #include <boost/numeric/odeint/external/eigen/eigen.hpp>
 #include "Hamiltonian_Matrix.hpp"
 #include "Parameters.hpp"
-#include "Majorana_Transform.hpp"
+#include "Majoranize.hpp"
 #include "Typedefs.hpp"
 #include <cmath>
 #include <omp.h>
@@ -37,8 +37,8 @@ typedef magma::SelfAdjointEigenSolver<Mat_cd> MSolver;
 typedef Eigen::SelfAdjointEigenSolver<Mat_cd> MSolver;
 #endif
 
-inline std::tuple<Vec_cd, Vec_cd, Vec_cd> Get_C_0_Majs(const Vec_cd &eval, const Mat_cd &evec, double tr) {
-    Vec_cd C_0 = Vec_cd(MATRIX_SIZE);
+inline std::tuple<Vec_cd, Vec_cd, Vec_cd, Vec_cd>
+Get_C_0_Majs(const Vec_cd &eval, const Mat_cd &evec, double tr) {
     // Summ up over Fermmie see and Majorana states
     HAMILTONIAN M(MATRIX_SIZE, T_COUPLE, T_START, MU, DELTA);
     size_t majoranas[2] = {0, 0};
@@ -52,41 +52,8 @@ inline std::tuple<Vec_cd, Vec_cd, Vec_cd> Get_C_0_Majs(const Vec_cd &eval, const
             majoranas[1] = t;
         }
     }
-    /*
-#ifdef DEBUG_ACTIVE
-    double E = 0;
-#endif
-#pragma unroll
-    for (size_t k = 0; k < eval.size(); k++) {
-        if ((k != majoranas[0]) || k > (k != majoranas[1])) {
-            const double e_k = eval[k].real();
-            if (std::signbit(e_k)) {
-                C_0 += evec.col(k);
-#ifdef DEBUG_ACTIVE
-                E += e_k;
-#endif
-            }
-+
-    }
-#ifdef DEBUG_ACTIVE
-    std::cout << "E_maj1 = " << eval[majoranas[0]] << " E_maj2 = " << eval[majoranas[1]] << std::endl;
-#endif
-    auto tpl = Majoranaize(evec.col(majoranas[0]).normalized(), evec.col(majoranas[1]).normalized());
-#ifdef DEBUG_ACTIVE
-    std::cout << "|C_0| = " << C_0.norm() << std::endl;
-#endif
-    C_0 = (C_0 + ((0 < eval[majoranas[0]].real()) ? evec.col(majoranas[1]) : evec.col(majoranas[0]))).eval();
-    //C_0 += evec.col(majoranas[0]).normalized() + evec.col(majoranas[1]).normalized();
-    //C_0 += std::get<0>(tpl) ; //+ std::get<1>(tpl);
-#ifdef DEBUG_ACTIVE
-    E += std::max(eval[majoranas[0]].real(), eval[majoranas[1]].real());
-    std::cout << "E_0 = " << E << std::endl;
-    double a = std::abs(E - (C_0.dot(M.get() * C_0) / C_0.squaredNorm()));
-    if (a > 1e-12) std::cout << " E-Hv/vv = " << a << " E= "<<E << " Hv/vv= " << (C_0.dot(M.get() * C_0)) <<  std::endl;
-#endif
-    return std::make_tuple(C_0, std::get<0>(tpl), std::get<1>(tpl));*/
-    C_0 = evec.col(majoranas[0]);
-    return std::make_tuple(C_0, evec.col(majoranas[0]), evec.col(majoranas[1]));
+    auto tpl = FermiiMajize(evec.col(majoranas[0]), evec.col(majoranas[1]));
+    return std::make_tuple(std::get<0>(tpl), std::get<1>(tpl), std::get<2>(tpl), std::get<3>(tpl));
 }
 
 inline Vec Energys(const Vec_cd &eval, const double &tr) {
@@ -118,7 +85,7 @@ public:
             std::cout << std::endl << "tid " << omp_get_thread_num << "\t theta " << theta << " \t |c| " << c.norm() << std::endl;
         }
         dcdt = H->getH() * c;*/
-        dcdt = H->get() * c + E_offset;//+ H->trace_A() * c;
+        dcdt = H->get() * c;//+ E_offset;//+ H->trace_A() * c;
         //dcdt = M * c;
         dcdt *= cd(0, -1 / w);
     }
@@ -162,7 +129,48 @@ struct last_observer {
     }
 };
 
-Mat Do_TE(Vec const &Omegas) {
+inline void Write_Output_atomic(Mat_cd &Rho_t, size_t k, const Eigen::VectorXcd &res) {
+    for (size_t j = 0; j < res.size(); j++) {
+#pragma omp atomic write
+        reinterpret_cast<double (&)[2]>(Rho_t(j, k))[0] = res[j].real();
+#pragma omp atomic write
+        reinterpret_cast<double (&)[2]>(Rho_t(j, k))[1] = res[j].imag();
+    }
+}
+
+inline Eigen::VectorXcd
+Prepare_Output(const double Omega, const Vec_cd &Ferm1, const Vec_cd &Ferm2, const Vec_cd &Maj1, const Vec_cd &Maj2,
+               double norm, size_t k, const Vec_cd &C_f) {
+    Eigen::VectorXcd res(6);
+    res << Omega,
+            Ferm1.dot(C_f) / norm,
+            Ferm2.dot(C_f) / norm,
+            C_f.norm(),
+            Maj1.dot(C_f) / norm,
+            Maj2.dot(C_f) / norm;
+    return res;
+}
+
+inline void Integrate_Schroedinger(const Vec &Omegas, Mat_cd &Rho_t, const Vec_cd &Ferm1, const Vec_cd &Ferm2,
+                                   const Vec_cd &Maj1, const Vec_cd &Maj2, double E_offset, double norm, int tid,
+                                   size_t k,
+                                   _2DTopSuperConMatrix &myM, Vec_cd &myC_0,
+                                   boost::numeric::odeint::bulirsch_stoer<Vec_cd> &state, Eigen::VectorXi &Threads,
+                                   Vec &Progress, Vec_cd &C_f) {
+    boost::numeric::odeint::integrate_const(
+            state,
+            Schroedinger_of_cs(Omegas[k], E_offset, &myM),
+            myC_0,
+            static_cast<double>(T_START),
+            static_cast<double>(T_END),
+            (T_END - T_START) / T_RES / (R_STIFF + 1.0),//* Omegas[k],
+            last_observer(C_f, Progress, Threads, static_cast<double>(k - tid) * 2 / Omegas.size()));
+    {
+        Write_Output_atomic(Rho_t, k, Prepare_Output(Omegas[k], Ferm1, Ferm2, Maj1, Maj2, norm, k, C_f));
+    }
+}
+
+Mat_cd Do_TE(Vec const &Omegas) {
 #ifdef ITT
     __itt_pause();
 #endif //ITT
@@ -171,10 +179,10 @@ Mat Do_TE(Vec const &Omegas) {
 #ifdef DEBUG_ACTIVE
     std::cout << "MATRIX_SIZE= " << MATRIX_SIZE << std::endl;
 #endif
-    Mat Rho_t(6, Omegas.size());
-    Vec_cd C_0, eval, Maj1, Maj2;
+    Mat_cd Rho_t(6, Omegas.size());
+    Vec_cd C_0, eval, Ferm1, Ferm2, Maj1, Maj2;
     Mat_cd evec;
-    double E_offset;
+    double E_offset, norm;
 
     HAMILTONIAN M(MATRIX_SIZE, T_COUPLE, T_START, MU, DELTA);
 
@@ -206,14 +214,28 @@ Mat Do_TE(Vec const &Omegas) {
 #endif
 
         auto tpl = Get_C_0_Majs(eval, evec, tr);
-        C_0 = std::get<0>(tpl);
-#ifdef DEBUG_ACTIVE
-        std::cout << "<c_0|H|c_0> = " << C_0.dot(M.get() * C_0) + tr << std::endl;
-#endif
 
-        Maj1 = std::get<1>(tpl), Maj2 = std::get<2>(tpl);
+
+        Maj1 = std::get<0>(tpl).normalized();
+        Maj2 = std::get<1>(tpl).normalized();
+        Ferm1 = std::get<2>(tpl).normalized();
+        Ferm2 = std::get<3>(tpl).normalized();
+        C_0 = Ferm1;
+        norm = C_0.norm();
+#ifdef DEBUG_ACTIVE
+        std::cout << "< Fermi1|C_0>" << std::norm(Ferm1.dot(C_0)) / norm << std::endl <<
+                  "< Fermi2|C_0>" << std::norm(Ferm2.dot(C_0)) / norm << std::endl <<
+                  "< C_0|C_0>" << C_0.norm() << std::endl <<
+                  "< Maj1|C_0>" << std::norm(Maj1.dot(C_0)) / norm << std::endl <<
+                  "< Maj2|C_0>" << std::norm(Maj2.dot(C_0)) / norm << std::endl <<
+                  "< Fermi1|Fermi2>" << std::norm(Ferm1.dot(Ferm2)) / norm << std::endl <<
+                  "< Maj1|Maj2>" << std::norm(Maj1.dot(Maj2)) / norm << std::endl;
+
+#endif
+#ifdef DEBUG_ACTIVE
+        std::cout << "<C__0|M | C_0> = " << C_0.dot(M.get() * C_0) + tr << std::endl;
+#endif
     }
-    double norm = std::pow(std::abs(C_0.dot(Maj1 + Maj2)), 2);
     mkl_set_dynamic(0);
     omp_set_max_active_levels(4);
 #ifdef DEBUG_ACTIVE
@@ -229,7 +251,7 @@ Mat Do_TE(Vec const &Omegas) {
     Vec Progress = Vec::Zero(OMP_NUM_THREADS);
     mkl_set_dynamic(0);
     omp_set_max_active_levels(2);
-#pragma omp parallel shared(Rho_t, Threads, Progress, C_0, M, std::cout) firstprivate(Omegas, eval, evec, Maj1, Maj2, norm, E_offset) default(none) num_threads(OMP_NUM_THREADS)
+#pragma omp parallel shared(Rho_t, Threads, Progress, C_0, M, std::cout) firstprivate(Omegas, eval, evec, Ferm1, Ferm2, Maj1, Maj2, norm, E_offset) default(none) num_threads(OMP_NUM_THREADS)
     {
         int tid = omp_get_thread_num();
         for (size_t k = tid; k < Omegas.size() / 2; k += OMP_NUM_THREADS) {
@@ -238,58 +260,18 @@ Mat Do_TE(Vec const &Omegas) {
 #pragma omp critical
             std::cout << "HL_Thread " << omp_get_thread_num() << " of " << omp_get_num_threads() << std::endl;
 #endif
-            Vec_cd myC_0 = C_0;
             HAMILTONIAN myM(M);
+            Vec_cd myC_0 = C_0;
             Vec_cd C_f(MATRIX_SIZE);
             boost::numeric::odeint::bulirsch_stoer<Vec_cd> state;
-            boost::numeric::odeint::integrate_const(
-                    state,
-                    Schroedinger_of_cs(Omegas[k], E_offset, &myM),
-                    myC_0,
-                    static_cast<double>(T_START),
-                    static_cast<double>(T_END),
-                    static_cast<double>(2.00) * M_PI / T_RES / (R_STIFF + 1.0),//* Omegas[k],
-                    last_observer(C_f, Progress, Threads, static_cast<double>(k - tid) * 2 / Omegas.size()));
-            {
-                Eigen::VectorXd res(6);
-                res << Omegas[k],
-                        std::norm(C_f.dot(Maj1)) / norm,
-                        std::norm(C_f.dot(Maj2)) / norm,
-                        C_f.norm(),
-                        std::arg((C_f.transpose() * Maj1)[0]),
-                        std::arg((C_f.transpose() * Maj2)[0]);
-
-                for (size_t j = 0; j < 5; j++) {
-#pragma omp atomic write
-                    Rho_t(j, k) = res[j];
-                }
-            }
-            myC_0 = C_0;
+            Integrate_Schroedinger(Omegas, Rho_t, Ferm1, Ferm2, Maj1, Maj2, E_offset, norm, tid, k, myM, myC_0, state,
+                                   Threads, Progress, C_f);
             myM = M;
+            myC_0 = C_0;
             //C_f(MATRIX_SIZE);
-            boost::numeric::odeint::integrate_const(
-                    state,
-                    Schroedinger_of_cs(Omegas[Omegas.size() - k - 1], E_offset, &myM),
-                    myC_0,
-                    static_cast<double>(T_START),
-                    static_cast<double>(T_END),
-                    static_cast<double>(2.00) * M_PI / T_RES / (R_STIFF + 1.0),//* Omegas[k],
-                    last_observer(C_f, Progress, Threads, (static_cast<double>(k - tid) * 2 + 1) / (Omegas.size())));
-            {
-                Eigen::VectorXd res(6);
-                res << Omegas[Omegas.size() - k - 1],
-                        std::pow(std::abs(C_f.dot(Maj1 - Maj2)), 2) / norm,
-                        std::pow(std::abs(C_f.dot(Maj1 + Maj2)), 2) / norm,
-
-                        C_f.norm(),
-                        std::arg((C_f.transpose() * Maj1)[0]),
-                        std::arg((C_f.transpose() * Maj2)[0]);
-
-                for (size_t j = 0; j < 5; j++) {
-#pragma omp atomic write
-                    Rho_t(j, Omegas.size() - k - 1) = res[j];
-                }
-            }
+            Integrate_Schroedinger(Omegas, Rho_t, Ferm1, Ferm2, Maj1, Maj2, E_offset, norm, tid, Omegas.size() - k - 1,
+                                   myM, myC_0, state,
+                                   Threads, Progress, C_f);
         }
         mkl_set_num_threads_local(0);
         {
@@ -317,3 +299,6 @@ Mat Do_TE(Vec const &Omegas) {
     return
             Rho_t;
 }
+
+
+

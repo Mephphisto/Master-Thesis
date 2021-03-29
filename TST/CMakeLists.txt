@@ -86,6 +86,7 @@ message("Using ${THREADSHL} OMP Thread and ${THREADS} MKL Threads")
 
 
 target_compile_definitions(TST PUBLIC GRID=${GRID})
+target_compile_definitions(TST PUBLIC RAD=${RAD})
 target_compile_definitions(TST PUBLIC T_RES=${T_RES})
 target_compile_definitions(TST PUBLIC W_RES=${W_RES}*${THREADS})
 target_compile_definitions(TST PUBLIC W_START=${W_START})
