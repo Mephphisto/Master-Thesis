@@ -64,11 +64,10 @@ inline Vec Energys(const Vec_cd &eval, const double &tr) {
 
 struct Schroedinger_of_cs {
 private:
-    double w, E_offset;
+    double w;
     HAMILTONIAN *H;
 public:
-    explicit Schroedinger_of_cs(const double &omega, const double &E_ofs, HAMILTONIAN *H_in) : w(omega),
-                                                                                               E_offset(E_ofs) {
+    explicit Schroedinger_of_cs(const double &omega, HAMILTONIAN *H_in) : w(omega) {
         H = H_in;
 #ifdef DEBUG_ACTIVE2
         _2DTopSuperConMatrix_DEPR Mcheck(MATRIX_SIZE, T_COUPLE, T_START, MU, DELTA);
@@ -140,12 +139,12 @@ inline void Write_Output_atomic(Mat_cd &Rho_t, size_t k, const Eigen::VectorXcd 
 
 inline Eigen::VectorXcd
 Prepare_Output(const double Omega, const Vec_cd &Ferm1, const Vec_cd &Ferm2, const Vec_cd &Maj1, const Vec_cd &Maj2,
-               double norm, size_t k, const Vec_cd &C_f) {
+               double norm, size_t k, const Vec_cd &C_f, double Eergy) {
     Eigen::VectorXcd res(6);
     res << Omega,
             Ferm1.dot(C_f) / norm,
             Ferm2.dot(C_f) / norm,
-            C_f.norm(),
+            cd(C_f.norm(), Eergy),
             Maj1.dot(C_f) / norm,
             Maj2.dot(C_f) / norm;
     return res;
@@ -155,18 +154,26 @@ inline void Integrate_Schroedinger(const Vec &Omegas, Mat_cd &Rho_t, const Vec_c
                                    const Vec_cd &Maj1, const Vec_cd &Maj2, double E_offset, double norm, int tid,
                                    size_t k,
                                    _2DTopSuperConMatrix &myM, Vec_cd &myC_0,
-                                   boost::numeric::odeint::bulirsch_stoer<Vec_cd> &state, Eigen::VectorXi &Threads,
+                                   Eigen::VectorXi &Threads,
                                    Vec &Progress, Vec_cd &C_f) {
+    boost::numeric::odeint::bulirsch_stoer<Vec_cd> state;
+    //boost::numeric::odeint::runge_kutta_fehlberg78<Vec_cd> state;
     boost::numeric::odeint::integrate_const(
+            //boost::numeric::odeint::make_controlled(1e-3,1e-3, state),
             state,
-            Schroedinger_of_cs(Omegas[k], E_offset, &myM),
+            Schroedinger_of_cs(Omegas[k], &myM),
             myC_0,
             static_cast<double>(T_START),
             static_cast<double>(T_END),
-            (T_END - T_START) / T_RES / (R_STIFF + 1.0),//* Omegas[k],
-            last_observer(C_f, Progress, Threads, static_cast<double>(k - tid) * 2 / Omegas.size()));
+            (T_END - T_START) / T_RES,//(* std::min( Omegas[k]/ E_offset, 1.0),
+            last_observer(C_f, Progress, Threads,
+                          static_cast<double>(
+                                  (k < Omegas.size() / 2 ? 2 * (k - tid) : 2 * (Omegas.size() - 1 - k - tid) + 1) *
+                                  OMP_NUM_THREADS / Omegas.size())));
     {
-        Write_Output_atomic(Rho_t, k, Prepare_Output(Omegas[k], Ferm1, Ferm2, Maj1, Maj2, norm, k, C_f));
+        myM.Update(MATRIX_SIZE, T_COUPLE, T_END, MU, DELTA);
+        double Energy = std::abs(C_f.dot(myM.get() * C_f));
+        Write_Output_atomic(Rho_t, k, Prepare_Output(Omegas[k], Ferm1, Ferm2, Maj1, Maj2, norm, k, C_f, Energy));
     }
 }
 
@@ -200,7 +207,7 @@ Mat_cd Do_TE(Vec const &Omegas) {
         assert(("Diagonalilisation :: No Success ", Solver.info() == Eigen::Success));
         eval = Solver.eigenvalues();
         evec = Solver.eigenvectors();
-        E_offset = eval.cwiseAbs().maxCoeff() * (R_STIFF + 1.0) / (R_STIFF - 1.0);
+        E_offset = eval.cwiseAbs().maxCoeff() / 4;
 #ifdef DEBUG_ACTIVE
         std::cout << " Debug Test Diagonalizeing Well?" << std::endl;
         Mat_cd D = (evec.adjoint() * M.get().selfadjointView<Eigen::Lower>() * evec);
@@ -263,15 +270,13 @@ Mat_cd Do_TE(Vec const &Omegas) {
             HAMILTONIAN myM(M);
             Vec_cd myC_0 = C_0;
             Vec_cd C_f(MATRIX_SIZE);
-            boost::numeric::odeint::bulirsch_stoer<Vec_cd> state;
-            Integrate_Schroedinger(Omegas, Rho_t, Ferm1, Ferm2, Maj1, Maj2, E_offset, norm, tid, k, myM, myC_0, state,
-                                   Threads, Progress, C_f);
+            Integrate_Schroedinger(Omegas, Rho_t, Ferm1, Ferm2, Maj1, Maj2, E_offset, norm, tid, k, myM, myC_0, Threads,
+                                   Progress, C_f);
             myM = M;
             myC_0 = C_0;
             //C_f(MATRIX_SIZE);
             Integrate_Schroedinger(Omegas, Rho_t, Ferm1, Ferm2, Maj1, Maj2, E_offset, norm, tid, Omegas.size() - k - 1,
-                                   myM, myC_0, state,
-                                   Threads, Progress, C_f);
+                                   myM, myC_0, Threads, Progress, C_f);
         }
         mkl_set_num_threads_local(0);
         {
