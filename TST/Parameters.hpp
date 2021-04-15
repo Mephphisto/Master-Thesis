@@ -22,18 +22,18 @@
 #define EVAL_EVEC_BY_CSV
 //#define SHOW_MATRIX_AND_QUIT
 //#define MATRIX_TO_CSV
-#define MU_TO_CSV
-#define DELTA_TO_CSV
+//#define MU_TO_CSV
+//#define DELTA_TO_CSV
 //#define MAJIZ
 
 constexpr double RADIUS = GRID * RAD;
 //Deine Matrix Parameters
-constexpr double pref = 1.0 / 3.0;
+constexpr double pref = 1.0;
 //#define PERIODIC_BOUNDRY
 #define PHASE
 constexpr int MATRIX_SIZE = (2 * GRID * GRID);
 constexpr double T_START = -0.0;
 constexpr double T_END = -(M_PI * 2.0 * T_ROT + T_START);
 constexpr double T_COUPLE = pref * T_C;
-constexpr double MU = pref * 3;
-constexpr double DELTA = pref * 3;
+constexpr double MU = pref * 0.5;
+constexpr double DELTA = pref * 1.0;

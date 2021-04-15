@@ -176,7 +176,8 @@ endif ()
 get_target_property(OUT TST LINK_LIBRARIES)
 message(STATUS ${OUT})
 
-find_library(optim , TST)
+find_library(optim TST)
+include_directories("/usr/local/include/optim/")
 
 find_package(autodiff)
 target_link_libraries(TST autodiff::autodiff)

@@ -240,7 +240,7 @@ Mat_cd Do_TE(Vec const &Omegas) {
 
 #endif
 #ifdef DEBUG_ACTIVE
-        std::cout << "<C__0|M | C_0> = " << C_0.dot(M.get() * C_0) << std::endl;
+        std::cout << "<C_0|M|C_0> = " << C_0.dot(M.get() * C_0) << std::endl;
 #endif
     }
     mkl_set_dynamic(0);

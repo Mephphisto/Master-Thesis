@@ -16,6 +16,7 @@
 #include <chrono>
 #include <fstream>
 #include <vector>
+
 #ifdef MAJIZE
 #include "Majoranize.hpp"
 #endif
@@ -32,9 +33,12 @@ template<class T>
 class Diagonalize_Hamiltonian_Eigen : public Diagonalize_Hamiltonian<T> {
     inline void Compute() override {
 #if OMP_NUM_THREADS > 1
+        mkl_set_dynamic(0);
+        omp_set_max_active_levels(2);
 #pragma omp parallel num_threads(OMP_NUM_THREADS)
 
         {
+            mkl_set_num_threads(MKL_NUM_THREADS / OMP_NUM_THREADS);
             // Get Thread ID
             int tid = omp_get_thread_num();
             // Create Solver
@@ -57,10 +61,11 @@ class Diagonalize_Hamiltonian_Eigen : public Diagonalize_Hamiltonian<T> {
                 //Storage for Matrix and Trace
                 Mat_cd m;
                 double tr;
-                double t = T_START + (T_END - T_START) * ((k == 0) ? 0.0 : (double(k) / double(T_RES - 1)));
+                //double t = T_START + (T_END - T_START) * ((k == 0) ? 0.0 : (double(k) / double(T_RES - 1)));
+                double t = -MU + 2.0 * MU * ((k == 0) ? 0.0 : (double(k) / double(T_RES - 1)));
                 {
                     //Build Matrix to be Solved by MKL
-                    T M = T(MATRIX_SIZE, T_COUPLE, t, MU, DELTA);
+                    T M = T(MATRIX_SIZE, T_COUPLE, T_START, t, DELTA);
                     m = M.get();
                     tr = 0.0;//M.trace_A();
                 }
@@ -109,7 +114,7 @@ class Diagonalize_Hamiltonian_Eigen : public Diagonalize_Hamiltonian<T> {
 #pragma omp critical
                     std::cout << " EiVal[" << l << "] = " << this->All_EigenValues.col(k)[l];
                     this->All_EigenVectors.push_back(Solver.eigenvectors().col(l));
-                    }
+                }
 #endif
             }
 #if OMP_NUM_THREADS > 1

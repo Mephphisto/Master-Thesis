@@ -52,9 +52,12 @@ private:
                     E2x = exp(-r * (pow(x - Gsize_d / 2 + Vort_x, 2)));
 //#pragma omp simd
             for (size_t y = 1; y < Gsize; y++) {
-                double Ex = E1x * exp(-r * pow(y - Gsize_d / 2 - Vort_y, 2))
-                            + E2x * exp(-r * pow(y - Gsize_d / 2 + Vort_y, 2));
-                set(at(x, y), at(x, y), mu - 2 * mu * Ex);
+                //double Ex = E1x * exp(-r * pow(y - Gsize_d / 2 - Vort_y, 2))
+                //            + E2x * exp(-r * pow(y - Gsize_d / 2 + Vort_y, 2));
+                //set(at(x, y), at(x, y), mu - 2 * mu * Ex);
+                set(at(x, y), at(x, y),
+                    -4 * t + (r < pow(x - Gsize_d / 2 - Vort_x, 2) + pow(y - Gsize_d / 2 + Vort_y, 2)) ? mu : -mu);
+
                 set(at(x, y - 1), at(x, y), t);
                 set(at(x, y), at(x, y - 1), t);
                 set(at(y, x), at(y - 1, x), t);
@@ -62,7 +65,9 @@ private:
             }
             double Ex = E1x * exp(-r * pow(-Gsize_d / 2 - Vort_y, 2))
                         + E2x * exp(-r * pow(-Gsize_d / 2 + Vort_y, 2));
-            set(at(x, 0), at(x, 0), mu - 2 * mu * Ex);
+            //set(at(x, 0), at(x, 0), mu - 2 * mu * Ex);
+            set(at(x, 0), at(x, 0),
+                -4 * t + (r < pow(x - Gsize_d / 2 - Vort_x, 2) + pow(-Gsize_d / 2 + Vort_y, 2)) ? mu : -mu);
         }
 
     }
@@ -97,6 +102,7 @@ private:
 #ifdef ICC
 #pragma unroll_and_jam
 #else
+#pragma unrollandfuse
 #pragma unrollandfuse
 #endif
         for (size_t x = 0; x < Gsize; x++) {
