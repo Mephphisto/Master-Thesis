@@ -22,9 +22,9 @@
 #define EVAL_EVEC_BY_CSV
 //#define SHOW_MATRIX_AND_QUIT
 //#define MATRIX_TO_CSV
-//#define MU_TO_CSV
-//#define DELTA_To_CSV
-//#define MAJIZE
+#define MU_TO_CSV
+#define DELTA_TO_CSV
+//#define MAJIZ
 
 constexpr double RADIUS = GRID * RAD;
 //Deine Matrix Parameters
@@ -37,4 +37,3 @@ constexpr double T_END = -(M_PI * 2.0 * T_ROT + T_START);
 constexpr double T_COUPLE = pref * T_C;
 constexpr double MU = pref * 3;
 constexpr double DELTA = pref * 3;
-constexpr double R_STIFF = 2;

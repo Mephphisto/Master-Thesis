@@ -59,7 +59,7 @@ int main() {
     const size_t num_steps = W_RES;
     Vec omegas(num_steps);
     for (int k = 0; k < num_steps; k++) {
-        double aux = std::pow(10.0, W_START + (W_END - W_START) * (double(k) / double(W_RES)));
+        double aux = std::pow(10.0, W_START + (W_END - W_START) * (double) k / ((double) num_steps));
         omegas[k] = aux;
     }
 
@@ -67,7 +67,7 @@ int main() {
 
 
     try {
-        std::fstream csv_file("Rho_Decay.csv",
+        std::fstream csv_file("Rho_Decay_" + std::to_string(RAD) + ".csv",
                               std::fstream::out);
         assert(csv_file.is_open());
         csv_file << "{{w, maj1-m1j2, maj1+m1j2,norm,pahse_Maj1,phase_Maj2},";
