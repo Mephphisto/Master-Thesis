@@ -23,7 +23,6 @@
 #if OMP_NUM_THREADS > 1
 
 #include <omp.h>
-#include "Majorana_Transform.hpp"
 #include "Typedefs.hpp"
 
 #endif

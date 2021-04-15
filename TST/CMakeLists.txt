@@ -24,7 +24,7 @@ elseif ()
 endif ()
 
 
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 
 add_executable(TST main.cpp)
 if (TRUE)
@@ -175,3 +175,8 @@ if (${CMAKE_BUILD_TYPE} STREQUAL RelWithDebInfo)
 endif ()
 get_target_property(OUT TST LINK_LIBRARIES)
 message(STATUS ${OUT})
+
+find_library(optim , TST)
+
+find_package(autodiff)
+target_link_libraries(TST autodiff::autodiff)

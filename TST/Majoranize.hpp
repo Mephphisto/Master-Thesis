@@ -136,7 +136,7 @@ std::tuple<Vec_cd, Vec_cd> Majoranize(const Vec_cd &X, const Vec_cd &Y) {
     double re_gxy = gX.conjugate().dot(Y).real();
     double dEdP, dEdX, dEdZ, dEdT;
 #ifdef DEBUG_ACTIVE
-    std::cout << "Beginnig Majoranize, Error_0 = " << 4 - 0 - 2.0 * Error(gxx, gyy, re_gxy, Phi, Xi, Zeta, Theta)
+    std::cout << "Beginnig Majoranize, Error_0 = " << 4.0 - 2.0 * Error(gxx, gyy, re_gxy, Phi, Xi, Zeta, Theta)
               << std::endl
               << " Teta = " << Theta << " Phi = " << Phi << " Xi = " << Xi << " Zeta = " << Zeta << std::endl
               << " Check 4-2Re(X*gX)-2Re(Y*gY) = " << X.dot(X) + Y.dot(Y) + gX.dot(gX) + gY.dot(gY) - 2.0 * (std::real(

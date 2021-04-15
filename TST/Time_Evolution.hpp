@@ -15,7 +15,7 @@
 #include <boost/numeric/odeint/external/eigen/eigen.hpp>
 #include "Hamiltonian_Matrix.hpp"
 #include "Parameters.hpp"
-#include "Majoranize.hpp"
+#include "Majorana_Transform.hpp"
 #include "Typedefs.hpp"
 #include <cmath>
 #include <omp.h>
@@ -25,7 +25,7 @@
 #include <boost/phoenix/operator.hpp>
 #include <string>
 
-#include "_2DTopSuperConMatrix_DEPRECATED.hpp"
+//#include "_2DTopSuperConMatrix_DEPRECATED.hpp"
 
 typedef double Time;
 
@@ -52,7 +52,7 @@ Get_C_0_Majs(const Vec_cd &eval, const Mat_cd &evec, double tr) {
             majoranas[1] = t;
         }
     }
-    auto tpl = FermiiMajize(evec.col(majoranas[0]), evec.col(majoranas[1]));
+    auto tpl = mjize::FermiiMajize(evec.col(majoranas[0]), evec.col(majoranas[1]));
     return std::make_tuple(std::get<0>(tpl), std::get<1>(tpl), std::get<2>(tpl), std::get<3>(tpl));
 }
 
@@ -240,7 +240,7 @@ Mat_cd Do_TE(Vec const &Omegas) {
 
 #endif
 #ifdef DEBUG_ACTIVE
-        std::cout << "<C__0|M | C_0> = " << C_0.dot(M.get() * C_0) + tr << std::endl;
+        std::cout << "<C__0|M | C_0> = " << C_0.dot(M.get() * C_0) << std::endl;
 #endif
     }
     mkl_set_dynamic(0);
