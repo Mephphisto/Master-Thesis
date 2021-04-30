@@ -4,23 +4,23 @@
 
 #pragma once
 
-#include "Parameters.hpp"
+
 #include <type_traits>
 #include <iostream>
-#include <Eigen/Dense>
 #include <fstream>
 #include <vector>
 #include <chrono>
 #include "Hamiltonian_MatrixSparse.hpp"
 #include "Hamiltonian_Matrix.hpp"
 #include "Typedefs.hpp"
-
+#include "Parameters.hpp"
+#include <Eigen/Dense>
 
 /// Abstract Template Baseclass to Solve Hamiltonian
 ///
 /// \tparam T Class that buiilds Matrix representing Hamiltonian. Has to be derived from 
-template <class T>
-class Diagonalize_Hamiltonian{
+template<class T>
+class Diagonalize_Hamiltonian {
     static_assert(std::is_base_of<Hamiltonian_Matrix, T>::value);
 protected:
     /// Storage of computed Eigen Values

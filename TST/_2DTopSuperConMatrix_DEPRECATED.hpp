@@ -71,6 +71,13 @@ private:
                     } else if (y_k == y_j - 1) {
                         set(k, j, t);
                     }
+#ifdef PERIODIC_BOUNDRY
+                    else if ((y_k == Gsize - 1) && (y_j == 0)) {
+                        set(k, j, t);
+                    } else if ((y_k == 0) && (y_j == Gsize - 1)) {
+                        set(k, j, t);
+                    }
+#endif
                 } else if (y_k == y_j) {
                     if (x_k == x_j + 1) {
                         set(k, j, t);
@@ -79,14 +86,11 @@ private:
                     }
                 }
 #ifdef PERIODIC_BOUNDRY
-                } else if ((x_k == x_j) && (y_k == Gsize - 1) && (y_j == 0)) {
-                    set(k, j, t);
-                } else if ((x_k == x_j) && (y_k == 0) && (y_j == Gsize - 1)) {
-                    set(k, j, t);
-                } else if ((x_k == Gsize - 1) && (x_j == 0) && (y_k == y_j)) {
-                    set(k, j, t);
-                } else if ((x_k == 0) && (x_j == Gsize - 1) && (y_k == y_j)) {
-                    set(k, j, t);
+                if ((x_k == Gsize - 1) && (x_j == 0) && (y_k == y_j)) {
+                   set(k, j, t);
+               } else if ((x_k == 0) && (x_j == Gsize - 1) && (y_k == y_j)) {
+                   set(k, j, t);
+               }
 #endif
                 /*else {
                    set(k, j, 0);
@@ -94,8 +98,8 @@ private:
                }*/
             }
         }
-
     }
+
 
     cd inline getPhase(const size_t &x_j, const size_t &y_j, const size_t &x_k, const size_t &y_k) const {
         cd phase;
@@ -141,6 +145,13 @@ private:
                     } else if (1 + y_k == y_j) {
                         set(k, j + Msize, cd(0, -1) * Delta * getPhase(x_j, y_j, x_k, y_k));
                     }
+#ifdef PERIODIC_BOUNDRY
+                    else if ((y_k == Gsize - 1) && (y_j == 0)) {
+                        set(k, j + Msize, cd(0, -1) * Delta );
+                    } else if ((y_k == 0) && (y_j == Gsize - 1)) {
+                        set(k, j + Msize, cd(0, 1) * Delta);
+                    }
+#endif
                 } else if (y_k == y_j) {
                     if (x_k == x_j + 1) {
                         set(k, j + Msize, cd(1, 0) * Delta * getPhase(x_j, y_j, x_k, y_k));
@@ -149,14 +160,11 @@ private:
                     }
                 }
 #ifdef PERIODIC_BOUNDRY
-                } else if ((x_k == x_j) && (y_k == Gsize - 1) && (y_j == 0)) {
-                    set(k, j + Msize, cd(0, -1) * Delta * phase);
-                } else if ((x_k == x_j) && (y_k == 0) && (y_j == Gsize - 1)) {
-                    set(k, j + Msize, cd(0, 1) * Delta * phase);
-                } else if ((x_k == Gsize - 1) && (x_j == 0) && (y_k == y_j)) {
-                    set(k, j + Msize, cd(-1, 0) * Delta * phase);
-                } else if ((x_k == 0) && (x_j == Gsize - 1) && (y_k == y_j)) {
-                    set(k, j + Msize, cd(1, 0) * Delta * phase);
+                if ((x_k == Gsize - 1) && (x_j == 0) && (y_k == y_j)) {
+                   set(k, j + Msize, cd(-1, 0) * Delta );
+               } else if ((x_k == 0) && (x_j == Gsize - 1) && (y_k == y_j)) {
+                   set(k, j + Msize, cd(1, 0) * Delta );
+               }
 #endif
                 /* else {
                 set(k, j + Msize, 0);
@@ -164,6 +172,7 @@ private:
             }
         }
     }
+
 
 public:
     /// Helper fuction to get the index from a x/y coordinate Pair

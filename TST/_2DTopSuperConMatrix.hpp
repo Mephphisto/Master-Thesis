@@ -9,6 +9,7 @@
 #include "Hamiltonian_Matrix.hpp"
 #include "Typedefs.hpp"
 
+
 /// This Class generates matrices representing the topological chiral 2D p-Wave Superconducter Hamiltonian
 class _2DTopSuperConMatrix : public Hamiltonian_Matrix {
 private:
@@ -47,27 +48,38 @@ private:
 #else
 #pragma unrollandfuse
 #endif
+
         for (size_t x = 0; x < Gsize; x++) {
+#ifdef GAUSS
             double E1x = exp(-r * (pow(x - Gsize_d / 2 - Vort_x, 2))),
                     E2x = exp(-r * (pow(x - Gsize_d / 2 + Vort_x, 2)));
+#endif
 //#pragma omp simd
             for (size_t y = 1; y < Gsize; y++) {
-                //double Ex = E1x * exp(-r * pow(y - Gsize_d / 2 - Vort_y, 2))
-                //            + E2x * exp(-r * pow(y - Gsize_d / 2 + Vort_y, 2));
-                //set(at(x, y), at(x, y), mu - 2 * mu * Ex);
-                set(at(x, y), at(x, y),
-                    -4 * t + (r < pow(x - Gsize_d / 2 - Vort_x, 2) + pow(y - Gsize_d / 2 + Vort_y, 2)) ? mu : -mu);
+#ifdef GAUSS
+                double Ex = E1x * exp(-r * pow(y - Gsize_d / 2 - Vort_y, 2))
+                            + E2x * exp(-r * pow(y - Gsize_d / 2 + Vort_y, 2));
+                set(at(x, y), at(x, y), mu - 2 * mu * Ex + SHIFT);
+#else
+                bool inside = (std::min({pow(y - Gsize_d / 2.0 - Vort_y, 2)+pow(x - Gsize_d / 2.0 - Vort_x, 2),
+                                         pow(y - Gsize_d / 2.0 + Vort_y, 2) + pow(x - Gsize_d / 2.0 + Vort_x, 2)}) < RADIUS);
+                set(at(x, y), at(x, y), +4.0*t+ (inside) ? -mu +SHIFT: mu+SHIFT);
+#endif
 
                 set(at(x, y - 1), at(x, y), t);
                 set(at(x, y), at(x, y - 1), t);
                 set(at(y, x), at(y - 1, x), t);
                 set(at(y - 1, x), at(y, x), t);
             }
+#ifdef GAUSS
             double Ex = E1x * exp(-r * pow(-Gsize_d / 2 - Vort_y, 2))
                         + E2x * exp(-r * pow(-Gsize_d / 2 + Vort_y, 2));
-            //set(at(x, 0), at(x, 0), mu - 2 * mu * Ex);
-            set(at(x, 0), at(x, 0),
-                -4 * t + (r < pow(x - Gsize_d / 2 - Vort_x, 2) + pow(-Gsize_d / 2 + Vort_y, 2)) ? mu : -mu);
+            set(at(x, 0), at(x, 0), mu - 2 * mu * Ex + SHIFT);
+#else
+            bool inside = (std::min({pow( - Gsize_d / 2.0 - Vort_y, 2)+pow(x - Gsize_d / 2.0 - Vort_x, 2),
+                                     pow( - Gsize_d / 2.0 + Vort_y, 2) + pow(x - Gsize_d / 2.0 + Vort_x, 2)}) < RADIUS);
+            set(at(x, 0), at(x, 0), + (inside) ? -mu +SHIFT: mu +SHIFT);
+#endif
         }
 
     }
@@ -75,7 +87,6 @@ private:
 //#pragma omp declare simd
     cd inline getPhase(const size_t &x_j, const size_t &y_j, const size_t &x_k, const size_t &y_k) const {
         cd phase;
-#ifdef PHASE
 
         phase = cd(1, 0);
         phase *= cd(static_cast<double>(x_j + x_k) / 2 - (Gsize_d - 1) / 2 - Vort_x,
@@ -90,9 +101,6 @@ private:
                 phase = 0.0;
             }
         }
-#else
-        phase = cd(1, 0);
-#endif
         return phase;
     }
 
@@ -108,11 +116,17 @@ private:
         for (size_t x = 0; x < Gsize; x++) {
 //#pragma omp simd
             for (size_t y = 0; y < Gsize - 1; y++) {
-
+#ifdef PHASE
                 set(at(x, y + 1), at(x, y) + Msize, cd(0, 1) * Delta * getPhase(x, y, x, y + 1));
                 set(at(x, y), at(x, y + 1) + Msize, cd(0, -1) * Delta * getPhase(x, y + 1, x, y));
                 set(at(y + 1, x), at(y, x) + Msize, cd(1, 0) * Delta * getPhase(y, x, y + 1, x));
                 set(at(y, x), at(y + 1, x) + Msize, cd(-1, 0) * Delta * getPhase(y + 1, x, y, x));
+#else
+                set(at(x, y + 1), at(x, y) + Msize, cd(0, 1) * Delta );
+                set(at(x, y), at(x, y + 1) + Msize, cd(0, -1) * Delta );
+                set(at(y + 1, x), at(y, x) + Msize, cd(1, 0) * Delta );
+                set(at(y, x), at(y + 1, x) + Msize, cd(-1, 0) * Delta );
+#endif
             }
         }
     }

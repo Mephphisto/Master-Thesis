@@ -27,8 +27,8 @@ def colorize(z):
     return c
 
 
-FileName = "Matrix7200_Tres2"
-Path = "/home/jakob/CLionProjects/TST_MKL_Eigen/TST/cmake-build-debug-gcc/"
+FileName = "Matrix648_Tres1"
+Path = "/home/jakob/CLionProjects/TST_MKL_Eigen/TST/cmake-build-release-gcc/"
 a = []
 with open(Path + FileName + '.csv', newline='') as csvfile:
     spamreader = csv.reader(csvfile, delimiter=',')
@@ -46,7 +46,9 @@ with open(Path + FileName + '.csv', newline='') as csvfile:
 
 # 'nearest' interpolation - faithful but blocky
 plt.figure(figsize=(len(a) / 100, len(a[0]) / 100))
-plt.imshow(colorize(a), interpolation='nearest')
+plt.xticks([324], (''))
+plt.yticks([324], (''))
+plt.imshow(colorize(np.array(a, dtype=np.cfloat)), interpolation='nearest')
 
 # plt.show(dpi=1200)
 plt.savefig(FileName + ".png")

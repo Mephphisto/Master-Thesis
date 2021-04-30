@@ -15,6 +15,8 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fopenmp -DADD_")
 
 set(MKLROOT /opt/intel/mkl/)
+#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DUPCASE")
+
 if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Intel")
     set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -qopt-report=1 -qopenmp -qopenmp-link static -ipo ") #-inline-forceinline  -qoverride-limits ")   #
     set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO} -g -qopt-report=1 -debug inline-debug-info -parallel-source-info=2 -qopenmp -qopenmp-link dynamic -shared-intel ") #-inline-forceinline  -qoverride-limits")

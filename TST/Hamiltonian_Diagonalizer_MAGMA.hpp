@@ -12,7 +12,6 @@
 #include "TST_Magma_Solver.hpp"
 #endif
 #include "Hamiltonian_Diagonalizer.hpp"
-#include <magma_lapack.h>
 #include <vector>
 #include <chrono>
 #include "Majorana_Transform.hpp"
@@ -54,14 +53,7 @@ class Diagonalize_Hamiltonian_magma : public Diagonalize_Hamiltonian<T> {
             //Solve the Matrix
             Solver.compute(m);
             // Fetch  Eigenvalues from Solver
-#pragma omp critical
-            {
-                if (Solver.info() != Eigen::Success) {
-                    if (status == Eigen::ComputationInfo::NoConvergence) std::cerr << "NoConvergence" << std::endl;
-                    if (status == Eigen::ComputationInfo::InvalidInput) std::cerr << "InvalidInput" << std::endl;
-                    if (status == Eigen::ComputationInfo::NumericalIssue) std::cerr << "NumericalIssue" << std::endl;
-                }
-            }
+
             this->All_EigenValues.col(k) = Solver.eigenvalues().col(0).real() +
                                            Vec::Constant(MATRIX_SIZE, (tr - Solver.eigenvalues().col(
                                                    0).real().sum()) / 2);
@@ -84,12 +76,13 @@ class Diagonalize_Hamiltonian_magma : public Diagonalize_Hamiltonian<T> {
 #else
 #pragma unroll
             for (auto l : majoranas) {
-                std::cout << " EiVal[" << l << "] = " << this->All_EigenValues.col(k)[l] << std::cout << std::endl;;
+                std::cout << " EiVal[" << l << "] = " << this->All_EigenValues.col(k)[l] << std::endl;;
                 this->All_EigenVectors.push_back(Solver.eigenvectors().col(l));
 #endif
 
-            this->t_s(k) = t;
+                this->t_s(k) = t;
+            }
         }
-    }
 
+    }
 };

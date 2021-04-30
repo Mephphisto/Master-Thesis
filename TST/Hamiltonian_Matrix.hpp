@@ -6,8 +6,7 @@
 //  Copyright © 2019 Jakob Teuffel. All rights reserved.
 //
 
-#ifndef Hamiltonian_Matrix_hpp
-#define Hamiltonian_Matrix_hpp
+#pragma once
 
 #include <Eigen/Dense>
 #include <iostream>
@@ -135,4 +134,4 @@ public:
     }
 };
 
-#endif /* Hamiltonian_Matrix_h */
+

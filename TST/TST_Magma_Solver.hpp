@@ -7,7 +7,7 @@
 #include <Eigen/src/Eigenvalues/Tridiagonalization.h>
 #include <cuda.h>
 #include "magma_v2.h"
-#include "magma_lapack.h"
+//#include "magma_lapack.h"
 
 namespace magma {
     template<typename _MatrixType>

@@ -29,7 +29,7 @@ def colorize(z):
     return c
 
 
-FileName = "EigenVectors_M1800_Tres1"
+FileName = "DELTA_M2592_Tres100"
 Path = "/home/jakob/CLionProjects/TST_MKL_Eigen/TST/cmake-build-release-gcc/"
 a = []
 with open(Path + FileName + '.csv', newline='') as csvfile:
@@ -69,7 +69,7 @@ for i in majoranas:
 
     # 'nearest' interpolation - faithful but blocky
     plt.imshow(colorize(img), interpolation='none')
-    plt.savefig("Majoranas/2D_Modes_x" + str(i) + ".png", )
+    plt.savefig("Delta/2D_Modes_x" + str(i) + ".png", )
     plt.clf()
     del b1, k, img, aux
 
@@ -88,7 +88,7 @@ for i in majoranas:
 
     # 'nearest' interpolation - faithful but blocky
     plt.imshow(colorize(img), interpolation='none')
-    plt.savefig("Majoranas/2D_Modes_y" + str(i) + ".png", )
+    plt.savefig("Delta/2D_Modes_y" + str(i) + ".png", )
     plt.clf()
     del b1, k, img, aux
 
@@ -107,7 +107,7 @@ for i in majoranas:
 
     # 'nearest' interpolation - faithful but blocky
     plt.imshow(colorize(img), interpolation='none')
-    plt.savefig("Majoranas/2D_Modes_x-y" + str(i) + ".png", )
+    plt.savefig("Delta/2D_Modes_x-y" + str(i) + ".png", )
     plt.clf()
     del b1, k, img, aux
 
@@ -126,7 +126,7 @@ for i in majoranas:
 
     # 'nearest' interpolation - faithful but blocky
     plt.imshow(colorize(img), interpolation='none')
-    plt.savefig("Majoranas/2D_Modes_x+ycon" + str(i) + ".png", )
+    plt.savefig("Delta/2D_Modes_x+ycon" + str(i) + ".png", )
     plt.clf()
     del b1, k, img, aux
 
@@ -145,7 +145,7 @@ for i in majoranas:
 
     # 'nearest' interpolation - faithful but blocky
     plt.imshow(colorize(img), interpolation='none')
-    plt.savefig("Majoranas/2D_Modes_Density+" + str(i) + ".png", )
+    plt.savefig("Delta/2D_Modes_Density+" + str(i) + ".png", )
     plt.clf()
     del b1, k, img, aux
 
@@ -173,6 +173,6 @@ for i in majoranas:
 
     # 'nearest' interpolation - faithful but blocky
     plt.imshow(colorize(img), interpolation='none')
-    plt.savefig("Majoranas/2D_Modes_Density-" + str(i) + ".png", )
+    plt.savefig("Delta/2D_Modes_Density-" + str(i) + ".png", )
     plt.clf()
     del b1, k, img, aux

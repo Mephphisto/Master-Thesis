@@ -1,7 +1,8 @@
+#pragma once
+
 #define OPTIM_ENABLE_EIGEN_WRAPPERS
 
 #include "optim.hpp"
-
 #include <autodiff/forward.hpp>
 #include <autodiff/forward/eigen.hpp>
 
@@ -116,7 +117,7 @@ namespace mjize {
         Eigen::Matrix2cd A = Eigen::Matrix2cd::Zero();
         A << i * params[0], params[1] + i * params[2], -params[1] + i * params[2], i * params[3];
         A = std::exp(cd(0, params[4])) *
-            ((A - Eigen::Matrix2cd::Identity()) * (Eigen::Matrix2cd::Identity() + A).inverse()).eval();
+                ((A - Eigen::Matrix2cd::Identity()) * (Eigen::Matrix2cd::Identity() + A).inverse()).eval();
 #ifdef DEBUG_ACTIVE
         std::cout << "Err_in = " << 4.0 - (r).real().trace() << std::endl;
         std::cout << "Err_out = " << 4.0 - (A.transpose() * r * A).real().trace() << std::endl;
@@ -178,7 +179,7 @@ namespace mjize {
           (-params[5] + i * params[6]), (-params[10] + i * params[11]), (-params[13] + i * params[14]), (i *params[15]);
         //@formatter:on
         A = std::exp(cd(0, params[16])) *
-            ((A - Eigen::Matrix4cd::Identity()) * (Eigen::Matrix4cd::Identity() + A).inverse()).eval();
+                ((A - Eigen::Matrix4cd::Identity()) * (Eigen::Matrix4cd::Identity() + A).inverse()).eval();
         std::cout << "Err_in = " << -(r).real().trace() << std::endl;
         std::cout << "Err_out = " << -(A.transpose() * r * A).real().trace() << std::endl;
         std::cout << "R  = " << r << std::endl;

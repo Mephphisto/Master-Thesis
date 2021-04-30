@@ -9,9 +9,9 @@
 
 
 #include "Parameters.hpp"
-#include "_1DTopSuperConMatrix.hpp"
+
 #include "_2DTopSuperConMatrix.hpp"
-#include "_2DTopSuperConMatrixSparse.hpp"
+#include "_2DTopSuperConMatrix_DEPRECATED.hpp"
 
 #ifdef ITT_ACTIVE
 
@@ -37,7 +37,6 @@
 #else
 
 #include "Hamiltonian_Diagonalizer_Eigen.hpp"
-#include "Hamiltonian_Diagonalizer_PLASMA.hpp"
 
 #endif
 
