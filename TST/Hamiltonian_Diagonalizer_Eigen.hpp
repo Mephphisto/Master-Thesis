@@ -18,7 +18,7 @@
 #include <vector>
 
 #ifdef MAJIZE
-#include "Majoranize.hpp"
+#include "Majorana_Transform.hpp"
 #endif
 
 #if OMP_NUM_THREADS > 1
@@ -103,8 +103,8 @@ class Diagonalize_Hamiltonian_Eigen : public Diagonalize_Hamiltonian<T> {
                     }
                 }
 #ifdef MAJIZE
-                auto tpl = Majoranize(Solver.eigenvectors().col(majoranas[0]).normalized(),
-                                    Solver.eigenvectors().col(majoranas[1]).normalized());
+                auto tpl = mjize::Fermiize(Solver.eigenvectors().col(majoranas[0]).normalized(),
+                                           Solver.eigenvectors().col(majoranas[1]).normalized());
                 this->All_EigenVectors.push_back(std::get<0>(tpl));
                 this->All_EigenVectors.push_back(std::get<1>(tpl));
 #else

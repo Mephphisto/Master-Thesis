@@ -1,4 +1,5 @@
 import csv
+import os
 from colorsys import hls_to_rgb
 from typing import Iterable, Tuple, TypeVar
 import math
@@ -29,8 +30,14 @@ def colorize(z):
     return c
 
 
-FileName = "DELTA_M2592_Tres100"
+FileName = "EigenVectors_M2592_Tres100"
 Path = "/home/jakob/CLionProjects/TST_MKL_Eigen/TST/cmake-build-release-gcc/"
+OutFolder = "Majs_Mu"
+try:
+    os.makedirs(OutFolder)
+except:
+    pass
+
 a = []
 with open(Path + FileName + '.csv', newline='') as csvfile:
     spamreader = csv.reader(csvfile, delimiter=',')
@@ -69,7 +76,7 @@ for i in majoranas:
 
     # 'nearest' interpolation - faithful but blocky
     plt.imshow(colorize(img), interpolation='none')
-    plt.savefig("Delta/2D_Modes_x" + str(i) + ".png", )
+    plt.savefig(OutFolder + "/2D_Modes_x" + str(i) + ".png", )
     plt.clf()
     del b1, k, img, aux
 
@@ -88,7 +95,7 @@ for i in majoranas:
 
     # 'nearest' interpolation - faithful but blocky
     plt.imshow(colorize(img), interpolation='none')
-    plt.savefig("Delta/2D_Modes_y" + str(i) + ".png", )
+    plt.savefig(OutFolder + "/2D_Modes_y" + str(i) + ".png", )
     plt.clf()
     del b1, k, img, aux
 
@@ -107,7 +114,7 @@ for i in majoranas:
 
     # 'nearest' interpolation - faithful but blocky
     plt.imshow(colorize(img), interpolation='none')
-    plt.savefig("Delta/2D_Modes_x-y" + str(i) + ".png", )
+    plt.savefig(OutFolder + "/2D_Modes_x-y" + str(i) + ".png", )
     plt.clf()
     del b1, k, img, aux
 
@@ -126,7 +133,7 @@ for i in majoranas:
 
     # 'nearest' interpolation - faithful but blocky
     plt.imshow(colorize(img), interpolation='none')
-    plt.savefig("Delta/2D_Modes_x+ycon" + str(i) + ".png", )
+    plt.savefig(OutFolder + "/2D_Modes_x+ycon" + str(i) + ".png", )
     plt.clf()
     del b1, k, img, aux
 
@@ -145,7 +152,7 @@ for i in majoranas:
 
     # 'nearest' interpolation - faithful but blocky
     plt.imshow(colorize(img), interpolation='none')
-    plt.savefig("Delta/2D_Modes_Density+" + str(i) + ".png", )
+    plt.savefig(OutFolder + "/2D_Modes_Density+" + str(i) + ".png", )
     plt.clf()
     del b1, k, img, aux
 
@@ -173,6 +180,6 @@ for i in majoranas:
 
     # 'nearest' interpolation - faithful but blocky
     plt.imshow(colorize(img), interpolation='none')
-    plt.savefig("Delta/2D_Modes_Density-" + str(i) + ".png", )
+    plt.savefig(OutFolder + "/2D_Modes_Density-" + str(i) + ".png", )
     plt.clf()
     del b1, k, img, aux
