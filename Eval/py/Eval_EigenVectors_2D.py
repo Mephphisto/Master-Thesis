@@ -30,9 +30,9 @@ def colorize(z):
     return c
 
 
-FileName = "EigenVectors_M2592_Tres100"
+FileName = "EigenVectors_M5000_Tres1"
 Path = "/home/jakob/CLionProjects/TST_MKL_Eigen/TST/cmake-build-release-gcc/"
-OutFolder = "Majs_Mu"
+OutFolder = "Majs_Dummy"
 try:
     os.makedirs(OutFolder)
 except:
@@ -109,12 +109,12 @@ for i in majoranas:
         for k in range(gsize):
             x = b[k + gsize * j]
             y = b[k + gsize * j + l2]
-            aux.append(x - y)
+            aux.append(x + y)
         img.append(aux)
 
     # 'nearest' interpolation - faithful but blocky
     plt.imshow(colorize(img), interpolation='none')
-    plt.savefig(OutFolder + "/2D_Modes_x-y" + str(i) + ".png", )
+    plt.savefig(OutFolder + "/2D_Modes_x+y" + str(i) + ".png", )
     plt.clf()
     del b1, k, img, aux
 
@@ -137,24 +137,6 @@ for i in majoranas:
     plt.clf()
     del b1, k, img, aux
 
-for i in majoranas:
-    print(i)
-    b1, b2 = np.empty(l, complex), np.empty(l, complex)
-    b = a[i]
-    img = []
-    for j in range(gsize):
-        aux = []
-        for k in range(gsize):
-            x = b[k + gsize * j]
-            y = b[k + gsize * j + l2]
-            aux.append(x * x.conjugate() - y * y.conjugate())
-        img.append(aux)
-
-    # 'nearest' interpolation - faithful but blocky
-    plt.imshow(colorize(img), interpolation='none')
-    plt.savefig(OutFolder + "/2D_Modes_Density+" + str(i) + ".png", )
-    plt.clf()
-    del b1, k, img, aux
 
 for i in majoranas:
     print(i)
@@ -180,6 +162,6 @@ for i in majoranas:
 
     # 'nearest' interpolation - faithful but blocky
     plt.imshow(colorize(img), interpolation='none')
-    plt.savefig(OutFolder + "/2D_Modes_Density-" + str(i) + ".png", )
+    plt.savefig(OutFolder + "/2D_Modes_Density" + str(i) + ".png", )
     plt.clf()
     del b1, k, img, aux

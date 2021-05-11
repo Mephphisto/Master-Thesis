@@ -15,7 +15,7 @@ def grouped(iterable: Iterable[T], n=2) -> Iterable[Tuple[T, ...]]:
     return zip(*[iter(iterable)] * n)
 
 
-FileName = "MU_M2592_Tres105"
+FileName = "MU_M5000_Tres1"
 Path = "/home/jakob/CLionProjects/TST_MKL_Eigen/TST/cmake-build-release-gcc/"
 a = []
 with open(Path + FileName + '.csv', newline='') as csvfile:

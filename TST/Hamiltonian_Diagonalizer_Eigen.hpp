@@ -18,7 +18,9 @@
 #include <vector>
 
 #ifdef MAJIZE
+
 #include "Majorana_Transform.hpp"
+
 #endif
 
 #if OMP_NUM_THREADS > 1
@@ -32,6 +34,7 @@
 template<class T>
 class Diagonalize_Hamiltonian_Eigen : public Diagonalize_Hamiltonian<T> {
     inline void Compute() override {
+        this->All_EigenVectors.resize(2 * T_RES);
 #if OMP_NUM_THREADS > 1
         mkl_set_dynamic(0);
         omp_set_max_active_levels(2);
@@ -61,11 +64,19 @@ class Diagonalize_Hamiltonian_Eigen : public Diagonalize_Hamiltonian<T> {
                 //Storage for Matrix and Trace
                 Mat_cd m;
                 double tr;
-                //double t = T_START + (T_END - T_START) * ((k == 0) ? 0.0 : (double(k) / double(T_RES - 1)));
+#ifdef SweepMU
                 double t = -MU + 2.0 * MU * ((k == 0) ? 0.0 : (double(k) / double(T_RES - 1)));
+
+#else
+                double t = T_START + (T_END - T_START) * ((k == 0) ? 0.0 : (double(k) / double(T_RES - 1)));
+#endif
                 {
                     //Build Matrix to be Solved by MKL
+#ifdef SweepMU
                     T M = T(MATRIX_SIZE, T_COUPLE, T_START, t, DELTA);
+#else
+                    T M = T(MATRIX_SIZE, T_COUPLE, t, MU, DELTA);
+#endif
                     m = M.get();
                     tr = 0.0;//M.trace_A();
                 }
@@ -102,11 +113,15 @@ class Diagonalize_Hamiltonian_Eigen : public Diagonalize_Hamiltonian<T> {
                         majoranas[1] = l;
                     }
                 }
+#ifdef DEBUG_ACTIVE
+                std::cout << "E1 = " << Solver.eigenvalues()[majoranas[0]] << "\t E2 = "
+                          << Solver.eigenvalues()[majoranas[0]] << std::endl;
+#endif
 #ifdef MAJIZE
                 auto tpl = mjize::Fermiize(Solver.eigenvectors().col(majoranas[0]).normalized(),
                                            Solver.eigenvectors().col(majoranas[1]).normalized());
-                this->All_EigenVectors.push_back(std::get<0>(tpl));
-                this->All_EigenVectors.push_back(std::get<1>(tpl));
+                this->All_EigenVectors[2 * k] = (std::get<0>(tpl));
+                this->All_EigenVectors[2 * k + 1] = (std::get<1>(tpl));
 #else
 
 #pragma unroll

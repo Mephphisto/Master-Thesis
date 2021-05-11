@@ -63,7 +63,7 @@ private:
 #else
                 bool inside = (std::min({pow(y - Gsize_d / 2.0 - Vort_y, 2)+pow(x - Gsize_d / 2.0 - Vort_x, 2),
                                          pow(y - Gsize_d / 2.0 + Vort_y, 2) + pow(x - Gsize_d / 2.0 + Vort_x, 2)}) < RADIUS);
-                set(at(x, y), at(x, y), +4.0*t+ (inside) ? -mu +SHIFT: mu+SHIFT);
+                set(at(x, y), at(x, y), (inside) ? -mu + SHIFT : mu + SHIFT);
 #endif
 
                 set(at(x, y - 1), at(x, y), t);
@@ -76,9 +76,10 @@ private:
                         + E2x * exp(-r * pow(-Gsize_d / 2 + Vort_y, 2));
             set(at(x, 0), at(x, 0), mu - 2 * mu * Ex + SHIFT);
 #else
-            bool inside = (std::min({pow( - Gsize_d / 2.0 - Vort_y, 2)+pow(x - Gsize_d / 2.0 - Vort_x, 2),
-                                     pow( - Gsize_d / 2.0 + Vort_y, 2) + pow(x - Gsize_d / 2.0 + Vort_x, 2)}) < RADIUS);
-            set(at(x, 0), at(x, 0), + (inside) ? -mu +SHIFT: mu +SHIFT);
+            bool inside = (std::min({pow(0.0 - Gsize_d / 2.0 - Vort_y, 2) + pow(x - Gsize_d / 2.0 - Vort_x, 2),
+                                     pow(0.0 - Gsize_d / 2.0 + Vort_y, 2) + pow(x - Gsize_d / 2.0 + Vort_x, 2)}) <
+                           RADIUS);
+            set(at(x, 0), at(x, 0), +(inside) ? -mu + SHIFT : mu + SHIFT);
 #endif
         }
 
@@ -171,8 +172,8 @@ public:
     _2DTopSuperConMatrix(const size_t &size_in, const double &t_in, const double &phi_in, const double &mu_in,
                          const double &Delta_in) :
             Hamiltonian_Matrix(size_in),
-            t(t_in),
-            mu(mu_in),
+            t(-t_in),
+            mu(-mu_in),
             Delta(static_cast<cd>(Delta_in / 2)) {
         this->Gsize = sqrt(Msize);
         this->Gsize_d = static_cast<double>(Gsize);
@@ -213,8 +214,8 @@ public:
             const double &phi_in,
             const double &mu_in,
             const double &Delta_in) {
-        this->t = t_in;
-        this->mu = mu_in;
+        this->t = -t_in;
+        this->mu = -mu_in;
         this->Delta = static_cast<cd>(Delta_in / 2);
         this->Msize = size_in / 2;
         this->Gsize = sqrt(Msize);

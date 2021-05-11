@@ -101,7 +101,7 @@ namespace mjize {
                 Y.cwiseProduct(Yg).sum());
 
         Eigen::Matrix2cd r = de_dual(R);
-        Eigen::VectorXd params = Eigen::VectorXd::Ones(5);
+        Eigen::VectorXd params = Eigen::VectorXd::Zero(5);
 
 
         optim::algo_settings_t opt_set;

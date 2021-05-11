@@ -29,8 +29,8 @@ def colorize(z):
     return c
 
 
-FileName = "EigenVectors_M7200_Tres400"
-Path = "/home/jakob/CLionProjects/TST_MKL_Eigen/TST/cmake-build-release/"
+FileName = "EigenVectors_M2592_Tres144"
+Path = "/home/jakob/CLionProjects/TST_MKL_Eigen/TST/cmake-build-release-gcc/"
 a = []
 with open(Path + FileName + '.csv', newline='') as csvfile:
     spamreader = csv.reader(csvfile, delimiter=',')
@@ -72,7 +72,10 @@ for i in majoranas:
         for k in range(l):
             b1[k] = a[(2 * i) % states][k]
             b2[k] = a[(2 * i + 1) % states][k]
-        b = project(b, b1) + project(b, b2)
+        if np.vdot(b, b1).__abs__() > np.vdot(b, b2).__abs__():
+            b = project(b, b1)
+        else:
+            b = project(b, b2)
     Norm = np.sqrt(np.vdot(b, b)).__abs__()
     N[i+1] = 1-Norm
     print(Norm)
@@ -83,11 +86,11 @@ for i in majoranas:
         for k in range(gsize):
             x = b[k + gsize * j]
             y = b[k + gsize * j + l2]
-            aux.append((x - y))
+            aux.append((x + y))
         img.append(aux)
     # 'nearest' interpolation - faithful but blocky
     plt.imshow(colorize(img), interpolation='none')
-    plt.savefig("Majoranas/2D_Modes_" + str(i) + ".png", quality=90, optimize=True)
+    plt.savefig("Majoranas_T/2D_Modes_" + str(i) + ".png")
     plt.clf()
     del b1, k, img, aux
 
@@ -95,4 +98,4 @@ plt.plot(N) #np.linspace(0, 4 * pi, 2 * states+1),
 plt.ylabel("Population")
 plt.xlabel("Phase")
 plt.yscale("log")
-plt.savefig("Majoranas/Population-Plot2.png", quality=90, optimize=True)
+plt.savefig("Majoranas/Population-Plot2.png")
