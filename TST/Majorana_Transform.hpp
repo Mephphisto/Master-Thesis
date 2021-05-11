@@ -103,9 +103,10 @@ namespace mjize {
         Eigen::Matrix2cd r = de_dual(R);
         Eigen::VectorXd params = Eigen::VectorXd::Zero(5);
 
-
         optim::algo_settings_t opt_set;
-        opt_set.print_level = 3;
+#ifdef DEBUG_ACTIVE
+        opt_set.print_level = 1;
+#endif
         bool success = optim::bfgs(params, opt_fn, nullptr, opt_set);
 #ifdef DEBUG_ACTIVE
         if (success) {
@@ -159,17 +160,18 @@ namespace mjize {
 
         Eigen::VectorXd params = Eigen::VectorXd::Ones(17);
 
-
         optim::algo_settings_t opt_set;
+#ifdef DEBUG_ACTIVE
         opt_set.print_level = 1;
+#endif
         bool success = optim::bfgs(params, opt_fn4, nullptr, opt_set);
-
+#ifdef DEBUG_ACTIVE
         if (success) {
             std::cout << "bfgs: autodiff test completed successfully." << std::endl;
         } else {
             std::cout << "bfgs: autodiff test completed unsuccessfully." << std::endl;
         }
-
+#endif
         Eigen::Matrix4cd A = Eigen::Matrix4cd::Zero();
         //@formatter:off
         A <<

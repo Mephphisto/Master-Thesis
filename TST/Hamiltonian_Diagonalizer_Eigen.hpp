@@ -101,31 +101,31 @@ class Diagonalize_Hamiltonian_Eigen : public Diagonalize_Hamiltonian<T> {
                                                Vec::Constant(MATRIX_SIZE, (tr - Solver.eigenvalues().col(
                                                        0).real().sum()) / 2);
 
-                size_t majoranas[2] = {0, 0};
+                size_t Low_E_States[2] = {0, 0};
 
 #pragma unroll
                 for (size_t l = 0; l < this->All_EigenValues.col(k).size(); l++) {
-                    if (abs(this->All_EigenValues.col(k)[l]) < abs(this->All_EigenValues.col(k)[majoranas[0]])) {
-                        majoranas[1] = majoranas[0];
-                        majoranas[0] = l;
+                    if (abs(this->All_EigenValues.col(k)[l]) < abs(this->All_EigenValues.col(k)[Low_E_States[0]])) {
+                        Low_E_States[1] = Low_E_States[0];
+                        Low_E_States[0] = l;
                     } else if (abs(this->All_EigenValues.col(k)[l]) <
-                               abs(this->All_EigenValues.col(k)[majoranas[1]])) {
-                        majoranas[1] = l;
+                               abs(this->All_EigenValues.col(k)[Low_E_States[1]])) {
+                        Low_E_States[1] = l;
                     }
                 }
 #ifdef DEBUG_ACTIVE
-                std::cout << "E1 = " << Solver.eigenvalues()[majoranas[0]] << "\t E2 = "
-                          << Solver.eigenvalues()[majoranas[0]] << std::endl;
+                std::cout << "t=" << t << "\t E1 = " << Solver.eigenvalues()[Low_E_States[0]] << "\t E2 = "
+                          << Solver.eigenvalues()[Low_E_States[1]] << std::endl;
 #endif
 #ifdef MAJIZE
-                auto tpl = mjize::Fermiize(Solver.eigenvectors().col(majoranas[0]).normalized(),
-                                           Solver.eigenvectors().col(majoranas[1]).normalized());
+                auto tpl = mjize::Fermiize(Solver.eigenvectors().col(Low_E_States[0]).normalized(),
+                                           Solver.eigenvectors().col(Low_E_States[1]).normalized());
                 this->All_EigenVectors[2 * k] = (std::get<0>(tpl));
                 this->All_EigenVectors[2 * k + 1] = (std::get<1>(tpl));
 #else
 
 #pragma unroll
-                for (auto l : majoranas) {
+                for (auto l : Low_E_States) {
 #pragma omp critical
                     std::cout << " EiVal[" << l << "] = " << this->All_EigenValues.col(k)[l];
                     this->All_EigenVectors.push_back(Solver.eigenvectors().col(l));
