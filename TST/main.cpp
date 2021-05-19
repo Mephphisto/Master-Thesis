@@ -66,7 +66,7 @@ int main() {
 
 
     try {
-        std::fstream csv_file("Rho_Decay_" + std::to_string(RAD) + ".csv",
+        std::fstream csv_file("Rho_Decay_R" + std::to_string(RADIUS) + "_D" + std::to_string(DISTANCE) + ".csv",
                               std::fstream::out);
         assert(csv_file.is_open());
         csv_file << "{{w, maj1-m1j2, maj1+m1j2,norm,pahse_Maj1,phase_Maj2},";

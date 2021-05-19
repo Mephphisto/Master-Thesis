@@ -179,8 +179,8 @@ public:
         this->Gsize_d = static_cast<double>(Gsize);
         {
             double sp = sin(phi_in), cp = cos(phi_in);
-            this->Vort_x = sp * (Gsize_d - 1) / 4;
-            this->Vort_y = cp * (Gsize_d - 1) / 4;
+            this->Vort_x = sp * DISTANCE;
+            this->Vort_y = cp * DISTANCE;
         }
 
 #ifdef DEBUG_ACTIVE2
@@ -222,8 +222,8 @@ public:
         this->Gsize_d = static_cast<double>(Gsize);
         {
             double sp = sin(phi_in), cp = cos(phi_in);
-            this->Vort_x = sp * (Gsize_d - 1) / 4;
-            this->Vort_y = cp * (Gsize_d - 1) / 4;
+            this->Vort_x = sp * DISTANCE;
+            this->Vort_y = cp * DISTANCE;
         }
 
 #ifdef DEBUG_ACTIVE2

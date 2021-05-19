@@ -27,13 +27,14 @@
 #define DELTA_TO_CSV
 
 constexpr double RADIUS = GRID * RAD;
+constexpr double DISTANCE = GRID * DIST;
 //Deine Matrix Parameters
 #define MAJIZE
 //#define PERIODIC_BOUNDRY
 #define PHASE
 //#define GAUSS
 #define SHIFT -4 * t
-//#define SweepMU
+#define SweepMU
 constexpr int MATRIX_SIZE = (2 * GRID * GRID);
 constexpr double T_START = 0.0;
 constexpr double T_END = -(M_PI * 2.0 * T_ROT + T_START);
