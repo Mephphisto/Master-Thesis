@@ -26,8 +26,8 @@
 #define MU_TO_CSV
 #define DELTA_TO_CSV
 
-constexpr double RADIUS = GRID * RAD;
-constexpr double DISTANCE = GRID * DIST;
+constexpr double RADIUS = RAD;
+constexpr double DISTANCE = GRID / 4 * DIST;
 //Deine Matrix Parameters
 #define MAJIZE
 //#define PERIODIC_BOUNDRY
