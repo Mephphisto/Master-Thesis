@@ -1,18 +1,18 @@
 [0] Config.pm:328> INFO - This is Biber 2.21
 [0] Config.pm:331> INFO - Logfile is 'Master.blg'
-[88] biber:342> INFO - === Thu Jun 25, 2026, 20:42:46
-[103] Biber.pm:421> INFO - Reading 'Master.bcf'
-[181] Biber.pm:1002> INFO - Found 61 citekeys in bib section 0
-[192] Biber.pm:4487> INFO - Processing section 0
-[201] Biber.pm:4678> INFO - Looking for bibtex file 'BIB.bib' for section 0
-[203] bibtex.pm:1713> INFO - LaTeX decoding ...
-[326] bibtex.pm:1519> INFO - Found BibTeX data source 'BIB.bib'
-[750] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'normalization = NFD' with 'normalization = prenormalized'
-[750] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'variable = shifted' with 'variable = non-ignorable'
-[750] Biber.pm:4307> INFO - Sorting list 'nty/global//global/global/global' of type 'entry' with template 'nty' and locale 'en-US'
-[750] Biber.pm:4313> INFO - No sort tailoring available for locale 'en-US'
-[804] bbl.pm:676> INFO - Writing 'Master.bbl' with encoding 'UTF-8'
-[833] bbl.pm:779> INFO - Output to Master.bbl
-[833] Biber.pm:132> WARN - BibTeX subsystem: /tmp/biber_tmp_UiAm/6bf0dc6b2a458e14544d6559112cfe8f_14.utf8, line 303, warning: undefined macro "pub-ISO"
-[833] Biber.pm:132> WARN - BibTeX subsystem: /tmp/biber_tmp_UiAm/6bf0dc6b2a458e14544d6559112cfe8f_14.utf8, line 306, warning: undefined macro "pub-ISO:adr"
-[833] Biber.pm:134> INFO - WARNINGS: 2
+[97] biber:342> INFO - === Thu Jun 25, 2026, 20:44:24
+[113] Biber.pm:421> INFO - Reading 'Master.bcf'
+[193] Biber.pm:1002> INFO - Found 61 citekeys in bib section 0
+[205] Biber.pm:4487> INFO - Processing section 0
+[215] Biber.pm:4678> INFO - Looking for bibtex file 'BIB.bib' for section 0
+[217] bibtex.pm:1713> INFO - LaTeX decoding ...
+[368] bibtex.pm:1519> INFO - Found BibTeX data source 'BIB.bib'
+[795] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'variable = shifted' with 'variable = non-ignorable'
+[795] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'normalization = NFD' with 'normalization = prenormalized'
+[795] Biber.pm:4307> INFO - Sorting list 'nty/global//global/global/global' of type 'entry' with template 'nty' and locale 'en-US'
+[795] Biber.pm:4313> INFO - No sort tailoring available for locale 'en-US'
+[849] bbl.pm:676> INFO - Writing 'Master.bbl' with encoding 'UTF-8'
+[877] bbl.pm:779> INFO - Output to Master.bbl
+[877] Biber.pm:132> WARN - BibTeX subsystem: /tmp/biber_tmp_g8o6/6bf0dc6b2a458e14544d6559112cfe8f_13.utf8, line 303, warning: undefined macro "pub-ISO"
+[877] Biber.pm:132> WARN - BibTeX subsystem: /tmp/biber_tmp_g8o6/6bf0dc6b2a458e14544d6559112cfe8f_13.utf8, line 306, warning: undefined macro "pub-ISO:adr"
+[877] Biber.pm:134> INFO - WARNINGS: 2
