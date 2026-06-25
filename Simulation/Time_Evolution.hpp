@@ -294,7 +294,7 @@ Mat_cd Do_TE(Vec const &Omegas)
     mkl_set_dynamic(0);
 #endif
     omp_set_max_active_levels(2);
-#pragma omp parallel shared(Rho_t, Threads, Progress, C_0, M, std::cout) firstprivate(Omegas, eval, evec, Ferm1, Ferm2, Maj1, Maj2, norm, E_offset) default(none) num_threads(OMP_NUM_THREADS)
+#pragma omp parallel shared(Rho_t, Threads, Progress, C_0, M, std::cout) firstprivate(Omegas, eval, evec, Ferm1, Ferm2, Maj1, Maj2, norm, E_offset, MATRIX_SIZE) default(none) num_threads(OMP_NUM_THREADS)
     {
         int tid = omp_get_thread_num();
         for (size_t k = tid; k < Omegas.size() / 2; k += OMP_NUM_THREADS)

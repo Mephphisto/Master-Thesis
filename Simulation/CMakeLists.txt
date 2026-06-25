@@ -208,7 +208,8 @@ endif ()
 get_target_property(OUT sim LINK_LIBRARIES)
 message(STATUS ${OUT})
 
-find_library(optim sim)
+find_library(OPTIM_LIB optim HINTS /usr/local/lib REQUIRED)
+target_link_libraries(sim ${OPTIM_LIB})
 include_directories("/usr/local/include/optim/")
 
 find_package(autodiff)
