@@ -1,0 +1,18 @@
+[0] Config.pm:328> INFO - This is Biber 2.21
+[0] Config.pm:331> INFO - Logfile is 'Master.blg'
+[98] biber:342> INFO - === Thu Jun 25, 2026, 19:37:37
+[116] Biber.pm:421> INFO - Reading 'Master.bcf'
+[192] Biber.pm:1002> INFO - Found 61 citekeys in bib section 0
+[205] Biber.pm:4487> INFO - Processing section 0
+[215] Biber.pm:4678> INFO - Looking for bibtex file 'BIB.bib' for section 0
+[217] bibtex.pm:1713> INFO - LaTeX decoding ...
+[360] bibtex.pm:1519> INFO - Found BibTeX data source 'BIB.bib'
+[737] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'normalization = NFD' with 'normalization = prenormalized'
+[737] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'variable = shifted' with 'variable = non-ignorable'
+[737] Biber.pm:4307> INFO - Sorting list 'nty/global//global/global/global' of type 'entry' with template 'nty' and locale 'en-US'
+[737] Biber.pm:4313> INFO - No sort tailoring available for locale 'en-US'
+[791] bbl.pm:676> INFO - Writing 'Master.bbl' with encoding 'UTF-8'
+[818] bbl.pm:779> INFO - Output to Master.bbl
+[818] Biber.pm:132> WARN - BibTeX subsystem: /tmp/biber_tmp__iKf/6bf0dc6b2a458e14544d6559112cfe8f_13.utf8, line 303, warning: undefined macro "pub-ISO"
+[818] Biber.pm:132> WARN - BibTeX subsystem: /tmp/biber_tmp__iKf/6bf0dc6b2a458e14544d6559112cfe8f_13.utf8, line 306, warning: undefined macro "pub-ISO:adr"
+[818] Biber.pm:134> INFO - WARNINGS: 2

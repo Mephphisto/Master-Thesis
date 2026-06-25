@@ -1,0 +1,77 @@
+\contentsline {section}{\numberline {1}Introduction}{11}{section.1}%
+\contentsline {subsection}{\numberline {1.1}Motivation}{11}{subsection.1.1}%
+\contentsline {subsubsection}{\numberline {1.1.1}Quantum Computing}{13}{subsubsection.1.1.1}%
+\contentsline {subsubsection}{\numberline {1.1.2}Topological Quantum Computing}{14}{subsubsection.1.1.2}%
+\contentsline {subsection}{\numberline {1.2}Non-Abelian Anyons}{15}{subsection.1.2}%
+\contentsline {subsubsection}{\numberline {1.2.1}The Different Exchange Statistics in Two and Three Dimensions}{15}{subsubsection.1.2.1}%
+\contentsline {subsubsection}{\numberline {1.2.2}Anyons}{17}{subsubsection.1.2.2}%
+\contentsline {subsubsection}{\numberline {1.2.3}Case Study}{18}{subsubsection.1.2.3}%
+\contentsline {subsubsection}{\numberline {1.2.4}Braid Group $\mathcal {B}_n$}{19}{subsubsection.1.2.4}%
+\contentsline {subsubsection}{\numberline {1.2.5}Topological Quantum Computing with Non-Abelian Anyons}{20}{subsubsection.1.2.5}%
+\contentsline {subsection}{\numberline {1.3}Topological Solid State Physics}{21}{subsection.1.3}%
+\contentsline {subsubsection}{\numberline {1.3.1}Berry Phase}{21}{subsubsection.1.3.1}%
+\contentsline {subsubsection}{\numberline {1.3.2}Classification}{22}{subsubsection.1.3.2}%
+\contentsline {subsubsection}{\numberline {1.3.3}Edge Bulk Correspondence}{24}{subsubsection.1.3.3}%
+\contentsline {subsection}{\numberline {1.4}Numerical Methods and Considerations}{25}{subsection.1.4}%
+\contentsline {subsubsection}{\numberline {1.4.1}Diagonalisation}{25}{subsubsection.1.4.1}%
+\contentsline {paragraph}{\numberline {1.4.1.1}QR-Algorithm}{25}{paragraph.1.4.1.1}%
+\contentsline {paragraph}{\numberline {1.4.1.2}Divide and Conquer}{27}{paragraph.1.4.1.2}%
+\contentsline {subsubsection}{\numberline {1.4.2}Optimisation}{28}{subsubsection.1.4.2}%
+\contentsline {paragraph}{\numberline {1.4.2.1}Gradient Descent}{28}{paragraph.1.4.2.1}%
+\contentsline {paragraph}{\numberline {1.4.2.2}Programmatic Differentiation}{29}{paragraph.1.4.2.2}%
+\contentsline {paragraph}{\numberline {1.4.2.3}Broyden–Fletcher–Goldfarb–Shanno Method}{31}{paragraph.1.4.2.3}%
+\contentsline {subsubsection}{\numberline {1.4.3}Time Evolution}{31}{subsubsection.1.4.3}%
+\contentsline {paragraph}{\numberline {1.4.3.1}ODE-solving / Initial Value Problem}{31}{paragraph.1.4.3.1}%
+\contentsline {paragraph}{\numberline {1.4.3.2}Runge Kutta Schemes}{32}{paragraph.1.4.3.2}%
+\contentsline {paragraph}{\numberline {1.4.3.3}A-stability}{33}{paragraph.1.4.3.3}%
+\contentsline {paragraph}{\numberline {1.4.3.4}Error Estimation / Automatic Step Size}{34}{paragraph.1.4.3.4}%
+\contentsline {paragraph}{\numberline {1.4.3.5}Stiffness}{34}{paragraph.1.4.3.5}%
+\contentsline {paragraph}{\numberline {1.4.3.6}Bulirsch-Stoer }{36}{paragraph.1.4.3.6}%
+\contentsline {subsection}{\numberline {1.5}Majorana Fermions}{37}{subsection.1.5}%
+\contentsline {subsubsection}{\numberline {1.5.1}Kitaev Model}{37}{subsubsection.1.5.1}%
+\contentsline {section}{\numberline {2}Scope of this Thesis}{39}{section.2}%
+\contentsline {section}{\numberline {3}2D Chiral Topological P-Wave Superconductor}{40}{section.3}%
+\contentsline {subsection}{\numberline {3.1}Symmetries}{41}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.2}Topological Phases}{41}{subsection.3.2}%
+\contentsline {subsection}{\numberline {3.3}Vortex Bound States}{43}{subsection.3.3}%
+\contentsline {subsection}{\numberline {3.4}Non Abelian Exchange Statistics}{44}{subsection.3.4}%
+\contentsline {section}{\numberline {4}Analytical Setup}{46}{section.4}%
+\contentsline {subsection}{\numberline {4.1}Generalised Bogoliubov de Gennes Formalism}{46}{subsection.4.1}%
+\contentsline {subsubsection}{\numberline {4.1.1}Induced Charge Conjugation Symmetry}{46}{subsubsection.4.1.1}%
+\contentsline {subsubsection}{\numberline {4.1.2}Diagonalisation}{46}{subsubsection.4.1.2}%
+\contentsline {subsubsection}{\numberline {4.1.3}Fermionic Anti Commutation of Bogoliubov Quasi Particles}{48}{subsubsection.4.1.3}%
+\contentsline {subsubsection}{\numberline {4.1.4}Majorana Modes from Bogliubov Quasi Particles}{49}{subsubsection.4.1.4}%
+\contentsline {subsubsection}{\numberline {4.1.5}Expectation Values}{49}{subsubsection.4.1.5}%
+\contentsline {paragraph}{\numberline {4.1.5.1}Commutator of First and Second Order Operators}{49}{paragraph.4.1.5.1}%
+\contentsline {subsubsection}{\numberline {4.1.6}Time Evolution, Out-of-time-ordered Propagator}{52}{subsubsection.4.1.6}%
+\contentsline {subsection}{\numberline {4.2}Time Evolution}{55}{subsection.4.2}%
+\contentsline {subsubsection}{\numberline {4.2.1}Schrödinger Equation for Particle Exchange}{55}{subsubsection.4.2.1}%
+\contentsline {subsubsection}{\numberline {4.2.2}Instantaneous Eigenstate Representation}{56}{subsubsection.4.2.2}%
+\contentsline {subsubsection}{\numberline {4.2.3}Low $\omega $ Limit / Adiabatic Limit}{56}{subsubsection.4.2.3}%
+\contentsline {subsubsection}{\numberline {4.2.4}High $\omega $ Limit / Diadiabatic Limit}{58}{subsubsection.4.2.4}%
+\contentsline {section}{\numberline {5}Numerical Setup}{59}{section.5}%
+\contentsline {subsection}{\numberline {5.1}Hamiltonian Matrix}{59}{subsection.5.1}%
+\contentsline {subsection}{\numberline {5.2}Diagonalisation Implementation}{59}{subsection.5.2}%
+\contentsline {subsection}{\numberline {5.3}Treatment of Degenerate Ground State}{59}{subsection.5.3}%
+\contentsline {subsection}{\numberline {5.4}Time Evolution Implementation}{63}{subsection.5.4}%
+\contentsline {subsubsection}{\numberline {5.4.1}Adiabatic Time Evolution}{63}{subsubsection.5.4.1}%
+\contentsline {subsubsection}{\numberline {5.4.2}Time Evolution}{64}{subsubsection.5.4.2}%
+\contentsline {section}{\numberline {6}Results}{65}{section.6}%
+\contentsline {subsection}{\numberline {6.1}Single Phase}{65}{subsection.6.1}%
+\contentsline {subsection}{\numberline {6.2}Vortices}{68}{subsection.6.2}%
+\contentsline {subsubsection}{\numberline {6.2.1}Chemical Potential}{68}{subsubsection.6.2.1}%
+\contentsline {subsubsection}{\numberline {6.2.2}Phase Winding}{71}{subsubsection.6.2.2}%
+\contentsline {paragraph}{\numberline {6.2.2.1}Edge Modes}{76}{paragraph.6.2.2.1}%
+\contentsline {subsection}{\numberline {6.3}Adiabatic Time Evolution}{80}{subsection.6.3}%
+\contentsline {subsection}{\numberline {6.4}Non-Adiabatic Time Evolution}{82}{subsection.6.4}%
+\contentsline {subsubsection}{\numberline {6.4.1}Two Vortices}{82}{subsubsection.6.4.1}%
+\contentsline {subsubsection}{\numberline {6.4.2}Four Vortices}{88}{subsubsection.6.4.2}%
+\contentsline {section}{\numberline {7}Discussion and summary}{90}{section.7}%
+\contentsline {section}{\numberline {8}References}{92}{section.8}%
+\contentsline {section}{\numberline {9}Danksagung}{97}{section.9}%
+\contentsline {section}{\numberline {10}Appendix A / Video Frames}{99}{section.10}%
+\contentsline {section}{\numberline {11}Appendix B / Source code}{101}{section.11}%
+\contentsline {subsection}{\numberline {11.1}Matrix Creation}{102}{subsection.11.1}%
+\contentsline {subsection}{\numberline {11.2}Diagonalisation}{106}{subsection.11.2}%
+\contentsline {subsection}{\numberline {11.3}Treatment of Degeneracies}{111}{subsection.11.3}%
+\contentsline {subsection}{\numberline {11.4}Time Evolution}{113}{subsection.11.4}%

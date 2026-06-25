@@ -1,0 +1,152 @@
+\documentclass[Master]{subfiles}
+\begin{document}
+\section{Numerical Setup}
+\subsection{Hamiltonian Matrix}
+The numerical implementation of the generalised Bogoliubov de Gennes Hamiltonian \secref{sec:BdG} is done as a dense matrix with Eigen \cite{eigenweb} in C++ \cite{ISO:2017:IIIa}.
+While the matrix has a spectrum, sparse storage is found to be computationally inefficient for diagonalisation and time evolution. In addition to Eigen's compressed storage implementations Armadillo \cite{sanderson2016armadillo}\cite{sanderson2018user} is tested. However, diagonalisation is either inefficient or unable to find all eigenvalues and eigenvectors. In order to utilise multi-threading Intels Math Kernel Library \cite{intel-alt} is used beneath Eigen.
+In \secref{sec:BdG} the creation and annihilation operators $c_i,c^{\dag}_i : i \in I_N = {0,...,N}$ have a single index while in the 2D Hamiltonian \eqref{math:Hamil_MultiPart} we have two indices $c_{i,j},c^{\dag}_{i,j}, i \in I_n = {0,...,n}, j \in I_j = {0,...,m}$  Thus, we need a mapping:
+$$Z:I_n \times I_m \rightarrow I_N; (i,j)\rightarrow k$$
+The simple mapping:
+$$
+Z(i,j) = i + n*j 
+$$
+has the benefit that the given Hamiltonian becomes a Band matrix.
+Unless explicitly stated, all calculations are done on a $36\times36$ Grid.
+\subsection{Diagonalisation Implementation}
+Custom paralellisations and usage of Streaming SIMD extensions are done using Open-MP \cite{dagum1998openmp}. For small, $2450\times2450$, complex double precision matrices ($48$ Mb storage) it is faster to diaglonalise multiple matrices in parallel, scaling almost linearly with the number of threads (weak scaling). However, for large  $14450\times14450$ complex double precision matrices ($1.67$ GB storage) it is faster to parallelise diagonalisation of a single matrix. The diagonalisation of the hermitian matrix is then further optimised by usage of a graphics processing unit. A custom wrapper to MAGMA \cite{tdb10} and Nvidia's cuBLAS is implemented resulting in a $\sim 2\times$ speedup on complex hermitian $14450\times14450$ Matrices in double precision. Compared to the CPU implementation, benchmarked using MAGMA CPU implementation 8 threads on a intel i9 9900K vs MAGMA GPU implementation 8 threads on a intel i9 9900K and a Nvidia GTX 2070 Super. cuBLAS is found to be $\sim 20 \%$ faster than MAGMAS GPU implementation.
+\subsection{Treatment of Degenerate Ground State}
+For a degenerate ground state the matrix $M$ from the generalised Bogoliubov de Genes Hamiltonian has $\dim(\ker(M))>2$ the diagonalisation algorithm has to choose a specific basis of the degenerate subspace. The specific choice of this basis must not be deterministic. However, for a physical Hamiltonian, not all possible choices are the same. As all eigenvalues are orthogonal and normalised the quasi particle operators $d$ commute fermionically  \secref{sec:Fermionicness}, but an essential difference to us is that different vectors act differently under the symmetry $\gamma$ the vectors for $d,d^{\dag}$ behave as $\mathcal{
+C} \vec{V} = \vec{W}$ where as the vectors for Majorana operators behave as fixed points under $\mathcal{C}$  $\gamma\Gamma^* = \Gamma$. We use this property to find the $\Gamma$ vectors as we can then get the $\vec{V},\vec{W}$ vectors from a simple transformation described in \eqref{math:BdG_MajTransf1} and \eqref{math:BdG_MajTransf2}. When we remove all these degrees of freedom we get
+$$
+e^{i\theta} R_{Vort} U \text{,}
+$$
+where $\theta$ is some phase, $U \in SU(n)$ with $n = \dim(\ker(H))$ and $R_{Vort} \in \mathbb{C}^{2N \times n}$ is the part of the eigenvector matrix that contains the eingenvectors belonging to the kernel subspace. For the simple case of two vortices, we take two vectors $\vec{X},\vec{Y}$ and form the superposition's $\vec{A} = \alpha \vec{X} + \beta \vec{Y} $ and $ \vec{B} = \gamma \vec{Y} + \delta \vec{X}$. As we desire $\vec{A}$ and $\vec{B}$ to be normalised we additionally get $|\alpha|^2+|\beta|^2 = 1$ and $|\gamma|^2+|\delta|^2 = 1$.
+We further want $\braket{A}{B} = \delta_{A,B}$. This choice ensures these properties:
+\begin{dmath}\label{math:ABvecs}
+{\vec{A} = \exp (i \xi ) (\vec{X} \exp (i \phi ) \sin (\theta )+\vec{Y} \exp (-i \phi ) \cos (\theta )) }\\ 
+{\vec{B} = \exp (i \zeta ) (\vec{X} \exp (i \phi ) \cos (\theta )-\vec{Y} \exp (-i \phi ) \sin (\theta ))}\
+\end{dmath}
+We thus desire to find $\phi,\xi,\zeta,\theta$ such that $\gamma\vec{A}^* = \vec{A}$ However, as we got $\vec{X}$ and $\vec{Y}$ from numeric diagonalisation, we must expect some numerical error or noise in these vectors. Thus, there must not be an exact solution, but only a optimal one. Finding $\vec{A}$ and $\vec{B}$ by choice of $\phi,\xi,\zeta,\theta$ has become an optimisation problem.
+We define the error function as:
+$$ Err= |\gamma \vec{A}^*-A|^2 + |\gamma \vec{B}^*-B|^2 $$
+As $||^2$ is positive definite we can combine the error fuctions from $\vec{A}$ and $\vec{B}$. This further gives us a lower limit of $0$ for the case of an exact solution. For an upper limit we can use $|\vec{X}|=|\vec{Y}|=|\gamma\vec{X}|=|\gamma\vec{Y}|=|\vec{A}|=|\vec{B}|=|\gamma\vec{A}|=|\gamma\vec{B}|= 1$ thus $|\gamma \vec{A}^*-A| \leq 2 \geq |\gamma \vec{B}^*-B|$ thus $Err \leq 8$ and thus $\frac{1}{8}Err \in  [0,1]$.
+We can further express the error in dependence of $ \phi , \xi, \zeta , \theta $ using equation \eqref{math:ABvecs}:
+\begin{equation}
+\begin{split}Err(\phi,\xi,\zeta,\theta) = 4 - 2\left[ \right.
++ &\Re(\braket{\gamma\vec{X}}{\vec{X}}) \left(\cos ^2(\theta ) \cos (2 (\zeta +\phi ))+\sin ^2(\theta ) \cos (2 (\xi +\phi ))\right)\\
+- &\Im(\braket{\gamma\vec{X}}{\vec{X}}) \left(\cos ^2(\theta ) \sin (2 (\zeta +\phi ))+\sin ^2(\theta ) \sin (2 (\xi +\phi ))\right)\\
++ &\Re(\braket{\gamma\vec{Y}}{\vec{Y}}) \left(\sin ^2(\theta ) \cos (2 \zeta -2 \phi )+\cos ^2(\theta ) \cos (2 \xi -2 \phi )\right)\\
+- &\Im(\braket{\gamma\vec{Y}}{\vec{Y}}) \left(\sin ^2(\theta ) \sin (2 \zeta -2 \phi )+\cos ^2(\theta ) \sin (2 \xi -2 \phi )\right)\\
+- &\Re(\braket{\gamma\vec{X}}{\vec{Y}}) \sin (2 \theta ) (\cos (2 \zeta )-\cos (2 \xi )) 
+\left. \right]\end{split} 
+\end{equation}
+For simplicity, we may ignore the constant $4$ term and divide by $2$.
+As this is an analytical function, we can compute derivatives in respect to $\phi,\xi,\zeta,\theta$ (shown below) and thus compute the gradient 
+$\nabla_{\phi,\xi,\zeta,\theta} Err$:
+\begin{equation}\label{math:ABvecsD1}
+\begin{split}
+\partial_\theta Err =
+4 \left(\right. \sin (2 \theta ) \sin (\zeta -\xi )
+\left[ \right.
+- &\Re(\braket{\gamma\vec{X}}{\vec{X}}) \sin (\zeta +\xi +2 \phi )
++  \Im(\braket{\gamma\vec{X}}{\vec{X}}) (-\cos (\zeta +\xi +2 \phi ))\\
++ &\Re(\braket{\gamma\vec{Y}}{\vec{Y}}) \sin (\zeta +\xi -2 \phi )
++  \Im(\braket{\gamma\vec{Y}}{\vec{Y}}) \cos (\zeta +\xi -2 \phi )\left.\right]\\
+- &\Re(\braket{\gamma\vec{X}}{\vec{Y}}) \cos (2 \theta ) (\cos (2 \zeta )-\cos (2 \xi )) \left.\right)
+\end{split}
+\end{equation}
+\begin{dmath}\label{math:ABvecsD2}
+\begin{aligned}
+\partial_{\phi} Err = 
+4 \left[\right.
++&\Re(\braket{\gamma\vec{X}}{\vec{X}}) \left(\cos ^2(\theta ) \sin (2 (\zeta + \phi )) + \sin ^2(\theta ) \sin (2 (\xi + \phi )) \right)\\
++&\Im(\braket{\gamma\vec{X}}{\vec{X}}) \left(\cos ^2(\theta ) \cos (2 (\zeta + \phi )) + \sin ^2(\theta ) \cos (2 (\xi + \phi ))\right)\\
+-&\Re(\braket{\gamma\vec{Y}}{\vec{Y}}) \left(\sin ^2(\theta ) \sin (2 (\zeta - \phi )) + \cos ^2(\theta ) \sin (2 (\xi - \phi ))\right)\\
+-&\Im(\braket{\gamma\vec{Y}}{\vec{Y}}) \left(\sin ^2(\theta ) \cos (2 (\zeta - \phi )) + \cos ^2(\theta ) \cos (2 (\xi - \phi ))\right)\left.\right]\\
+\end{aligned}
+\end{dmath}
+\begin{dmath}\label{math:ABvecsD3}
+\begin{aligned}
+\partial_{\xi} Err = 
+4 \left[\right.
+&+\Re(\braket{\gamma\vec{X}}{\vec{X}}) \sin ^2(\theta ) \sin (2 (\xi +\phi ))
+&+\Im(\braket{\gamma\vec{X}}{\vec{X}}) \sin ^2(\theta ) \cos (2 (\xi +\phi ))\\
+&+\Re(\braket{\gamma\vec{Y}}{\vec{Y}}) \cos ^2(\theta ) \sin (2 \xi -2 \phi )
+&+\Im(\braket{\gamma\vec{Y}}{\vec{Y}}) \cos ^2(\theta ) \cos (2 \xi -2 \phi )\\
+&+\Re(\braket{\gamma\vec{X}}{\vec{Y}}) \sin (2 \theta ) \sin (2 \xi )
+\left.\right]&
+\end{aligned}
+\end{dmath}
+\begin{dmath}\label{math:ABvecsD4}
+\begin{aligned}
+\partial_{\zeta} Err = 4 \left[\right.
+&+\Re(\braket{\gamma\vec{X}}{\vec{X}}) \cos ^2(\theta ) \sin (2 (\zeta +\phi ))
+&+\Im(\braket{\gamma\vec{X}}{\vec{X}}) \cos ^2(\theta ) \cos (2 (\zeta +\phi ))\\
+&+\Re(\braket{\gamma\vec{Y}}{\vec{Y}}) \sin ^2(\theta ) \sin (2 \zeta -2 \phi )
+&+\Im(\braket{\gamma\vec{Y}}{\vec{Y}}) \sin ^2(\theta ) \cos (2 \zeta -2 \phi )\\
+&-\Re(\braket{\gamma\vec{X}}{\vec{Y}}) \sin (2 \theta )\sin (2 \zeta ) \left.\right]&
+\end{aligned}
+\end{dmath}
+We are therefore able to use e.g. a gradient decent (GD) approach. An additional benefit of this method is that the $Err$-fuction and its derivatives only depend on the constant scalar expressions  $ \Re(\gamma \vec{X}\cdot \vec{X}),\Re(\gamma \vec{Y}\cdot \vec{Y}),\Im(\gamma \vec{X}\cdot \vec{X}),\Im(\gamma \vec{Y}\cdot \vec{Y}),\Re(\gamma \vec{X}\cdot \vec{Y})$ all of which can be evaluated ahead of optimisation. Significantly reducing the computational cost.\\
+\hspace{1cm}\\
+For a general number of vortices the error takes the form:
+$$
+Err = ||\gamma R U  - R^* U^*||
+$$
+As $R \in \mathbb{C}^{2N\times n}$ is large and non square evaluating this expression is inefficient. As the expression is independent of the specific matrix norm, we can choose the Frobenius norm:
+$||M||^2 = tr(M^{\dag}M)$
+then the expression simplifies to:
+$$
+Err^2 = tr[(\gamma R U  - R^* U^*)^{\dag}*(\gamma R U  - R^* U^*)] = 
+tr[(U^{\dag} R^{\dag} \gamma - U^T R^T)*(\gamma R U  - R^* U^*)]
+$$
+$$
+= tr \left[
+\underbrace{(U^{\dag} R^{\dag} \gamma \gamma R U)}_{= \mathbb{1}_n}
+-(U^{\dag} R^{\dag} \gamma R^* U^*)
+-(U^T R^T \gamma R U)
++\underbrace{( U^T R^T R^* U^*)}_{= \mathbb{1}_n}\right]
+$$
+\begin{dmath}\label{num:GenericErrorExpr}
+= 2n - tr[\Re (U^T R^T \gamma R U )]
+\end{dmath}
+Here, $R^T \gamma R \in \mathbb{C}^{n \times n}$  is a square matrix whose dimension only depends on the ground state degeneracy. The entries are simple to calculate ahead of optimisation. We can further ignore the square on the error and the constant $2n$ term and define a new error function:
+\begin{dmath}
+Er(U) = - \tr[\Re (U^T R^T \gamma R U )]
+\end{dmath}
+The $SU(2n)$ is commonly parametrised using generators.
+While this is mathematically beautiful, it is inconvenient for an optimization problem, as the parameters live in a non trivial domain. For example the $SU(2)$ is commonly parametrised using the Pauli matrices as generators:
+$$ SU(2) = \left\{ i* (a \mathbb{1} + b \sigma^x + c \sigma^y d + \sigma^z | a,b,c,d \in \mathbb{R} : a^2+b^2+c^2+d^2 = 1) \right\}$$
+Here, the parameters live on the 4-sphere $\mathcal{S}^4$. For an optimisation this means there is a optimisation constraint which makes the problem harder to solve or the constraint has to be removed explicitly as in \eqref{math:ABvecs}. A more convenient way is to use the Cayley Transform for complex matrices: 
+$$
+f: U(n) \rightarrow SU(n); A\rightarrow(\mathbb{1}_n - A)(A + \mathbb{1}_n)^{-1}
+$$
+It maps a skew-hermitian Matrix $A : A^{\dag} = -A$ from the Lie group (U(n)) to the special unitary group.  Skew-hermitian matrices can be easily parametrised as the diagonal elements have to be complex $a_{i,i}^* = - a_{i,i}$ and the off diagonal elements $a_{i,j}^* = - a_{j,i}$ this leaves 
+$n + (n - 1) n$ parameters from $\mathbb{R}$. $n$ for the diagonal and $2 \sum_k^{n-1} k =  (n - 1) n$ for the off-diagonal. This is always one parameter more than necessary. Leaving this parametrisation over defined and non unique. However, one additional parameter from $\mathbb{R}$ is computationally cheaper than optimising on a non trivial domain. Here, we are interested in the resulting matrix, not the parameters. Thus, the non uniqueness is of no concern. When needed, the parameters of a generator based representation can be calculated from the matrix utilising the uniqueness of the canonical representation.\\
+\hspace{1cm}\\
+The optimisation problem of finding the correct $SU(2n)$ transformation of the operators in the $n$ times degenerate Hamiltonian was done in two different ways.
+for the two vortex $n=2$ case the the simple backtracking Gradient Decent from \secref{num:GD} using the derivatives calculated in \eqref{math:ABvecsD1}-\eqref{math:ABvecsD4} where initially implemented with $\Theta = (\phi,\xi,\zeta,\theta)$.
+Further, while mathematically $\Theta \in T^4$ the 4-Torus we have to use $\mathbb{R}^4$ as an embedding on a computer.
+However, this is dangerous as $\sin(x), \cos(x)$ implementations may become inaccurate for large arguments $|x|>>1$. Thus, we replace the difference in $\Theta - \lambda \nabla Err$ with the modulo  difference $(\Theta - \lambda \nabla Err + \pi ) mod2\pi-\pi$. This ensures $\Theta \in [-\pi,\pi]^4$ and additionally restores the topological property of $\Theta$. While this operation my introduce an additional error, this is mitigated as the inner \textbf{{while}} loop makes the check including any such error.\\
+\hspace{1cm}\\
+For the four Vortex case the expression \eqref{num:GenericErrorExpr} was used. Derivatives are calculated by autodifferention (see \secref{num:autodiff}) by the autodiff \cite{autodiff} library. Optimisation was done using  OptimLib \cite{optimlib} using the Broyden–Fletcher–Goldfarb–Shanno  \ref{num:BFGS} method. This was then extended to the use of two vortices. After the optimisation it is no longer obvious which vector corresponds to a creator and which correspond  to an annihilator. 
+When the eigenenergies are not perfectly $0$ we use the sign of:
+$$
+\frac{M \Vec{V}}{|\Vec{V}|}
+$$
+When the states are degenerate the choice is arbitrary. However, each choice implies a different state as $\ket{0}$ from the then degenerate ground state. Finding the corresponding creator annihilator pairs is easy, as they are connected by the induced charge conjugation symmetry $\gamma\vec{V}^* = {W}$.
+
+\subsection{Time Evolution Implementation}
+\subsubsection{Adiabatic Time Evolution}
+As discussed in \secref{anal:Adiabati} for an adiabatic time evolution of degenerate states, the time population remains in the instantaneous eigenstates, and the phases change as in \secref{sec:BerryPhase}. For degenerate states the time evolution stays in the degenerate subspace. Numerically, we can diagonalise the Hamiltonian at discrete time points. However, the eigenvalues from numerical diagonalisation can have varying phases. 
+When the resolution of $\theta$ is high enough, we can recover the instantaneous eigenstate by projecting on the next state  and normalising the result. We begin with the creation operator at $t=0$ and propagate this vector in time by iterating:
+$$\ket{\boldsymbol{{\phi}}(t_{n+1})} =  \frac{\ket{\vec{W}(t_{n+1})}\bra{\vec{W}(t_{n+1})}\ket{\boldsymbol{\phi}(t_{n})}}
+{\sqrt{|\braket{\vec{W}(t_{n+1})}|^2 |\braket{\vec{W}(t_{n+1})}{\boldsymbol{\phi}(t_{n})}|^2}}$$
+We consider that the Nynquist theorem \cite{shannon1949communication} to determine that a step size $\delta \theta$ is sufficient if there are at least twice as many steps for an integration form $\theta_0$ to $\theta_f$  $\Delta\theta = \theta_f-\theta_0$ than grid points on a circle enclosing the domain. For a grid with edge length $G$, thus, the smallest enclosing circle has a circumference $\pi \sqrt{2} G$ we ignore effects from a discrete lattice and get:
+$$\delta\theta = \Delta\theta \sqrt{2} G$$
+\mypagebreak
+\subsubsection{Time Evolution}
+To observe the time evolution of the exchange in finite time we use the propagators of the quasi particles $\braket{d}{d^{\dag}(-t)}$ and $\braket{d^{\dag}}{d^{\dag}(-t)}$ 
+as calculated in \secref{sec:Propagator} using \eqref{BdG:Prop=Scal}. The Schrödinger equation for quasi particle operators \eqref{math:OperatorSchroedinger} was rewritten as in \eqref{Eq:SETheta} and solved numerically for different values of $\omega$ and $\theta = \{\pi, 2 \pi\}$ simulating the exchange and double exchange of particles. As we expect zero energy modes the modified stiffness ratio \ref{num:modStiffRatio} diverges  to $\infty$. A solver for stiff systems is beneficial.
+The BOOST:ODEint \cite{ahnert2011odeint} implementation of Burlich Stroer \secref{num:Bulirsch-Stoer} was used for the solution of the Schrödinger equation of the quasi particle operators \ref{math:OperatorSchroedinger}. Other methods including Runge Kutta 4, Fehlbert78  and implicit Euler where tested but especially for small $\omega$ Burlich Stroer performed faster with a reasonably accurate result. 
+\end{document}

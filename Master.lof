@@ -1,0 +1,61 @@
+\contentsline {figure}{\numberline {1}{\ignorespaces Comparison of the historic scaling behaviour of different CPU-performance metrics. Figure adapted from \blx@tocontentsinit {0}\cite {CPU-Scaling}. }}{12}{figure.caption.3}%
+\contentsline {figure}{\numberline {2}{\ignorespaces Ven Diagram of classical and quantum complexity classes }}{14}{figure.caption.4}%
+\contentsline {figure}{\numberline {3}{\ignorespaces Exchange of identical particles}}{15}{figure.caption.5}%
+\contentsline {figure}{\numberline {4}{\ignorespaces Clockwise}}{15}{figure.caption.6}%
+\contentsline {figure}{\numberline {5}{\ignorespaces Counter-clockwise}}{15}{figure.caption.6}%
+\contentsline {figure}{\numberline {6}{\ignorespaces Exchange of identical particles in 3D}}{15}{figure.caption.6}%
+\contentsline {figure}{\numberline {7}{\ignorespaces Double exchange of identical particles}}{16}{figure.caption.7}%
+\contentsline {figure}{\numberline {8}{\ignorespaces Observed from one particle}}{16}{figure.caption.7}%
+\contentsline {figure}{\numberline {9}{\ignorespaces Exapmle of abelian and non abelian Exchange, With red arrows for the non-abelian $-1$ exchange path}}{19}{figure.caption.8}%
+\contentsline {figure}{\numberline {10}{\ignorespaces Braiding of strands as symbolic interpretation of $\mathcal {B}_3$}}{19}{figure.caption.9}%
+\contentsline {figure}{\numberline {11}{\ignorespaces Braiding of distanced strands commutes}}{19}{figure.caption.10}%
+\contentsline {figure}{\numberline {12}{\ignorespaces The middle strand can be moved smoothly from left to right to change $\sigma _1\sigma _2\sigma _1$ to $\sigma _2\sigma _1\sigma _2$ forming a homotopy.}}{20}{figure.caption.11}%
+\contentsline {figure}{\numberline {13}{\ignorespaces Examples of quantum gates and corresponding braid group elements from \blx@tocontentsinit {0}\cite {georgiev2017topological}}}{20}{figure.caption.12}%
+\contentsline {figure}{\numberline {14}{\ignorespaces Adiabatic Time evolution on a symbolic torus "State $\times $ Phase". The Berry phase wraps around the torus enclosing a Mobius strip. }}{22}{figure.caption.13}%
+\contentsline {figure}{\numberline {15}{\ignorespaces Cartan random matrix classification / The 10 fold way from \blx@tocontentsinit {0}\cite {ryu2010topological}}}{23}{figure.caption.14}%
+\contentsline {figure}{\numberline {16}{\ignorespaces Types of topological invariants from \blx@tocontentsinit {0}\cite {ryu2010topological}}}{23}{figure.caption.15}%
+\contentsline {figure}{\numberline {17}{\ignorespaces Zero-ernergy modes on Point interfaces and respective Symmetry classes. Figure adapted from \blx@tocontentsinit {0}\cite {teo2010topological}}}{24}{figure.caption.16}%
+\contentsline {figure}{\numberline {18}{\ignorespaces Zero-ernergy modes on Line interfaces and respective Symmetry classes. Figure adapted from \blx@tocontentsinit {0}\cite {teo2010topological}}}{24}{figure.caption.17}%
+\contentsline {figure}{\numberline {19}{\ignorespaces Outline of the Stability Regions for explicit Euler and Runge-Kutta schemes of orders 2,3,4,5}}{34}{figure.caption.20}%
+\contentsline {figure}{\numberline {20}{\ignorespaces Symbolic image of Kitaev Model for Majorana modes interactions of the three terms indicated as coloured lines}}{38}{figure.caption.21}%
+\contentsline {figure}{\numberline {21}{\ignorespaces Symbolic image of Kitaev model in the topological regime with free modes}}{38}{figure.caption.22}%
+\contentsline {figure}{\numberline {22}{\ignorespaces Plots of the Spectrum roots for $\Delta = 1 , t = 1/2$}}{41}{figure.caption.23}%
+\contentsline {figure}{\numberline {23}{\ignorespaces Phase diagram of the Hamiltonian \eqref {math:HamilBdG} in the topological and non-topological regimes depending on $\mu $ and $t$}}{42}{figure.caption.24}%
+\contentsline {figure}{\numberline {24}{\ignorespaces Phase diagram of the Hamiltonian \eqref {math:HamilBdG} in the topological $\Delta \neq 0$ regimes depending on $\mu $ and $t$}}{42}{figure.caption.25}%
+\contentsline {figure}{\numberline {25}{\ignorespaces Numerical evaluation of Winding number of the Hamiltonian \eqref {math:HamilBdG} for $|\Delta | = 1$ depending on $\mu $ and $t$}}{43}{figure.caption.26}%
+\contentsline {figure}{\numberline {26}{\ignorespaces Symbolic image of a chiral zero energy bound state (Grey) localised at the interface of a region (red) topologically different to the other region (white)}}{43}{figure.caption.27}%
+\contentsline {figure}{\numberline {27}{\ignorespaces Symbolic image of a chiral zero energy bound state (grey) localised around a region (red) topologically different to the outside (white)}}{43}{figure.caption.27}%
+\contentsline {figure}{\numberline {28}{\ignorespaces $M$ Matrix of the BdG Hamiltonian with periodic boundary conditions. constant Chemical potential $\mu = -2$, tunneling energy $t=\genfrac {}{}{}{}{1}{4}$, and Order parameter $|\Delta | = 1,$ on a $35 \times 35 Grid$}}{65}{figure.caption.28}%
+\contentsline {figure}{\numberline {29}{\ignorespaces Map of $\mathbb {C}$ to colours representing phase and absolute value}}{65}{figure.caption.29}%
+\contentsline {figure}{\numberline {30}{\ignorespaces Spectrum for the Hamiltonian with periodic boundary conditions. constant Chemical potential $\mu = -2$, tunneling energy $t=\genfrac {}{}{}{}{1}{4}$, and Order parameter $|\Delta | = 1,$ on a $35 \times 35 Grid$.}}{66}{figure.caption.30}%
+\contentsline {figure}{\numberline {31}{\ignorespaces Spectrum for periodic boundary conditions and $t=\genfrac {}{}{}{}{1}{4}, \Delta = 1$. the axes where shifted to the edge to improve visibility of roots.}}{67}{figure.caption.31}%
+\contentsline {figure}{\numberline {32}{\ignorespaces Plot of discrete pots in the chemical potential and a circular exchange path}}{68}{figure.caption.32}%
+\contentsline {figure}{\numberline {33}{\ignorespaces Plot of the chemical potential of a Gaussian vortex pair in real space, with pots along the x axis at $V_x^1=G/4,V_x^2=-G/4, V_y^{1/2} = 0$ and a radius $R = G/8$}}{69}{figure.caption.33}%
+\contentsline {figure}{\numberline {34}{\ignorespaces For discrete vortices the spectrum is similar as without vortices. $t=\genfrac {}{}{}{}{1}{4}, \Delta = 1, \mu _0 = -2, R = grid/8$}}{70}{figure.caption.34}%
+\contentsline {figure}{\numberline {35}{\ignorespaces For Gaussian vortices the spectrum shows new low energy states as the chemical energy vanishes close to the boundary $t=\genfrac {}{}{}{}{1}{4}, \Delta = 1, \mu _0 = -2, R = grid/8$}}{70}{figure.caption.34}%
+\contentsline {figure}{\numberline {36}{\ignorespaces Complex plot of phase winding around vortices}}{71}{figure.caption.35}%
+\contentsline {figure}{\numberline {37}{\ignorespaces Matrix with phase winding and gaussian vorices. $t=\genfrac {}{}{}{}{1}{4}, \Delta = 1, \mu = -2$}}{71}{figure.caption.36}%
+\contentsline {figure}{\numberline {38}{\ignorespaces Spectrum for discrete vortices, zero energy mode coloured in red . $t=\genfrac {}{}{}{}{1}{4}, \Delta = 1, \mu _0 = -2, R = Grid/8$ witout a $\pm 4t$ shift}}{72}{figure.caption.37}%
+\contentsline {figure}{\numberline {39}{\ignorespaces Spectrum for Gaussian vortices, zero energy mode coloured in red $t=\genfrac {}{}{}{}{1}{4}, \Delta = 1, R = Grid/8$ depending on $\mu _0$ witout a $\pm 4t$ shift}}{72}{figure.caption.37}%
+\contentsline {figure}{\numberline {40}{\ignorespaces Spectrum for discrete vortices, zero energy mode coloured in red $t=\genfrac {}{}{}{}{1}{4}, \Delta = 1, R = Grid/8$ depending on $\mu _0$ with a $-4t$ shift}}{73}{figure.caption.38}%
+\contentsline {figure}{\numberline {41}{\ignorespaces Spectrum for discrete vortices, zero energy mode coloured in red $t=\genfrac {}{}{}{}{1}{4}, \Delta = 1, R = Grid/8$ depending on $\mu _0$ with a $+4t$ shift}}{73}{figure.caption.38}%
+\contentsline {figure}{\numberline {42}{\ignorespaces Spectrum for Gaussian vortices, zero energy mode coloured in red $t=\genfrac {}{}{}{}{1}{4}, \Delta = 1, R = Grid/8$ depending on $\mu _0$ with a $-4t$ shift}}{74}{figure.caption.39}%
+\contentsline {figure}{\numberline {43}{\ignorespaces Spectrum for Gaussian vortices, zero energy mode coloured in red $t=\genfrac {}{}{}{}{1}{4}, \Delta = 1, R = Grid/8$ depending on $\mu _0$ with a $+4t$ shift}}{74}{figure.caption.39}%
+\contentsline {figure}{\numberline {44}{\ignorespaces Gaussian chemical potential extending over all different topological regions. Coloured white trivial, chrial+ blue, chiral- red, for $t=-\genfrac {}{}{}{}{1}{2},\Delta =1$}}{75}{figure.caption.40}%
+\contentsline {figure}{\numberline {45}{\ignorespaces Spectrum for discrete vortices, $t=\genfrac {}{}{}{}{1}{4}, \Delta = 1$ depending on $\mu _0$ with a $-4t$ shift}}{75}{figure.caption.41}%
+\contentsline {figure}{\numberline {46}{\ignorespaces Complex plot of the $\mathbf {V}$ vector for $\mu _0 = 0.5, t = 0.25, \Delta = 1, radius = G/8$}}{76}{figure.caption.42}%
+\contentsline {figure}{\numberline {47}{\ignorespaces $\left <\Delta \hat {n}_{x,y}\right >$ for the lowest energy $d^{\dag }$ operator at $\mu _0 = 0.5, t = 0.25, \Delta = 1, radius = G/8$}}{77}{figure.caption.43}%
+\contentsline {figure}{\numberline {48}{\ignorespaces Plot of Majorana modes for $\mu _0 = 0.5, t = 0.25, \Delta = 1, radius = G/8$}}{77}{figure.caption.44}%
+\contentsline {figure}{\numberline {49}{\ignorespaces $\mathbf {u}+\mathbf {v}$ Plot for the $\mathbf {V}$ vector for $\mu _0 = 0.5, t = 0.25, \Delta = 1, radius = G/8$}}{78}{figure.caption.45}%
+\contentsline {figure}{\numberline {50}{\ignorespaces Logarithmic plot of lowest edge state energy for with varying vortex radius $t=\genfrac {}{}{}{}{1}{4}, \Delta = 1, \mu = \genfrac {}{}{}{}{1}{2}$}}{79}{figure.caption.46}%
+\contentsline {figure}{\numberline {51}{\ignorespaces Logarithmic plot of lowest edge state energy for varying vortex to vortex distance D $t=\genfrac {}{}{}{}{1}{4}, \Delta = 1, \mu = \genfrac {}{}{}{}{1}{2}, R = G/8$}}{79}{figure.caption.47}%
+\contentsline {figure}{\numberline {52}{\ignorespaces Complex plot $ u_{x,y}+v_{x,y} $ of $\gamma _A$ during exchange}}{80}{figure.caption.48}%
+\contentsline {figure}{\numberline {53}{\ignorespaces Complex plots $ u_{x,y}+v_{x,y}$ mapping all four different states.}}{81}{figure.caption.49}%
+\contentsline {figure}{\numberline {54}{\ignorespaces Time evolution of the exchange of two Gaussian vortices $\mu = 1, \Delta = 1, t = -\genfrac {}{}{}{}{2}{3}, R = \genfrac {}{}{}{}{1}{35}$}}{83}{figure.caption.50}%
+\contentsline {figure}{\numberline {55}{\ignorespaces Comparison of the fidelity $|\left <d d^{\dag }(-\pi /\omega )\right >|^2$ for the exchange of two discrete vortices $\mu = 0.5, \Delta = 1, t = \genfrac {}{}{}{}{1}{2}$ and distance $D=9$ with a $-4t$ shift and different vortex radii $R$}}{84}{figure.caption.51}%
+\contentsline {figure}{\numberline {56}{\ignorespaces Comparison of the fidelity $|\left <(-\pi /\omega )d^{\dag }\right >|^2$ for the exchange of two discrete vortices $\mu = 1, \Delta = 1, t = \genfrac {}{}{}{}{1}{2}$ and distance $D=9$ with a $-4t$ shift and different vortex radii $R$}}{85}{figure.caption.52}%
+\contentsline {figure}{\numberline {57}{\ignorespaces Comparison of the fidelity $|\left <d d^{\dag }(-\pi /\omega )\right >|^2$ for the exchange of two discrete vortices $\mu = 0.5, \Delta = 1, t = \genfrac {}{}{}{}{1}{2}$ and radius $R=1.6$ with a $-4t$ shift and different vortex Distances $D$}}{86}{figure.caption.53}%
+\contentsline {figure}{\numberline {58}{\ignorespaces Comparison of the fidelity $|\left <(-\pi /\omega )d^{\dag }\right >|^2$ for the exchange of two discrete vortices $\mu = 1, \Delta = 1, t = \genfrac {}{}{}{}{1}{2}$ and radius $R=1.6$ with a $-4t$ shift and different vortex Distances $D$}}{87}{figure.caption.54}%
+\contentsline {figure}{\numberline {59}{\ignorespaces Exchange of $\tau (\sigma _2)$ of two Gaussian vortices $\mu = 1, \Delta = 1, t = -\genfrac {}{}{}{}{2}{3}, R = \genfrac {}{}{}{}{1}{35}$}}{89}{figure.caption.55}%
+\contentsline {figure}{\numberline {60}{\ignorespaces Complex plots of the $\mathbf {u}$ and $\mathbf {v}$ vector for $\mu _0 = 0.5, t = 0.25, \Delta = 1, radius = G/8$ at different states of rotation.}}{99}{figure.caption.57}%
+\contentsline {figure}{\numberline {61}{\ignorespaces Complex plots of the $\mathbf {u} + \mathbf {v}$ vector for $\mu _0 = 0.5, t = 0.25, \Delta = 1, radius = G/8$ at different states of rotation.}}{100}{figure.caption.58}%

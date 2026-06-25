@@ -1,0 +1,77 @@
+\documentclass[Master]{subfiles}
+\begin{document}
+\subsection{Time Evolution}
+\subsubsection{Schrödinger Equation for Particle Exchange}\label{Equivalence}
+When studying the case of quasi-particle exchange in 2D, ignoring translation of the particles during the exchange we can describe the exchange path in polar coordinates with the origin being the centre point of the two particles. The Schrödinger equation then has the following form:
+$$ i \hbar \partial_t \ket{\psi(t)} = \hat{H}(r(t),\theta(t))\ket{\psi(t)}$$
+When the distance between the particles remains constant during the exchange $r(t) = const$, then the parameters of the Hamiltonian reduce to $\theta(t)$
+$$ i \hbar \partial_t \ket{\psi(t)} = \hat{H}(\theta(t))\ket{\psi(t)}$$
+When the rotation is uniform $\theta(t) = \omega t$  the state $\ket{\psi(t)}$ can be expressed in dependence to $\theta$
+$$ i \hbar \partial_t \ket{\psi(t)} = i \hbar \frac{\omega}{\omega}\partial_t \ket{\psi(t)} = i \hbar \omega \partial_{t} \ket{\psi(t)}(\frac{\partial t}{\partial \theta})   = i \hbar \omega \partial_{\theta} \ket{\psi(\theta)} = \hat{H}(\theta)\ket{\psi(\theta)}$$
+This leaves us with the differential equation:
+\begin{dmath}\label{Eq:SETheta}
+\partial_{\theta} \ket{\psi(\theta)} = -\frac{  i }{\hbar \omega}\hat{H}(\theta)\ket{\psi(\theta)} 
+\end{dmath}
+If we extract a scalar $\xi$ with unit of energy from the Hamiltonian, $\ket{\psi(\theta)}, \Omega$ and $\hat{H'}$ becomes dimension less.
+$$\hat{H}(\theta)  = \xi \hat{H'}(\theta)$$
+$$\partial_{\theta} \ket{\psi(\theta)} = - i \frac{\xi}{\hbar \omega}\hat{H'}(\theta)\ket{\psi(\theta)} = - i \frac{ \hat{H'}}{\Omega}(\theta)\ket{\psi(\theta)} $$
+We can use any Matrix norm to uniquely define $\xi$. However, some are physically more convenient.  
+We define the following types of $\Omega$ and thus $\xi$\\
+$$\Omega_{max} = \frac{\hbar \omega}{|\lambda_{max}|} \text{ where } \xi = |\lambda_{max}|$$\\
+ $$\Omega_{min} = \frac{\hbar \omega}{|\lambda_{min}|} \text{ where } \xi = |\lambda_{min}| $$ \\
+$\Omega_{min}$ is not a Matrix norm and generally undefined as $\lambda_{min}$ might be zero. 
+However, for Majorana modes with a small energy splitting this choice is convenient.
+Experimentally, this formulation has the benefit that by tuning $\xi$ a desired behaviour at some $\Omega$ can be moved to a desired $\omega$.\\
+
+\subsubsection{Instantaneous Eigenstate Representation}
+When the eigenstates of the Hamiltonian are continuous in time, we can express the time evolution in this basis.
+We start with equation \eqref{Eq:SETheta} and write $\ket{\psi(\theta)}$ represented in the instantaneous eigen basis $\hat{H}(\theta) \ket{\phi_i} = \lambda_i(\theta) \ket{\phi_i} $
+$$\ket{\psi(\theta)} = \sum_{i} c_i(\theta) \ket{\phi_i(\theta)}$$
+When we insert this expression we get:
+$$\partial_{\theta} \sum_{i} c_i(\theta) \ket{\phi_i(\theta)} = - \frac{i}{\hbar \omega} \sum_{i} c_i(\theta) \hat{H}(\theta)  \ket{\phi_i(\theta)}$$
+$$ \Leftrightarrow  \sum_{i} \left(  \partial_{\theta} c_i \ket{\phi_i}+c_i \ket{\partial_{\theta} \phi_i}\right) = - \frac{i}{\hbar \omega} \sum_{i} \lambda_i c_i\ket{\phi_i}$$
+We multiply from the left with $\bra{\phi_i}$
+$$   \partial_{\theta}c_i + \sum_{i}  c_i \braket{\phi}{\partial_{\theta}\phi_i} = - \frac{i}{\hbar \omega} \sum_{i} \lambda_i c_i $$
+thus, we get:
+\begin{dmath}\label{Eq:SEThetaInst}
+$$   \partial_{\theta} c_i  =  - c_i  \left( \frac{i}{\hbar \omega} \lambda_i + \sum_{i} \braket{\phi}{\partial_{\theta}\phi_i} \right)$$
+\end{dmath}
+We get two terms in this equation. The first term is the dynamical phase. We use this expression to explore the limit of fast and slow exchange.
+\subsubsection{Low $\omega$ Limit / Adiabatic Limit}\label{anal:Adiabati}
+The $\omega \rightarrow 0$ limit corresponds to the adiabatic limit with a exchange time or periodicity $T = \frac{2 \pi}{\omega} \rightarrow \infty$.
+In this limit an instantaneous eigenstate $H(\omega t)\ket{\omega t} = \lambda(\omega t)$ is a solution up to phase.
+This results from the adiabatic theorem \cite{born1928beweis}. The phase evolves as described in \secref{sec:BerryPhase}.\\
+However, for equation \eqref{math:Hamil_MultiPart}  zero energy chiral Majorana modes occur. Thus, the ground state is gaped but degenerate. The adiabatic theorem for the degenerate case \cite{rigolin2012adiabatic} states that a time-dependent superposition of instantaneous eigenstates solves the Schrodinger equation. Thus, an initial instantaneous eigenstate remains in the space spanned by the degenerate instantaneous instates. Explicitly:
+\begin{dmath}\label{eq:DAT}
+\ket{\Vec{\Psi}^{(0)}(t)} = \sum_n e^{- i \Omega_n(t)} U^n(t)\ket{\Vec{n}(t)}
+\end{dmath}
+As $n$ indexes the degenerate states, this demonstrates that under adiabatic time evolution a state stays in is degenerate sub-space. However, exchange within the sub-space may occur expressed by the unitary transformation $U^n(t)$ acting on the subspace.
+Here, $\Theta(t)$ is the dynamical phase described in \secref{sec:BerryPhase}.
+$$\Omega_n(t) = \int_0^t dt'\frac{\omega(t')}{\hbar}$$
+The unitary transformation on the subspace further called the Wilczek-Zee \cite{wilczek1984appearance} phase:
+$$
+U^n(t) = U^n(0) \mathcal{P} \left[ \exp\int_0^t dt' A^{nn}(t')\right]
+$$With the time ordering operator $\mathcal{P}$ and the matrix. $$
+[A^{nn}(t)]_{j,k} = \braket{\Vec{n}_j(t)}{\partial_t \Vec{n}_k(t)}^*
+$$
+On a closed path $C$, the Wilczek-Zee phase becomes the Wilson loop: \cite{wilczek1984appearance}
+$$
+U_C = \mathcal{P}\exp(\oint_C d\vec{r} A(\vec{r}) )
+$$
+When the degeneracy of the Majorana modes is lifted, the expression of $\Omega_{min}$ has illustrative use. Imagine a system with PH-symmetry and two lowest energy states split by $2\xi > 0$ ; after rotating some angle $\theta$, the states have picked up a relative phase of $\exp(-i\frac{2 xi \theta}{\omega\hbar})$.  If we want these states to be coherent, the phase has to be much smaller that $\pi$. Thus:
+$$\frac{\theta \xi }{\hbar \omega } \ll \pi \Leftrightarrow \frac{2 \theta}{\pi} \ll \frac{\hbar \omega } {\xi } =\Omega_{min}\Leftrightarrow\frac{ 2 \theta \xi }{\hbar \pi} \ll \omega $$
+and for an exchange $\theta = \pi$:
+$$\frac{2 \xi \pi}{\hbar \omega } \ll \pi \Leftrightarrow 2 \ll \frac{\hbar \omega } {\xi} = \Omega_{min} \Leftrightarrow\frac{2\xi }{\hbar} \ll \omega  $$
+Equivalent for a full rotation $\theta = 2 \pi$:
+$$\frac{4 \xi \pi}{\hbar \omega } \ll \pi \Leftrightarrow 4 \ll \frac{\hbar \omega } {\xi} = \Omega_{min} \Leftrightarrow\frac{4\xi }{\hbar } \ll \omega  $$
+For the exchange of more than two vortices, the exchange statistic can contain off diagonal entries occurs (see \eqref{math:UnusualEchchange}). This cannot be mistaken for a dynamic phase as the dynamical phase does not mix states.
+\mypagebreak
+\subsubsection{High $\omega$ Limit / Diadiabatic Limit}
+When the Schrödinger equation is expressed in the form of \eqref{Eq:SETheta} we can take the right-hand side to the limit $\omega \rightarrow \infty$
+This corresponds to the $T\rightarrow 0$ limit for the periodicity:
+$$\lim_{\omega \rightarrow \infty} -\frac{  i }{\hbar \omega}\hat{H}(\theta)\ket{\psi(\theta)} = 0$$
+thus, the wave-function becomes stationary:
+$$\partial_{\theta} \ket{\psi(\theta)} = 0$$
+This corresponds to the diadiabatic limit where the Hamiltonian changes so fast that the wave-function has no time to adapt.
+
+\end{document}

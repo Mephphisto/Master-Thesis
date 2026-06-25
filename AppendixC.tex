@@ -1,0 +1,20 @@
+\documentclass[Master]{subfiles}
+\begin{document}
+\section{Appendix B / Source code}
+Base definitions to control operation\\
+\lstinputlisting{code/Defs.hpp}
+\subsection{Matrix Creation}
+Matrix base class\\
+\lstinputlisting{code/Hamiltonian_Matrix.hpp}
+Implementation on 2D chiral Topological superconductor with two vortices
+\lstinputlisting{code/_2DTopSuperConMatrix.hpp}
+\subsection{Diagonalisation}
+Base class
+\lstinputlisting{code/Hamiltonian_Diagonalizer.hpp}
+Implementation of a Eigen based Diagonalizer
+\lstinputlisting{code/Hamiltonian_Diagonalizer_Eigen.hpp}
+\subsection{Treatment of Degeneracies}
+\lstinputlisting{code/Majorana_Transform.hpp}
+\subsection{Time Evolution}
+\lstinputlisting{code/Time_Evolution.hpp}
+\end{document}

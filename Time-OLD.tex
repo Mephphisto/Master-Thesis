@@ -1,0 +1,168 @@
+\documentclass[Master]{subfiles}
+\begin{document}
+\subsection{Time Evolution}
+
+
+For the time dependent Hamiltonian $H(t)$ we attempt to solve the Shroedinger Equation: \\ $i \hbar \partial_t \ket{\psi(t)} = H(t)\ket{\psi(t)}$
+We choose the instantaneous eigenstates $n$ :
+$$ \forall t \in \mathbb{R} : H(t)\ket{n(t)} = \lambda_n(t) \ket{n(t)} $$
+We now choose the ansatz for the state as:
+$$ \ket{\psi(t)}=\sum_n c_n(_t)\ket{n(t)} $$
+With this the Schroedinger Equation becomes:
+$$i \hbar \partial_t \sum_n c_n(t)\ket{n(t)}  = H(t)\sum_m c_m(t)\ket{m(t)}  = \sum_m c_m(t) H(t)\ket{m(t)}  = \sum_m c_m(t) \lambda_m(t)\ket{m(t)} $$
+The left-hand side expands to:
+$$ i \hbar \partial_t \sum_n c_n(t)\ket{n(t)}  = i \hbar  \sum_n  \partial_tc_n(t)\ket{n(t)}  =  i \hbar  \sum_n  \left((\partial_t c_n(t))\ket{n(t)} +  c_n(t)\partial_t \ket{n(t)} \right)$$
+Thus the Schroedinger equation becomes:
+$$ i \hbar  \sum_n  \left((\partial_t c_n(t))\ket{n(t)} +  c_n(t)\partial_t \ket{n(t)} \right) = \sum_m c_m(t) \lambda_m(t)\ket{m(t)} $$
+
+\Error{DANGEROUS NON ADIABATIC MISSING SUM!}
+
+We multiply from the left with $\bra{n(t)}$ to get 
+$$ i \hbar   \left(\partial_t c_n(t) +  c_n(t)\bra{n(t)}\partial_t \ket{n(t)} \right) = \sum_m c_m(t) \lambda_m(t)\bra{n(t)}\ket{m(t)} =   c_n(t) \lambda_n(t)$$
+thus the resulting equation for $c(t)$ is:
+\begin{dmath}\label{math:SEInstEib}
+\partial_t c_n(t)  =  c_n(t) \left(\frac{-i}{\hbar}\lambda_n(t) -  \bra{n(t)}\partial_t \ket{n(t)} \right)
+\end{dmath}
+thus $c(t)$ is :
+$$ c_n(t) = c_n(0) \ exp\left( \int^t_0 dt'  \frac{-i}{\hbar}\lambda_n(t') -  \bra{n(t')}\partial_t' \ket{n(t')} \right)$$
+When we are only interested in the amplitude $\rho_n(t) = |c_n(t)|$ we get
+$$
+ \rho_n(t) = \rho_n(0) \  exp\left( - \int^t_0 dt'  \Re(\bra{n(t')}\partial_t' \ket{n(t')} )\right)
+$$
+\subsubsection{Numerical instability}
+ Time evolution is given in the form:
+$$ \rho_n(t) = \rho_n(0) \ exp\left( - \int^t_0 dt'  \Re(\bra{n(t')}\partial_{t'} \ket{n(t')} )\right) = \rho_n(0)$$
+When we evaluate this numerically in $N$ time steps 
+We get an error in the approximation of the derivative $\ket{\dot n}$.
+For a Finite Difference Method the error is of $\mathcal{O}(h) = \mathcal{O}(L/N) \approx \mathcal{O}(1/N)$ However when treating the integral with a quadrature rule, we sum up the weighted terms approximately summing up all errors. 
+$$\int^t_0 dt'  \Re(\braket{n(t')}{\dot n(t')} 
+\approx \sum_{i=1}^N \omega_i \Re(\braket{n(t_i)}{\dot n(t_i)} 
+\approx N | \Re(\bra{n(t')}\partial_t' \ket{n(t')}  
+\approx N  \mathcal{O}(1/N) = \mathcal{O}(0)$$
+Thus the error is independent of the number of time steps. And increasing $N$ does not improve accuracy.
+\subsubsection{Analytical Derivation}
+\begin{dmath}\label{math:contisconst}
+ \rho_n(t) 
+ = \rho_n(0)  \ exp\left( - \int^t_0 dt'  \Re(\bra{n(t')}\partial_t' \ket{n(t')} )\right)
+ = \rho_n(0)  \ exp\left( - \int^t_0 dt'  \frac{1}{2}(\bra{n(t')}\partial_t' \ket{n(t')} +(\partial_{t}'\bra{n(t')}) \ket{n(t')} )\right) 
+ = \rho_n(0)  \ exp\left( - \int^t_0 dt'  \frac{1}{2}\partial_t' \braket{n(t')}{n(t')}\right) 
+ =  \rho_n(0)  \ exp\left( - \frac{1}{2} [\braket{n(t')}{n(t')}]_0^t\right)  
+ =  \rho_n(0)  \ exp\left( - \frac{1}{2} (\braket{n(t)}{n(t)}-\braket{n(0)}{n(0)})\right) 
+ = \rho_n(0)  \ exp\left( - \frac{1}{2} (1-1)\right) = \rho_n(0)
+\end{dmath}
+For continuous $\ket{n(t)} $, $\Re(\bra{n(t')}\partial_t' \ket{n(t')} )$ vanishes
+thus $\rho$ is constant.\\
+\hspace{.5cm}\\
+However if there exists is a disconuetiy, then we must not use the Schroedinger Equation in the insatantaneous eigenbasis (\ref{math:SEInstEib}) as ist contains the derivative of the eigen state which is ill defined!\\
+lets assume that there is  a singular disconuetiy in an otherwise contineous Neighbourhood  $D$ around the discontinuous point $t'$. such  that WLOG $\ket{n(t)}$ is contineous, both in $before = \{t \in D: t \leqslant t'\}$ and $after = \{t \in T: t > t'\} $ with $ before \bigcup after = D $ this is justified as we can always substitute $t\leftrightarrow -t$.\\
+from \ref{math:contisconst} we know, that the instantaneous eigenstate is stable in the contineous regimes $before$ and $after$. As $ before \bigcup after = D $ we have the  complete time evolution of $\rho_n$ in the functions $\rho^{before}_n = const$ and $\rho^{after}_n = const$. However these are expressed in different bases. Thus we need to deal with the transition from $before$ to $after$:
+We define:
+$$
+\ket{n_{before}} = \ket{n(t')}
+$$
+$$
+\ket{n_{after}} = \lim_{t\searrow t'} \ket{n(t)}
+$$
+Thus we have to project $ \ket{\psi_{before}}$ on  $ \ket{\psi_{after}}=\sum_n c_n(t)\ket{n_{after}} $
+$$ c_n^{after} = \sum_m c_m^{before} \braket{n_{after}}{m_{before}} $$
+thus 
+$$ \rho_n^{after} = \sum_m \rho_m^{before} \braket{n_{after}}{m_{before}} $$
+While $\rho = \sum_n \rho_n$ is conserved, individual components $\rho_n$ are not!
+We can now continue in the $after$ regime, with the Instantaneous Eigenbasis.
+where $\rho_n = const$
+
+\subsubsection{Computation for the Kitaev Chain}
+For the Kitaev Chain we know the Majorana Mode in the contineous limit:
+\begin{dmath}\label{math:KitMaj}
+\ket{\gamma} = \frac{1}{\sqrt{2}} exp\left( -\frac{1}{|\Delta|}\int_0^x \mu(x') dx' \right) (1 , -i)
+\end{dmath}
+We now move the Domain wall from $0 \leftarrow d$
+$$
+\ket{\gamma} = \frac{1}{\sqrt{2}} exp\left( -\frac{1}{|\Delta|}\int_d^x \mu(x'-d) dx' \right) (1 , -i)$$
+Thus the correlation function $\braket{\gamma_0}{\gamma_d}$ becomes:
+\begin{dmath}
+\braket{\gamma_0}{\gamma_d} = \frac{1}{\sqrt{2}} exp\left[ -\frac{1}{|\Delta|}\left(\int_0^x \mu(x') dx'  +  \int_d^x \mu(x'-d) dx' \right)\right] (1,i).(1 , -i) = \\
+exp\left[ -\frac{1}{|\Delta|}\left(\int_0^x \mu(x') dx'  +  \int_0^{x-d} \mu(x') dx' \right)\right]  =\\
+ exp\left[ -\frac{1}{|\Delta|}\left(2\int_0^x \mu(x') dx'  +  \int_{d-x}^x \mu(x') dx' \right)\right] = \\
+ exp\left[ -\frac{1}{|\Delta|}\left(\int_{d-x}^x \mu(x') dx' \right)\right] \braket{\gamma_0}{\gamma_0}
+\end{dmath}
+This is contineous in $d$ as long as $\mu(x)$ has no singularities. Notice $\mu(x)$ need not be contineous itself. However this continuety argument stems from the integra and does not follow in the same way from a sum, thus it cannot translate to the case of dicretized space.
+\begin{dmath}\label{math:KitDiscMaj}
+\ket{\gamma} = \frac{1}{\sqrt{2}} exp\left( -\frac{1}{|\Delta|}\sum_{k = min(d,m)}^{max(d,m)} sign(m-d)\mu_k \right) (1 , -i)
+\end{dmath}
+
+
+\subsubsection{Numerical Considerations}
+When Computing the time evolution of $\rho$ we encounter terms of the form $\braket{n(t)}{n(t)}$ and $\bra{n(t)}\partial_t\ket{n(t)}$  we might want to compute $\partial_t \ket{n(t)}$ with a finite difference scheme and thus we encounter in both cases an expression of the form $\braket{\phi}{\phi'}$ with $\phi \approx \phi'$ If we assume a small difference  in the vectors we get  $ |\epsilon| << 1:\braket{\phi}{\phi +\epsilon} = \braket{\phi}{\phi} +\braket{\phi}{\epsilon} = 1 + \braket{\phi}{\epsilon}$ we get \\
+FIX THIS ERROR APPROX 
+$$ \rho_n(t) = exp\left( - \int^t_0 dt'  \epsilon \right) = exp\left( - t \epsilon \right) $$
+ And we get a exponentially decaying $\rho$ 
+
+
+
+
+IMPROVE
+
+if there is only a finite number of disconuetes, then we can use the Shroedinger Equation in the eigenbasis at some fixed $t$ 
+
+
+The Shroedinger Equation becomes:
+$$i \hbar \partial_t \sum_n c_n(t)\ket{n_{before}}  =\sum_m c_m(t) H(t)\ket{m_{before}}$$
+We multiply form the left with $\bra{n_{before}}$
+$$i \hbar \partial_t c_n(t) =\sum_m c_m(t) \bra{n_{before}}H(t)\ket{m_{before}}$$
+As we are only interested in the transition through $t'$ we can observe the Schroedinger equation in this point.
+$$i \hbar \partial_t c_n(t') =\sum_m c_m(t') \bra{n_{before}}H(t')\ket{m_{before}} = \sum_m c_m(t') \bra{n_{before}}\lambda_m(t')\ket{m_{before}} = c_n(t')\lambda_n(t')$$
+thus
+
+Bad calculations From BDG 
+
+\Error{Remove Begin}\\
+
+$$
+tr\left[\hat{\Omega_i} T\hat{O}T^{\dag} \right]-tr\left[\hat{\Omega_0} T\hat{O}T^{\dag} \right]
+$$
+
+$$
+= \sum_{j,k} [\Omega_i]_{j,k} [T\hat{O}T^{\dag} ]_{j,k} - \sum_{j,k} [\Omega_0]_{j,k} [T\hat{O}T^{\dag} ]_{j,k} = \sum_{j,k} [\Omega_i-\Omega_0]_{j,k} [T\hat{O}T^{\dag} ]_{j,k}= tr\left[(\hat{\Omega_i}-\hat{\Omega_0}) T\hat{O}T^{\dag} \right]
+$$
+
+The ground state is the state with all "holes" filled thus for all $l, \left<\hat{n}_{\hat{d}_l}\right> = 0$
+$$
+[\hat{\Omega_0}]_{j,k} = \sum_{l=0}^N \delta_{l+N,k}\delta_{l+N,j}
+$$
+Where as for $\ket{i} = d_i^{\dag}\ket{0}$ is  $l, \left<\hat{n}_{\hat{d}_l}\right> = \delta_{l,i}$
+thus 
+$$ [\hat{\Omega_i}-\hat{\Omega_0}]_{j,k} 
+= \delta_{i,k}\delta_{i,j}
++\sum_{l=0,l\neq i}^N \delta_{l+N,k}\delta_{l+N,j} 
+- \sum_{l=0}^N \delta_{l+N,k}\delta_{l+N,j} = \delta_{i,k}\delta_{i,j} - \delta_{i+N,k}\delta_{i+N,j}
+$$ 
+Therefore 
+$$
+\left<\hat{\Delta_{i}O}\right> = \sum_{j,k} ( \delta_{i,k}\delta_{i,j} - \delta_{i+N,k}\delta_{i+N,j}) [T\hat{O}T^{\dag} ]_{j,k} 
+= \sum_{j,k} \delta_{i,k}\delta_{i,j} [T\hat{O}T^{\dag} ]_{j,k} - \sum_{j,k} \delta_{i+N,k}\delta_{i+N,j} [T\hat{O}T^{\dag} ]_{j,k}
+$$
+$$
+= \sum_{j,k,l,m} \delta_{i,k}\delta_{i,j} T_{j,l} \hat{O}_{l,m}T^{\dag}_{m,j}  - \sum_{j,k} \delta_{i+N,k}\delta_{i+N,j} T_{j,l} \hat{O}_{l,m}T^{\dag}_{m,j}
+= \sum_{l,m}  T_{i,l} \hat{O}_{l,m}T^{\dag}_{m,i}  - \sum_{l,m} T_{i+N,l} \hat{O}_{l,m}T^{\dag}_{m,i+N}
+$$
+$$
+= W_i^{T} \hat{O} X_i - X_i^{T} \hat{O} W_i
+$$
+with \eqref{math:BdG_Simplobs}\\
+ \begin{math}
+ \centering
+ \bra{\vec{\Psi}_d}\hat{n}_i
+\ket{\vec{\Psi}_d} = \bra{\vec{\Psi}_d}\frac{(|X_{i+N}|^2 - |X_i|^2)}{2}\left(
+\begin{array}{c|c}
+   \delta_{i,i}  &  0\\
+   \hline 
+   0 & -\delta_{i,i}
+\end{array}\right)
+\ket{\vec{\Psi}_d}+\frac{1}{2}
+= 
+(|X_{i+N}|^2 - |X_i|^2)(2\left<\hat{n}_{d_i}\right>)- \frac{1}{2})+\frac{1}{2})
+\end{math}\\
+\Error{Remove End}\\
+
+\end{document}

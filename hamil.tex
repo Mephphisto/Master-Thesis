@@ -1,0 +1,424 @@
+\documentclass[Master]{subfiles}
+\begin{document}
+\subsection{2D Topological D-Wave Superconductor}
+\label{Hamil}
+2D Topological Superconductor
+\begin{dmath}
+H = \sum_{m,n} \left[-t\left((c_{m+1,n}^{\dag}c_{m,n}+h.c.)
++ (c_{m,n+1}^{\dag}c_{m,n}+h.c.)
+\right)
+-(\mu - 4t) c_{m,n}^{\dag} c_{m,n} 
++ ( \Delta c_{m+1,n}^{\dag}c_{m,n}^{\dag} + \Delta^* c_{m,n}c_{m+1,n})
++ i( \Delta c_{m,n+1}^{\dag}c_{m,n}^{\dag} -\Delta^* c_{m,n}c_{m,n+1})
+\right]
+\end{dmath}
+let $c_{j,l}$ be 
+$$
+c_{j,l} = \sum_{<<\mathbf{k}>>} e^{(i \mathbf{k} r_{i,l})} c_{\mathbf{k}}
+$$
+\begin{dmath}
+H = \sum_{m,n} \sum_{<<k_1,k_2>>}
+-t \left(
+(e^{i(k_2r_{m,n}-k_1r_{m+1,n})})
++(e^{i(k_2r_{m,n+1}-k_1r_{m,n})})c_{k_1}^{\dag}c_{k_2}
++h.c.\right)
+-(\mu - 4t) e^{i (k_2-k_1)r_{j,l}}
+c_{k_1}^{\dag}c_{k_2}\\
++\left(
+\Delta (e^{-i(k_1r_{m+1,n}+k_2r_{m,n})}
++i(e^{-i(k_1 r_{m,n+1}+k_2 r_{m,n})})
+\right) c_{k_1}^{\dag}c_{k_2}^{\dag}\\
++ \left(
+ \Delta^* (e^{i(k_1 r_{m,n}+k_2 r_{m+1,n})}
+-i  e^{i(k_1 r_{m,n}+k_2 r_{m,n+1})})
+\right) c_{k_1}c_{k_2}
+\end{dmath}
+let $a_m$ be the Latice Konstant in x-direction and $a_n$ be the latice conatant in y-direction\\  such that $r_{m,n} + a_m = r_{m+1,n}$ and $r_{m,n} + a_n = r_{m,n+1}$
+\begin{dmath}
+H = \sum_{m,n} \sum_{<<k_1,k_2>>}
+ e^{i(k_2-k_1)r_{m,n}} -t\left(
+ (e^{-ik_1 a_m}+e^{ik_2 a_n})c_{k_1}^{\dag}c_{k_2}+h.c.
+ \right)
+-(\mu - 4t)
+c_{k_1}^{\dag}c_{k_2}\\
+\left(
++\Delta e^{-i(k_1+k_2)r_{m,n}} 
+ \left(
+ e^{-ik_1a_m}+ie^{-ik_1 a_n}\right)
+ c_{k_1}^{\dag}c_{k_2}^{\dag}\\
++\Delta^*  e^{i(k_1 +k_2)r_{m,n} }
+\left(
+e^{ik_2 a_m} -e^{ik_1 a_m} 
+\right) c_{k_1}c_{k_2}
+\right)
+= 
+\sum_{<<k_1,k_2>>}\delta_{k_1,k_2} 
+\left[
+-t  \left(
+	(e^{ik_1 a_m}
+	+e^{ik_2 a_n})c_{k_1}^{\dag}c_{k_2}+h.c.
+\right) 
+-(\mu - 4t)c_{k_1}^{\dag}c_{k_2}
+\right]\\
+\left(
+\Delta \delta_{k_1,-k_2}
+(e^{-i(k_1 a_m)}-e^{-i(k_2 a_m)}+i (e^{-ik_1 a_n}- e^{-ik_2 a_n))}) 
+c_{k_1}^{\dag}c_{k_2}^{\dag}
++\Delta^* \delta_{k_1,-k_2}
+( e^{-i(k_2 a_m)}-e^{-i(k_1 a_m)} -i( e^{-ik_2 a_n}-e^{-ik_1 a_n}))
+ c_{k_1}c_{k_2}
+ \right)
+ =
+ \sum_{<<k_1,k_2>>}\delta_{k_1,k_2} 
+ \left[-t \left((e^{i k_1 a_m}+e^{i k_2 a_n})
+		c_{k_1}^{\dag}c_{k_2}+h.c.\right) -(\mu - 4t)c_{k_1}^{\dag}c_{k_2}\right]\\
+\left(
+	\Delta \delta_{k_1,-k_2}
+	(
+		e^{-ik_1 a_m}-e^{-ik_2 a_m}+i 
+		(
+			e^{-ik_1 a_n}- e^{-ik_2 a_n}
+		)
+		c_{k_1}^{\dag}c_{k_2}^{\dag}
+		+\Delta^* \delta_{k_1,-k_2}
+		(
+			 e^{-ik_2 a_m}-e^{-ik_1 a_m} -i( e^{-ik_2 a_n}-e^{-ik_1 a_n}
+		 )
+	)
+ 		c_{k_1}c_{k_2}
+ \right)
+  =
+ \sum_{<<k_1,k_2>>}\delta_{k_1,k_2} 
+ \left[
+	-t  
+	\left(
+		(
+			e^{i k_1 a_m}
+			+e^{i k_2 a_n}
+		)
+		c_{k_1}^{\dag}c_{k_2}
+		+(
+			e^{-i k_1 a_m}
+			+e^{-i k_2 a_n}
+		)
+		c_{k_1}c_{k_2}^{\dag}
+	\right) 
+	-(
+		\mu - 4t
+	)
+	c_{k_1}^{\dag}c_{k_2}
+\right]
+\left(
+	\Delta \delta_{k_1,-k_2}
+	(
+		e^{-ik_1 a_m}-e^{-ik_2 a_m}+i 
+		(
+			e^{-ik_1 a_n}- e^{-ik_2 a_n))}
+		)
+		c_{k_1}^{\dag}c_{k_2}^{\dag}
+		+\Delta^* \delta_{k_1,-k_2}
+		(
+			 e^{-ik_2 a_m}-e^{-ik_1 a_m} -i( e^{-ik_2 a_n}-e^{-ik_1 a_n}
+		 )
+	)
+ 		c_{k_1}c_{k_2}
+ =
+ \sum_{<<k_1,k_2>>}\delta_{k_1,k_2} 
+ \left[
+	-t  
+	\left(
+		(
+			e^{i k_1 a_m}
+			+e^{i k_2 a_n}
+		)
+		c_{k_1}^{\dag}c_{k_2}
+		+(
+			e^{-i k_1 a_m}
+			+e^{-i k_2 a_n}
+		)
+		c_{k_1}c_{k_2}^{\dag}
+	\right) 
+	-(
+		\mu - 4t
+	)
+	c_{k_1}^{\dag}c_{k_2}
+\right]
+\left(
+	\Delta \delta_{k_1,-k_2}
+	(
+		e^{-ik_1 a_m}-e^{-ik_2 a_m}+i 
+		(
+			e^{-ik_1 a_n}- e^{-ik_2 a_n))}
+		)
+		c_{k_1}^{\dag}c_{k_2}^{\dag}
+		+\Delta^* \delta_{k_1,-k_2}
+		(
+			 e^{-ik_2 a_m}-e^{-ik_1 a_m} -i( e^{-ik_2 a_n}-e^{-ik_1 a_n}
+		 )
+	)
+ 		c_{k_1}c_{k_2}
+ \right)
+ \right)
+ \end{dmath}
+For $k,-k$ the anticummutator  $[c_{k_1},c_{k_2} ]_+ = \delta_{k_1,k_2}$ becomes  $[c_k,c_{-k}]_+=0 = c_kc_{-k}+c_{-k}c_k \Rightarrow c_kc_{-k} = \frac{1}{2}(c_k,c_{-k}+c_k,c_{-k})= \frac{1}{2}(c_k,c_{-k}-c_{-k},c_k)$   
+ \begin{dmath}
+ = 
+\sum_{<<k>>}\left[
+-t \left(
+(e^{i(k a_m)}
++e^{i(k a_n)})+h.c.\right)
+-(\mu - 4t)\right]c_{k}^{\dag}c_{k} 
++\frac{1}{2}\left(
+\Delta 
+(e^{-i(k a_m)}+i e^{-ik a_n}) 
+\frac{1}{2}(c_{k}^{\dag}c_{-k}^{\dag}-c_{-k}^{\dag}c_{k}^{\dag})
++\Delta^*
+( e^{i(k a_m)} -i( e^{i(k a_n)}))
+ \frac{1}{2}(c_{k} c_{-k}-c_{-k}c_{k})
+ \right)
+  +(e^{-i k_1 a_m}+e^{-i k_2 a_n})
+ \end{dmath}
+ We swap the $-c_{-k}c_{k}$ and $-c_{-k}^{\dag}c_{k}^{\dag}$ in the sum over$ k$ with $-k$ and recive:
+ \begin{dmath}
+  = 
+\sum_{<<k>>}\left[
+-t \left(
+(e^{i(k a_m)}+h.c.)
++(e^{i(k a_n)}+h.c.)
+-(\mu - 4t)\right) \right] 
+c_{k}^{\dag}c_{k}
++\frac{1}{2}\left(
+\Delta 
+\frac{1}{2}(e^{-i(k a_m)}-e^{i(k a_m)}+i (e^{-ik a_n}-(e^{ik a_n})) 
+(c_{k}^{\dag}c_{-k}^{\dag})
++\Delta^*
+ \frac{1}{2}( e^{i(k a_m)}-e^{-i(k a_m)} -i( e^{i(k a_n)}-e^{-i(k a_n)}))
+(c_{k} c_{-k})
+ \right)
++(e^{-i k_1 a_m}+e^{-i k_2 a_n})
+= 
+\sum_{<<k>>}\left[-t 2(Cos(k a_m)+Cos(k a_n))-(\mu - 4t)\right] c_{k}^{\dag}c_{k}
++\frac{1}{2}\left(
+2i\Delta (Sin(k a_m)+iSin(k a_n)) 
+c_{k}^{\dag}c_{-k}^{\dag}
++-2i\Delta^*(Sin(k a_m)-iSin(k a_n)) c_{k}c_{-k}
+\right)
+ +(e^{-i k a_m}+e^{-i k a_n})
+\end{dmath}
+Let $k a_m = k_x$ and $k a_n = k_y$
+\begin{dmath}
+H = \sum_{<<k>>}\left[-t 2(Cos(k_x)+Cos(k_y))-(\mu - 4t)\right] c_{k}^{\dag}c_{k}
++\frac{1}{2}\left(
+2i\Delta (Sin(k_x)+iSin(k_y)) 
+c_{k}^{\dag}c_{-k}^{\dag}
++-2i\Delta^*(Sin(k_x)-iSin(k_y))
+c_{k}c_{-k}
+\right)
+ +(e^{-i k_x}+e^{-i k_y})
+\end{dmath}
+For symetry we move $\frac{1}{2}$ of the $\left[-t 2(Cos(k_x)+Cos(k_y))-(\mu - 4t)\right] c_{k}^{\dag}c_{k}$ Term from $k\rightarrow-k$ resulting in  $\frac{1}{2}\left[-t 2(Cos(k_x)+Cos(k_y))-(\mu - 4t)\right] (c_{k}^{\dag}c_{k}-c_{-k}c_{-k}^{\dag})$
+\begin{dmath}
+H = \sum_{<<k>>}\frac{1}{2}\left[-t 2(Cos(k_x)+Cos(k_y))-(\mu - 4t)\right] (c_{k}^{\dag}c_{k}-c_{-k}^{\dag}c_{-k})
++\frac{1}{2}\left(
+2i\Delta (Sin(k_x)+iSin(k_y)) 
+c_{k}^{\dag}c_{-k}^{\dag}
+-2i\Delta^*(Sin(k_x)-iSin(k_y))
+c_{k}c_{-k}
+\right)
++(e^{-i k_x}+e^{-i k_y})
+\Leftrightarrow
+H_{BdG} =\\
+\frac{1}{2 }\sum_{<<k>>}\left[
+\left( \begin{array}{r}
+c_k \\                                    
+c^{\dagger}_{-k} \\                                      
+\end{array}\right)^{\dag}
+\left( \begin{array}{rr}
+-t 2(Cos(k_x)+Cos(k_y))-(\mu - 4t)& 2i\Delta (Sin(k_x)+iSin(k_y))   \\                                              
+-2i\Delta^*(Sin(k_x)-iSin(k_y)) & t 2(Cos(k_x)+Cos(k_y))-(\mu - 4t)\\                                       
+\end{array}\right)
+\left( \begin{array}{r}
+c_k \\                                    
+c^{\dagger}_{-k} \\                                      
+\end{array}\right)
++(e^{-i k_x}+e^{-i k_y})
+\right]
+= 
+\sum_{<<k>>}
+\left[
+	-\left( 
+		\begin{array}{r}
+			c_k \\                                    
+			c^{\dagger}_{-k} \\                                      
+		\end{array}
+	\right)^{\dag}
+	\left( 
+		\begin{array}{rr}
+			t (Cos(k_x)+Cos(k_y))+4t-\mu& \Delta (Sin(k_y)-iSin(k_x))   \\                                              
+			\Delta^*(Sin(k_y)+iSin(k_x)) & -t (Cos(k_x)+Cos(k_y))+4t-\mu\\                                       
+		\end{array}
+	\right)
+	\left( 
+		\begin{array}{r}
+			c_k \\                                    
+			c^{\dagger}_{-k} \\                                      
+		\end{array}
+	\right)
+	 +(e^{-i k_x}+e^{-i k_y})
+\right]
+\end{dmath}
+This Hamiltonian has the form:
+\begin{dmath}
+H_{BdG}=\sum_{<<k>>}
+\left[
+	-\Psi_k^{\dag}
+	\left( 
+		\begin{array}{rr}
+			\alpha_k& \beta_k   \\                                              
+			\beta_k^* & -\alpha_k \\                                       
+		\end{array}
+	\right)
+	\Psi_k                                 
+	 +C	_k
+\right]
+= 
+\sum_{<<k>>}
+\left[
+	-\Psi_k^{\dag}
+	T^{-1}
+	\left(
+\begin{array}{cc}
+ -\sqrt{\alpha ^2+\beta  \beta ^*} & 0 \\
+ 0 & \sqrt{\alpha ^2+\beta  \beta ^*} \\
+\end{array}
+\right)
+	T
+	\Psi_k                              
+	 +C	_k
+\right]
+=
+= 
+\sum_{<<k>>}
+\left[
+	-\Phi_k^{\dag}
+	\left(
+\begin{array}{cc}
+ -\sqrt{\alpha ^2+\beta  \beta ^*} & 0 \\
+ 0 & \sqrt{\alpha ^2+\beta  \beta ^*} \\
+\end{array}
+\right)
+	\Phi_k                              
+	 +C	_k
+\right]
+\end{dmath}
+Where
+\begin{dmath}
+T = \left(
+\begin{array}{cc}
+ \frac{1}{\sqrt{\frac{2 \alpha  \left(\alpha +\sqrt{\alpha ^2+\beta  \beta ^*}\right)}{\beta  \beta ^*}+2}} & \frac{1}{\sqrt{\frac{2 \alpha  \left(\alpha -\sqrt{\alpha ^2+\beta  \beta ^*}\right)}{\beta  \beta ^*}+2}} \\
+ \frac{-\alpha -\sqrt{\alpha ^2+\beta  \beta ^*}}{\beta  \sqrt{\frac{2 \alpha  \left(\alpha +\sqrt{\alpha ^2+\beta  \beta ^*}\right)}{\beta  \beta ^*}+2}} & \frac{\sqrt{\alpha ^2+\beta  \beta ^*}-\alpha }{\beta  \sqrt{\frac{2 \alpha  \left(\alpha -\sqrt{\alpha ^2+\beta  \beta ^*}\right)}{\beta  \beta ^*}+2}} \\
+\end{array}
+\right)
+\end{dmath}
+and 
+$$T^{\dag} = T^{-1}$$
+As $T$ is unitary $\Psi_k^{\dag}T_k^{-1}=\Psi_k^{\dag}T_k^{\dag}= (T_k\Psi_k)^{\dag}=\Phi_k^{\dag}$, thus he new creators $\Phi_k$ are still Bosons as
+\begin{dmath}
+	[\Phi_{k_1},\Phi_{k_2}^{\dag}]_+ =
+	\left[T\Psi_k{K_1},\Psi_{k_2}^{\dag}T^{-1}\right]_+ = 
+	T\Psi_{k_1}\Psi_{k_2}^{\dag}T^{-1}+\Psi_{k_2}^{\dag}T^{-1}T\Psi_{k_1}
+	=
+	TT^{-1}\Psi_{k_1}\Psi_{k_2}^{\dag}+\Psi_{k_2}^{\dag} \mathbb{1} \Psi_{k_1}
+	=[\Psi_{k_1},\Psi_{k_2}^{\dag}]_+
+\end{dmath}
+The resulting diagonal Hamiltonian is:
+\begin{dmath}
+\sum_{<<k>>}
+\left[
+	-\Phi_k^{\dag}
+	\left(
+\begin{array}{cc}
+ -\sqrt{\alpha ^2+\beta  \beta ^*} & 0 \\
+ 0 & \sqrt{\alpha ^2+\beta  \beta ^*} \\
+\end{array}
+\right)
+	\Phi_k                              
+	 	 +(e^{-i k_x}+e^{-i k_y})
+\right]
+= \sum_{<<k>>}
+\left[
+	-\left( 
+		\begin{array}{r}
+			b_k \\                                    
+			b^{\dagger}_{-k} \\                                      
+		\end{array}
+	\right)^{\dag}
+	\left(
+		\left(
+\begin{array}{cc}
+ -\sqrt{\alpha ^2+\beta  \beta ^*} & 0 \\
+ 0 & \sqrt{\alpha ^2+\beta  \beta ^*} \\
+\end{array}
+\right)
+	\right)
+	\left( 
+		\begin{array}{r}
+			b_k \\                                    
+			b^{\dagger}_{-k} \\                                      
+		\end{array}
+	\right)                              
+	 +(e^{-i k_x}+e^{-i k_y})
+\right]
+= \sum_{<<k>>}
+\left[
+	-\sqrt{\alpha ^2+\beta  \beta ^*} b_k^{\dag}b_k
+	\sqrt{\alpha ^2+\beta  \beta ^*}b_{-k}b_{-k}^{\dag}                  
+	 +(e^{-i k_x}+e^{-i k_y})
+\right]
+= \sum_{<<k>>}
+\left[
+	-\sqrt{\alpha ^2+\beta  \beta ^*}b_k^{\dag}b_k
+	-(\alpha_k+|\beta_k|))(1-b_{-k}^{\dag}b_{-k})  
+	 +(e^{-i k_x}+e^{-i k_y})
+\right]
+=\sum_{<<k>>}
+\left[
+	-\sqrt{\alpha ^2+\beta  \beta ^*}b_k^{\dag}b_k
+	+(\alpha_k+|\beta_k|)b_{-k}^{\dag}b_{-k}
+	 +(e^{-i k_x}+e^{-i k_y})+(\alpha_k+|\beta_k|)
+\right]
+=\sum_{<<k>>}
+\left[
+	-(\alpha_k-|\beta_k|
+	+\alpha_{-k}+|\beta_{-k}|)b_k^{\dag}b_k
+	 +(e^{-i k_x}+e^{-i k_y})+(\alpha_k+|\beta_k|)
+\right]
+=\sum_{<<k>>}
+\left[
+	-\hbar \omega_k b_k^{\dag}b_k
+	 +(e^{-i k_x}+e^{-i k_y})+(\alpha_k+|\beta_k|)
+\right]
+\end{dmath}
+Thus the Dispersion is: 
+\begin{dmath}
+\hbar \omega_k = (\alpha_k-|\beta_k|+\alpha_{-k}+|\beta_{-k}|) 
+=  t (Cos(k_x)+Cos(k_y))+4t-\mu-|\Delta (Sin(k_y)-iSin(k_x))|
+	+t (Cos(-k_x)+Cos(-k_y))+4t-\mu+|\Delta (Sin(-k_y)-iSin(-k_x))|\\
+= 2 t (Cos(k_x)+Cos(k_y))+4t-\mu 
+	-|\Delta|\left( |(Sin(k_y)-iSin(k_x))|+|(-Sin(k_y)+iSin(k_x))|\right)
+= 2 \left(
+Cos(k_x)+Cos(k_y)+2t-\frac{\mu}{2}
+	-|\Delta||(Sin(k_y)-iSin(k_x))|
+	\right)
+\end{dmath}
+
+$$
+M=\left(
+\begin{array}{cc}
+ A & B \\
+ -\epsilon B^*  & -\epsilon  A^*  \\
+\end{array}
+\right)
+$$
+
+\end{document}
