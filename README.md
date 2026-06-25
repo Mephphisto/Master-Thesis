@@ -1,5 +1,6 @@
 # Master Thesis — Realspace Braiding of Majorana States
 ## Jakob Teuffel
+[![LaTex](https://github.com/Mephphisto/Master-Thesis/actions/workflows/publish.yml/badge.svg)](https://github.com/Mephphisto/Master-Thesis/actions/workflows/publish.yml)
 Full thesis can be found [here](https://mephphisto.github.io/Master-Thesis/Master.pdf)
 
 Numerical simulation and analysis of non-Abelian anyons in 2D chiral topological superconductors, with focus on adiabatic braiding of Majorana zero modes and their potential for fault-tolerant quantum computation.
