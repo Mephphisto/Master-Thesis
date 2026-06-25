@@ -97,6 +97,51 @@ make -j$(nproc)
 
 Key flags: `-DTIME_EVOLUTION=TRUE` for braiding runs, `-DUSE_MAGMA=TRUE` for GPU, `-DVERBOSE=TRUE` for debug output.
 
+**Example — two-vortex adiabatic exchange, time evolution:**
+
+```bash
+cd Simulation
+mkdir -p build && cd build
+cmake .. \
+  -DCMAKE_BUILD_TYPE=Release \
+  -DTHREADS=18 \
+  -DTHREADSHL=18 \
+  -DGRID=36 \
+  -DRAD="1.0/16.0" \
+  -DDIST=10 \
+  -DT_RES=500 \
+  -DT_ROT=0.5 \
+  -DT_C=-2.0 \
+  -DW_START=-4.0 \
+  -DW_END=2.0 \
+  -DW_RES=4 \
+  -DUSE_MAGMA=FALSE \
+  -DUSE_GPU=FALSE \
+  -DVERBOSE=TRUE \
+  -DTIME_EVOLUTION=TRUE
+make -j$(nproc)
+./sim
+```
+
+| Parameter | Value | Meaning |
+| --------- | ----- | ------- |
+| `CMAKE_BUILD_TYPE` | `Release` | Compiler optimizations on (`-O3`, architecture flags). Use `RelWithDebInfo` for profiling. |
+| `THREADS` | `18` | Thread count for the BLAS/LAPACK backend (MKL on Linux, vecLib on macOS). Controls low-level parallelism inside each matrix diagonalization. |
+| `THREADSHL` | `18` | OpenMP thread count for the high-level outer loop (iterating over time steps or ω values). Effective total concurrency = `THREADS × THREADSHL`. |
+| `GRID` | `36` | Lattice size N. The BdG Hamiltonian is `2N² × 2N²` (here 2592 × 2592). Larger grids reduce finite-size effects at quadratic cost. |
+| `RAD` | `"1.0/16.0"` | Vortex radius in lattice units (≈ 0.0625). In discrete mode: vortex core is the set of sites within this radius. In Gaussian mode (`-DGAUSS`): half-width of the Gaussian chemical-potential modulation. Passed as a C++ expression, evaluated at compile time. |
+| `DIST` | `10` | Vortex separation scale factor. The vortex centre is placed at `DISTANCE = GRID/4 × DIST` lattice sites from the grid centre. |
+| `T_RES` | `500` | Number of time steps for the ODE integrator during time evolution. Higher values give finer resolution along the exchange path. |
+| `T_ROT` | `0.5` | Number of full rotations in the exchange path. `T_END = −2π × T_ROT`, so `0.5` = half-rotation = one vortex exchange τ(σ₁). |
+| `T_C` | `-2.0` | Hopping amplitude t in the BdG Hamiltonian (nearest-neighbour tunnelling energy). Sets the bandwidth and together with μ determines whether the system is in the topological phase. |
+| `W_START` | `-4.0` | Log₁₀ of the minimum angular velocity for the fidelity sweep: ω_min = 10⁻⁴ (deep adiabatic regime). |
+| `W_END` | `2.0` | Log₁₀ of the maximum angular velocity: ω_max = 10² (deep diabatic regime). |
+| `W_RES` | `4` | Base resolution of the ω sweep. Actual number of ω values compiled in = `W_RES × THREADS` = 72, distributed evenly in log-space between `W_START` and `W_END`. |
+| `USE_MAGMA` | `FALSE` | Disable GPU-accelerated diagonalization via MAGMA. Set `TRUE` if a CUDA-capable GPU and MAGMA are available. |
+| `USE_GPU` | `FALSE` | Disable GPU offload for matrix operations. Required alongside `USE_MAGMA=TRUE` for full GPU path. |
+| `VERBOSE` | `TRUE` | Enable debug output (`DEBUG_ACTIVE` defined). Prints progress, thread counts, and intermediate results to stdout. |
+| `TIME_EVOLUTION` | `TRUE` | Run the adiabatic time evolution / braiding simulation. When `FALSE`, only the static eigenvalue sweep (μ or Δ scan) is performed. |
+
 Output: CSV files written to `Simulation/build/` (eigenvalue spectra, eigenvector data, fidelity decay).
 
 ### Evaluation/
