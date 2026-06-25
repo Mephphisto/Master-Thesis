@@ -10,6 +10,11 @@ compile_commands.json
 CTestTestfile.cmake
 _deps
 Eval/py/Majoranas
+.idea
+
+# macOS
+.DS_Store
+**/.DS_Store
 
 **/.vs
 # Prerequisites
@@ -20,6 +25,25 @@ Eval/py/Majoranas
 *.lo
 *.o
 *.obj
+
+# LaTeX artifacts
+*.aux
+*.bbl
+*.blg
+*.bcf
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+*.toc
+*.lof
+*.lot
+*.run.xml
+*.nav
+*.snm
+*.vrb
+
+# LaTeX build dir
+Thesis/build/
 
 # Precompiled Headers
 *.gch
@@ -395,18 +419,18 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
-/TST/VTune Amplifier Results/TST
-/TST/cmake-build-release-intel-2019/
-/TST/.idea/
-/TST/build/
-/TST/build_teerm/
-/TST/cmake-build-debug/
-/TST/cmake-build-debug-intel-2019/
-/TST/cmake-build-release/
-/TST/.idea/
-/TST/build/
-/TST/build_teerm/
-/TST/cmake-*/
+/Simulation/VTune Amplifier Results/Simulation
+/Simulation/cmake-build-release-intel-2019/
+/Simulation/.idea/
+/Simulation/build/
+/Simulation/build_teerm/
+/Simulation/cmake-build-debug/
+/Simulation/cmake-build-debug-intel-2019/
+/Simulation/cmake-build-release/
+/Simulation/.idea/
+/Simulation/build/
+/Simulation/build_teerm/
+/Simulation/cmake-*/
 /Eval/py/Majoranas/
 /Eval/py/Majoranas2D/
 /Eval/py/interpret/
@@ -415,7 +439,7 @@ MigrationBackup/
 /Eval/py/Majoranas/
 /Eval/py/Majoranas_+Mu/
 /Eval/py/Modes/
-/TST/rune_**/
-/TST/job_TST.sh.o*
+/Simulation/rune_**/
+/Simulation/job_Simulation.sh.o*
 /Eval/.idea/
 /Eval/Swp*

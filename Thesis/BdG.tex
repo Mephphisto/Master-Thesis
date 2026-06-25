@@ -1,0 +1,653 @@
+\documentclass[Master]{subfiles}
+\begin{document}
+\subsection{Generalised Bogoliubov de Gennes Formalism}
+\label{sec:BdG}
+We use the concept of the Bogoliubov de Gennes Formalism on general second-order Hamiltionians analogous to \cite{blaizot1986quantum}
+$$\hat{H} = \sum_{j,k} A_{j,k}c^{\dag}_{j}c_{k} +  (B_{j,k} c^{\dag}_{j}c^{\dag}_{k} + B_{j,k}^* c_{j}c_{k}) \text{.}$$
+Hermiticity demands for $A,B \in \mathbb{R}^{N\times N}$:
+$$ A_{j,k}^* =A_{k,j} \Rightarrow A = A^{\dag} ; B_{j,k} =-B_{k,j} \Rightarrow B = -B^{T}$$
+We can rewrite $\hat{H}$ as  $\hat{H}_{BdG}$ with a block Matrix $M \in \mathbb{C}^{2N\times 2N}$ with:
+\begin{dmath}\label{math:GeneralizedBdGHamiltonian}
+H_{BdG} = 
+\frac{1}{2}
+\left(
+\begin{array}{c|c}
+\vec{c}^{\dag} & \vec{c} 
+\end{array}
+\right)
+\left(
+\begin{array}{c|c}
+A & B \\
+\hline
+- B^* & -A^*
+\end{array}
+\right)
+\left(
+\begin{array}{c}
+\vec{c} \\
+\hline
+\vec{c}^{\dag}
+\end{array}
+\right) + tr(A) = \frac{1}{2}\bra{\vec{\Psi_c}}M\ket{\vec{\Psi_c}} + tr(A)
+\end{dmath}
+Here, we moved the creation and annihilation operators $c_i,c_i^{\dag}$ into block vectors denoted $\bra{\vec{\Psi}},\ket{\vec{\Psi}}$.
+We further refer to this as the generalised Bogoliubov de Gennes Hamiltonian.
+Explicitly the block vectors are organised as:
+$$
+\ket{\vec{\Psi}_c} = \left(\begin{array}{c}
+       \vec{c}\\
+       \hline
+        \vec{c}^{\dag}
+\end{array}\right) \ ; \ [\vec{c}]_i =[\vec{c}^{\dag}]_{i+N} = c_i \ ; \ [\vec{c}]_{i+N}= [\vec{c}^{\dag}]_i = c^{\dag}_i  
+$$
+\subsubsection{Induced Charge Conjugation Symmetry}\label{sec:indChegeConjSym}
+In this formulation we introduce a charge conjugation symmetry of the form $\mathcal{T} = \gamma \Gamma$ an $\gamma = \sigma^x \otimes \mathbb{1}_N$ and $\Gamma$ is the complex conjugation operator such that $\gamma M \gamma = - M^{*}$. Further $\gamma$ converts between $\bra{\vec{\Psi}}$ and $\ket{\vec{\Psi}}$ as:
+$$
+\gamma\ket{\vec{\Psi}_c} =  
+\left(\begin{array}{c|c}
+       0 & \mathbb{1}_N\\
+       \hline
+        \mathbb{1}_N & 0
+\end{array}\right)
+\left(\begin{array}{c}
+       \vec{c}\\
+       \hline
+        \vec{c}^{\dag}
+\end{array}\right) = 
+\left(\begin{array}{c}
+       \vec{c}^{\dag}\\
+       \hline
+        \vec{c}
+\end{array}\right) = \bra{\vec{\Psi}_c}^T
+$$
+
+\subsubsection{Diagonalisation}
+Analogous to \cite{blaizot1986quantum} we diagonalise $M$ as $TMT^{\dag} = D$ where $D = \sigma^z D_\omega$ and $D_\omega$ is a diagonal $N\times N$ matrix with sorted real eigenvalues.
+We then have a unitary $2 N\times 2 N$ Matrix $T$ from which we can read the eigenvectors of $M$.
+$$[T^{\dag}]_k = V_k$$
+$$ M \vec{V}_k = \omega_k \vec{V}_k $$
+Using the induced charge conjugation symmetry $\mathcal{T}$ we can see that the spectrum has to be symmetric around zero:
+$$ M \gamma \vec{V}_k^* = -\gamma (M \vec{V}_k)^* = -\gamma(\omega \vec{V}_k)^* = - \omega_k \gamma \vec{V}_k^* $$
+Thus, for each eigenvector with eigenvalue $\omega$ there exists another eigenvector with eigenvalue $-\omega$ now called $\vec{W}$. From the structure of $D$ we know:
+$$ \gamma \vec{V}_k^*  = \vec{V}_{k+N} := \vec{W}_k$$
+Here $\Vec{V}_k$ are columns of the Matrix $T^{\dag}$:
+$$
+T^{\dag}= 
+\left(
+\begin{array}{c|c}
+   \vec{V}  & \vec{W} 
+\end{array}\right) = 
+\gamma
+\left(
+\begin{array}{c|c}
+   \vec{W}^*  & \vec{V}^* 
+\end{array}\right)
+\ ;\ T = 
+\left(
+\begin{array}{c}
+   \vec{V}^{\dag} \\
+   \hline
+   \vec{W}^{\dag}
+\end{array}\right)
+= 
+\left(
+\begin{array}{c}
+   \vec{W}^T \\
+   \hline
+   \vec{V}^T
+\end{array}\right)\gamma
+$$
+As we know that the symmetry has the form $ \gamma = \sigma^x \otimes \mathbb{1}_N $ we can rewrite the eigenvectors $V_k$ extending \cite{blaizot1986quantum} as 
+$$
+V_k = 
+\left(
+\begin{array}{c}
+   \vec{u}\\
+   \hline 
+   \vec{v}
+\end{array}\right)
+$$
+Thus, for the vectors $W_k$ we get:
+$$
+W_k =  \gamma V_k^* = \left(
+\begin{array}{c}
+   \vec{v^*}\\
+   \hline 
+   \vec{u^*}
+\end{array}\right)
+$$
+Thus, $T$ and $T^{\dag}$ have the form:
+$$
+T^{\dag} = 
+\left(
+\begin{array}{c|c}
+   u  &  v^* \\
+   \hline 
+   v &  u^*
+\end{array}\right)
+\text{and }
+T = 
+\left(
+\begin{array}{c|c}
+   u^{\dag}  &  v^{\dag} \\
+   \hline 
+   v^{T} &  u^{T}
+\end{array}\right)
+$$
+with $ u,v  \in \mathbb{C}^{N\times N}$,
+T is a unitary canonical transformation thus:
+$$
+T T^{\dag} =
+\left(
+\begin{array}{c|c}
+   u^{\dag}  &  v^{\dag} \\
+   \hline 
+   v^{T} &  u^{T}
+\end{array}\right)
+\left(
+\begin{array}{c|c}
+   u  &  v^* \\
+   \hline 
+   v &  u^*
+\end{array}\right)
+=
+\left(
+\begin{array}{c|c}
+   u^{\dag}u+v^{\dag}v &  u^{\dag}v^*+v^{\dag}u^* \\
+   \hline 
+   v^{T}u+u^{T}v &  v^{T}v^*+u^{T}u^*
+\end{array}\right)
+\overset{!}{=} \mathbb{1}_{2N}
+$$
+Thus 
+$$u^{\dag}u+v^{\dag}v = \mathbb{1}_{N} =  v^{T}v^*+u^{T}u^*$$
+$$u^{\dag}v^*+v^{\dag}u^* = \mathbb{0}_{N} =  v^{T}u+u^{T}v$$
+$$\braket{\vec{u}_i}{\vec{u}_j} + \braket{\vec{v}_i}{\vec{v}_j} = \delta_{i,j} \ ; \ \braket{\vec{u}_i}{\vec{v}_j^*} = 0$$
+                                                               
+The Hamiltonian transforms as  \cite{blaizot1986quantum}
+$$
+H_{BdG} = \bra{\vec{\Psi_c}}T^{\dag}TMT^{\dag}T\ket{\vec{\Psi_c}} = \bra{\vec{\Psi_c}}T^{\dag}DT\ket{\vec{\Psi_c}} = \bra{\vec{\Psi_d}}D\ket{\vec{\Psi_d}}
+$$
+ with the Bogoliubov transformed Spinor :
+ $$ \ket{\vec{\Psi_d}} = 
+ T\ket{\vec{\Psi_c}} =
+ \left(
+\begin{array}{c}
+\vec{d} \\
+\hline 
+\vec{d}^{\dag}
+\end{array}
+\right)$$
+and the quasi-particle operators:
+$$
+d_i = \vec{V}_i^{\dag} \ket{\vec{\Psi}} \ ; \  d_i^{\dag} = \vec{W}_i^{\dag} \ket{\vec{\Psi}}
+ $$ 
+The Hamiltonian becomes
+$$
+\hat{H} =\sum^N_{k = 0} \omega_k  d_k^{\dag}d_k - \sum^N_{k=0} \omega_k + tr(A) =
+\sum^N_{k = 0} \omega_k  \bra{\vec{\Psi}}\vec{W} \vec{V}^{\dag}\ket{\vec{\Psi}} - \sum^N_{k=0} \omega_k + tr(A) 
+$$
+Further details can be found in \cite{blaizot1986quantum}.
+\subsubsection{Fermionic Anti Commutation of Bogoliubov Quasi Particles}\label{sec:Fermionicness}
+For the $d$ operators to anticommute we need $\forall l,i \in [0, 2N]$
+$$
+\delta_{l,i}  \stackrel{!}{=} \{d_l,d^{\dag}_i\} =\left\{  {\vec{V}_l}^{\dag} \ket{\vec{\Psi}} ,\bra{\vec{\Psi}{\vec{V}_i}} \right\} 
+= \left\{ \sum_{j=0}^N  V^*_{l,j} c_j +  V^*_{l,j+N} c^{\dag}_j, \sum_{k=0}^N  V_{i,k} c^{\dag}_k +  V_{i,k+N} c_k \right\} $$
+$$
+= \sum_{k,j = 0}^N
+V^*_{l,j}V_{i,k} \underbrace{\{c_j,c^{\dag}_k\}}_{=\delta_{j,k}} 
++ V^*_{l,j}V_{i,k+N} \underbrace{\{c_j,c_k\}}_{=0} 
++ V^*_{l,j+N}V_{i,k+N} \underbrace{\{c_j^{\dag},c_k\}}_{=\delta_{j,k}} 
++ V^*_{l,j+N}V_{i,k} \underbrace{\{c_j^{\dag},c^{\dag}_k\}}_{=0}
+$$
+\begin{dmath}\label{math:danticummute}
+{= \sum_{k,j} V^*_{l,j}V_{i,j} + V^*_{l,j+N}V_{i,j+N} = \vec{V}^{\dag}_l\vec{V}_i = \delta_{l,i} }\\
+\end{dmath}
+Thus, all vectors $\vec{V}$ need to be normalised and orthogonal:
+$$0 \stackrel{!}{=} \{d_l,d_i\}  =\left\{  {\vec{V}_l}^{\dag} \ket{\vec{\Psi}} ,{\vec{V}_i}^{\dag}\ket{\vec{\Psi}} \right\} 
+= \left\{ \sum_{j=0}^N  V^*_{l,j} c_j +  V^*_{l,j+N} c^{\dag}_j, \sum_{k=0}^N  V^*_{i,k} c_k +  V^*_{i,k+N} c^{\dag}_k \right\} $$
+$$
+= \sum_{k,j = 0}^N
+V^*_{l,j}V^*_{i,k} \underbrace{\{c_j,c_k\}}_{=0} 
++ V^*_{l,j}V^*_{i,k+N} \underbrace{\{c_j,c_k^{\dag}\}}_{=\delta_{j,k}} 
++ V^*_{l,j+N}V^*_{i,k+N} \underbrace{\{c_j^{\dag},c_k^{\dag}\}}_{=0} 
++ V^*_{l,j+N}V^*_{i,k} \underbrace{\{c_j^{\dag},c_k\}}_{=\delta_{j,k}}
+$$
+$$
+= \sum_{k,j} V^*_{l,j}V^*_{i,j+N} + V^*_{l,j+N}V^*_{i,j} = \vec{V}^{\dag}_l\gamma\vec{V}^*_i 
+= \vec{V}^{\dag}_l \vec{V}_{(i+N )mod 2N} = 0 
+$$ 
+This is already necessary to fulfil \eqref{math:danticummute}. Additionally, this implicitly states that $\vec{V}^{\dag}_l\neq\gamma\vec{V}^*_i$ which would be the case for Majorana operators as seen below. 
+We can see that the case for the creation operators is true from $\{d_l^{\dag},d_i^{\dag}\} = \{d_l,d_i\}^{\dag} =  0 $.
+\subsubsection{Majorana Modes from Bogliubov Quasi Particles}\label{sec:BDGMajoranas}
+We can further express a Majorana operator in terms of  $d$ and $d^{\dag}$:
+\begin{equation}\label{math:BdG_MajTransf1}
+\gamma_{A,k} = d_k+d^{\dag}_k = V_k \ket{\vec{\Psi}_c} + W_k \ket{\vec{\Psi}_c} = (V_k+W_k) \ket{\vec{\Psi}_c} = \Gamma_{A,k} \ket{\vec{\Psi}_c}
+\end{equation}
+\begin{equation}\label{math:BdG_MajTransf2}
+\gamma_{B,k} = i(d_k-d^{\dag}_k) = i(V_k-W_k) \ket{\vec{\Psi}_c} = \Gamma_{B,k} \ket{\vec{\Psi}_c}
+\end{equation}
+$$
+\Gamma_{A,k} = \left(
+\begin{array}{c}
+  \vec{u} + \vec{v^*}\\
+   \hline 
+   \vec{v} +\vec{u^*}
+\end{array}\right) \hspace{.5cm} ;\hspace{.5cm} \Gamma_{B,k} = i
+\left(
+\begin{array}{c}
+  \vec{u} - \vec{v^*}\\
+   \hline 
+   \vec{v} - \vec{u^*}
+\end{array}\right)
+$$
+We can check that $\gamma_{A,k} = \gamma^{\dag}_{A,k}$ and $\gamma_{B,k} = \gamma^{\dag}_{B,k}$
+$$
+\gamma^{\dag} = (\Gamma \ket{\vec{\Psi}_c} )^{\dag} = \gamma \Gamma^* \ket{\vec{\Psi}_c} 
+$$ 
+$$
+\gamma \Gamma_{A,k}^* = 
+\left(
+\begin{array}{c}
+  \vec{v} +\vec{u^*}\\
+   \hline 
+   \vec{u} + \vec{v^*}
+\end{array}\right) =
+\left(
+\begin{array}{c}
+  \vec{u} + \vec{v^*}\\
+   \hline 
+   \vec{v} +\vec{u^*}
+\end{array}\right)= \Gamma_{A,k} 
+$$
+$$\gamma \Gamma_{B,k}^* = -i
+\left(
+\begin{array}{c}
+  \vec{v} - \vec{u^*}\\
+   \hline 
+   \vec{u} - \vec{v^*}
+\end{array}\right)^*
+=i
+\left(
+\begin{array}{c}
+  \vec{u} - \vec{v^*}\\
+   \hline 
+   \vec{v} - \vec{u^*}
+\end{array}\right) =  \Gamma_{B,k} 
+$$
+
+\subsubsection{Expectation Values}\label{bdg:Expectationvalues}
+A second-order observable $\hat{O}$ of $c,c^{\dag}$s  becomes:
+ $$ \left<\hat{O}\right> = \bra{\vec{\Psi_c}}O_M\ket{\vec{\Psi_c}}  + \text{const.} $$
+Where $\hat{O}$ is a matrix in block form:
+ $$
+O_M= 
+\left(
+\begin{array}{c|c}
+   O_A  &  O_B \\
+   \hline 
+   O_B' &  -{O_A}^*
+\end{array}\right)
+$$
+\paragraph{Commutator of First and Second Order Operators} \label{sec:CommutatorLemma}
+ We can generally express the commutator $[\hat{O},d^{\dag}]$ of an first order operator $\hat{\vec{X}} = \Vec{X}\ket{\vec{\Psi_c}}$  with the observable $\hat{O}$ for convenience we choose $C = 0 $ WLOG  as any constant term must commute:
+ $$ [\hat{O},\hat{\vec{X}}] = 
+ [
+\frac{1}{2}
+\left(
+\begin{array}{c|c}
+\vec{c}^{\dag} & \vec{c} 
+\end{array}
+\right)
+\left(
+\begin{array}{c|c}
+O_A & {O_B} \\
+\hline
+O_B' & -{O_A}^*
+\end{array}
+\right)
+\left(
+\begin{array}{c}
+\vec{c} \\
+\hline
+\vec{c}^{\dag}
+\end{array}
+\right)
+, \vec{X}\left(
+\begin{array}{c}
+\vec{c} \\
+\hline
+\vec{c}^{\dag}
+\end{array}
+\right)]
+$$
+$$=[
+\frac{1}{2}
+\sum_{k,j} 
+{O_A}_{k,j} c^{\dag}_k c_j 
+- {O_A}^*_{k,j} \underbrace{c_k c^{\dag}_j}_{ = - c^{\dag}_{j} c_k + \underbrace{\delta_{j,k}}_{\text{const}}}
++  {O_B}_{k,j} c_k c_j
++ {O_B'}_{k,j} c^{\dag}_k c^{\dag}_j 
+,
+\sum_i X_i c_i + X_{i+N} c^{\dag}_i
+]
+$$
+$$
+= 
+\frac{1}{2}
+\sum_{i,k,j}
+({O_A}_{k,j} + {O_A}^*_{j,k}) \left(X_i[c^{\dag}_k c_j,c_i]+X_{i+N}[c^{\dag}_k c_j,c^{\dag}_i]\right)
++ {O_B}_{k,j} (X_i\underbrace{[c_k c_j,c_i]}_{=0}+X_{i+N}[c_k c_j,c^{\dag}_i])
+$$
+$$
++ {O_B'}_{k,j} (X_i[c_k^{\dag} c_j^{\dag},c_i]+X_{i+N}\underbrace{[c_k^{\dag} c_j^{\dag},c^{\dag}_i]}_{=0})
+$$
+$$
+= 
+\frac{1}{2}
+\sum_{i,k,j}
+({O_A}_{k,j} + {O_A}^*_{j,k})\left(X_i[c^{\dag}_k c_j,c_i]+X_{i+N}[c^{\dag}_k c_j,c^{\dag}_i]\right)
++ {O_B}_{k,j} X_{i+N}[c_k c_j,c^{\dag}_i]
++ {O_B'}_{k,j} X_i[c_k^{\dag} c_j^{\dag},c_i]
+$$
+$$
+= 
+\frac{1}{2}
+\sum_{i,k,j}
+({O_A}_{k,j} + {O_A}^*_{j,k}) \left(X_i\{c^{\dag}_k ,c_i\}c_j+X_{i+N} c^{\dag}_k \{ c_j,c^{\dag}_i\}\right)
++ {O_B}_{k,j} X_{i+N} (\delta_{j,i} c_k - \delta_{k,i} c_j)
++ {O_B'}_{k,j} X_i (\delta_{j,i} c^{\dag}_k - \delta_{k,i} c^{\dag}_j)
+$$
+$$
+= 
+\frac{1}{2}
+\sum_{i,k,j}
+({O_A}_{k,j} + {O_A}^*_{j,k})\left(X_i\delta_{k,i} c_j+X_{i+N} \delta_{j,i}  c^{\dag}_k \right)
++ {O_B}_{k,j} X_{i+N} (\delta_{j,i} c_k - \delta_{k,i} c_j)
++ {O_B'}_{k,j} X_i (\delta_{j,i} c^{\dag}_k - \delta_{k,i} c^{\dag}_j)
+$$
+$$
+= 
+\frac{1}{2}
+\sum_{i,k}\left(
+({O_A}_{k,i} + {O_A}^*_{i,k}) X_{i+N}  c^{\dag}_k 
++{O_B}_{k,i} X_{i+N}  c_k 
++ {O_B'}_{k,i} X_i c^{\dag}_k\right)
+$$
+$$
++\frac{1}{2}\sum_{i,j } \left({O_A}_{i,j} + {O_A}^*_{j,i})X_i c_j
+-  {O_B}_{i,j} X_{i+N}  c_j
+- {O_B'}_{i,j} c^{\dag}_j \right)
+$$
+In the first sum we substitute $k \rightarrow j$ :
+$$
+= 
+\frac{1}{2}
+\sum_{i,j}
+\left[({O_A}_{i,j} + {O_A}^*_{j,i}) X_i
+- ({O_B}_{i,j} - {O_B}_{j,i}) X_{i+N} \right]  c_j 
++ \left[ ( {O_A}^*_{i,j}+ {O_A}_{j,i} ) X_{i+N} 
+- ( {O_B'}_{i,j} - {O_B'}_{j,i} ) X_i \right]  c^{\dag}_j 
+$$
+$$
+= 
+\frac{1}{2}
+\left(
+\begin{array}{c|c}
+      v^* & u^*
+\end{array}
+\right)
+\left(
+\begin{array}{c|c}
+{O_A} + {O_A}^{\dag} &  {O_B'} - {O_B'}^T\\
+\hline
+{O_B} - {O_B}^T &  {O_A}^*+ {O_A}^T 
+\end{array}
+\right) 
+\left(
+\begin{array}{c}
+\vec{c}\\
+\hline
+\vec{c}^{\dag}
+\end{array}
+\right) $$
+When $\hat{O}$ is hermitian this expression further simplifies:\\
+${O_A}^{\dag} = {O_A}$ and $- {O_B}^{T} = {O_B}= -{O_B'}^*$
+
+$$
+= 
+\left(
+\begin{array}{c|c}
+      v^* & u^*
+\end{array}
+\right)\left(
+\begin{array}{c|c}
+{O_A} &  {O_B}\\
+\hline
+-{O_B}^*& -{O_A}^*
+\end{array}
+\right)
+\left(
+\begin{array}{c}
+\vec{c}\\
+\hline
+\vec{c}^{\dag}
+\end{array}
+\right) $$
+\begin{dmath}\label{math:CommutatorLemma}
+[\hat{O},\hat{\vec{X}}] = \vec{X}^{\dag}O_M\ket{\vec{\Psi}_c} 
+\end{dmath}
+Explicitly, for the Hamiltonain and a creation Bogoliubov creation operator $\vec{W}_l^{\dag}$ this gives:
+\begin{dmath}\label{math:CommutatorHd+}
+ [\hat{H},d^{\dag}]= \vec{W}_l^{\dag} M \ket{\vec{\Psi}_c}
+\end{dmath}
+For an annihilation operator  $[\hat{H},d]= \hat{H}d-d\hat{H} = (-\hat{H}^{\dag}d^{\dag}+d^{\dag}\hat{H}^{\dag})^{\dag} = -[\hat{H},d^{\dag}]^{\dag}$ thus:\\
+\begin{dmath}\label{math:CommutatorHd}
+ [\hat{H},d] = \bra{\vec{\Psi}_c} M \vec{V}^*_l
+\end{dmath}
+
+When evaluating an expectation value of an observable
+$$
+\left<\hat{O}\right> = \bra{\vec{\Psi}_d}\left(
+\begin{array}{c|c}
+   u^{\dag}  &  v^{\dag} \\
+   \hline 
+   v^{T} &  u^{T}
+\end{array}\right) \left(
+\begin{array}{c|c}
+   {O_A}  &  {O_B} \\
+   \hline 
+   -{O_B}^* &  -{O_A}^*
+\end{array}\right)
+\left(
+\begin{array}{c|c}
+   u  &  v^* \\
+   \hline 
+   v &  u^*
+\end{array}\right)\ket{\vec{\Psi}_d}$$
+$$
+= 
+\bra{\vec{\Psi}_d}\left(
+\begin{array}{c|c}
+   u^{\dag}(O_A u+ O_B v) - v^{\dag}(O_B^* u+ {O_A}^* v)
+   &
+   u^{\dag}(O_A v^*+ O_B u^*) - v^{\dag}(O_B^* v^*+ {O_A}^* u^*) \\
+   \hline 
+   v^{T}(O_A u+ O_B v) - u^{T}(O_B^* u+ {O_A}^* v) &
+   v^{T}(O_A v^*+ O_B u^*) - u^{T}(O_B^* v^*+ {O_A}^* u^*)
+\end{array}\right)
+\ket{\vec{\Psi}_d}
+$$
+
+For an observable expressed in terms of quasi particle operators $d, d^{\dag}$ we get the following expression:
+$$
+\bra{\vec{\Psi}_d}\hat{O}
+\ket{\vec{\Psi}_d}
+= \sum_{j,k = 1}^N \left<d_j^{\dag}d_k\right> \hat{O}_{j,k} 
++ \sum_{j,k = 1}^N \left<d_j d_k\right> \hat{O}_{j+N,k}
++ \sum_{j,k = 1}^N \left<d_j^{\dag}d_k^{\dag}\right> \hat{O}_{j,k+N}
++ \sum_{j,k = 1}^N \left<d_j d_k^{\dag}\right> \hat{O}_{j+N,k+N}
+$$
+From the Wick theorem we get:
+$$\left<d_j^{\dag}d_k\right> = \delta_{j,k}\left<\hat{n}_{\hat{d}_k}\right> ; \left<d_j d_k\right> = \left<d_j^{\dag}d_k^{\dag}\right> = 0; \left<d_j d_k^{\dag}\right> = \delta_{j,k} -\left<d_k^{\dag}d_j\right> = (1 - \left<\hat{n}_{\hat{d}_k}\right>)\delta_{j,k}$$
+thus, the sum simplifies to:\\
+\begin{math}
+\centering
+\bra{\vec{\Psi}_d}\hat{O}
+\ket{\vec{\Psi}_d} = 
+\sum_{j,k = 1}^N \delta_{j,k}\left<\hat{n}_{\hat{d}_k}\right>\hat{O}_{j,k} + \sum_{j,k = 1}^N (1 - \left<\hat{n}_{\hat{d}_k}\right>)\delta_{j,k} \hat{O}_{j+N,k+N}|= 
+\sum_{k = 1}^N \left<\hat{n}_{\hat{d}_k}\right>O_{k,k}+ (1 - \left<\hat{n}_{\hat{d}_k}\right>) \hat{O}_{k+N,k+N}
+= \tr\left[\left(
+\begin{array}{c|c}
+  D_{\hat{n}} &  0 \\
+   \hline 
+   0 & \mathbb{1}_N - D_{\hat{n}} 
+\end{array}\right)\hat{O}\right]
+\end{math}\\
+With:
+$$ [D_{\hat{n}} ]_{k,k} = \left<\hat{n}_{\hat{d}_k}\right> $$
+we define:
+$$ \hat{\Omega} = \left(
+\begin{array}{c|c}
+   \mathbb{1}_N \left<\hat{n}_{\hat{d}_k}\right>  &  0 \\
+   \hline 
+   0 & \mathbb{1}_N (1-\left<\hat{n}_{\hat{d}_k}\right>)
+\end{array}\right) $$
+Thus, in general for some operator $\hat{O}$ of $c, c^{\dag}$ we get:
+$$
+\bra{\vec{\Psi_c}}\hat{O}\ket{\vec{\Psi_c}} = \bra{\vec{\Psi_d}}T\hat{O}T^{\dag}\ket{\vec{\Psi_d}} =
+tr\left[\hat{\Omega} T\hat{O}T^{\dag} \right]
+$$
+For an hermitian variable we can simplify this according to \secref{sec:CommutatorLemma}:\\
+We express $\bra{i}\hat{O}\ket{i}$ as:
+$$
+\bra{i}\hat{O}\ket{i} = \bra{0}d_i\hat{O}d^{\dag}_i\ket{0} = \bra{0} (\hat{O}d_i -[\hat{O},d_i]) d^{\dag}_i\ket{0} = 
+\bra{0} \hat{O} \underbrace{d_i d^{\dag}_i}_{= 1- d^{\dag}_i d_i}\ket{0} +\bra{0} [\hat{O},d_i] d^{\dag}_i\ket{0}
+$$
+$$
+\bra{0} \hat{O} \ket{0} - \bra{0} \hat{O} d^{\dag}_i \underbrace{d_i\ket{0}}_{=0}  +\bra{0} [\hat{O},d_i] d^{\dag}_i\ket{0}
+$$
+For an hermitian observable and $T =0$ we get $d_k\ket{0}=0$ thus $\left<\hat{n}_{d_k}\right>=0$ using  \eqref{math:CommutatorHd}:
+$$
+\bra{0} \hat{O} \ket{0}  +  \bra{0}\bra{\vec{\Psi}_c}(O_M \vec{V}_i^*)d^{\dag}_i\ket{0} = \bra{0} \hat{O} \ket{0}  +   \bra{0}\bra{\vec{\Psi}_c} T^{\dag} T 
+(O_M \vec{V}_i^*)d^{\dag}_i\ket{0} 
+$$
+$$
+= \bra{0} \hat{O} \ket{0}  + \bra{0} \bra{\vec{\Psi}_d} T(O_M \vec{V}_i^*) d^{\dag}_i\ket{0}$$
+$$
+= \bra{0} \hat{O} \ket{0}  + \sum_j ( \underbrace{\bra{0}d^{\dag}_{j}d^{\dag}_{i}\ket{0}}_{=0} \vec{V}^{\dag}_j O_M \vec{V}^*_i+ \underbrace{\bra{0}d_{j}d^{\dag}_{i}\ket{0}}_{= \delta_{j,i}}\vec{W}^{\dag}_j O_M \vec{V}^*_i) 
+$$
+$$= \bra{0} \hat{O} \ket{0}  + \vec{V}^T_i O_M \vec{V}^*_i 
+$$
+We define the difference operator 
+\begin{equation}
+\label{bdg:Diffop}
+ \left<\Delta_{i}\hat{O}\right> = \bra{i}\hat{O}\ket{i}-\bra{0}\hat{O}\ket{0} =  \vec{V}^T_i O_M \vec{V}^*_i \left< \hat{n}_{d_i}\right>
+\end{equation}
+The electron density at a site $\hat{n}_l$ becomes
+ $$ \hat{n}_i = c^{\dag}_i c_i = \frac{1}{2}\left( c^{\dag}_i c_i - c_i c^{\dag}_i\right) + 1$$
+ $$
+ \left<\Delta_{l} \hat{n}_i\right> = \vec{V}^T_l \delta_i \vec{V}^*_l \left< \hat{n}_{d_i}\right> = (|u_{i,l}|^2-|v_{i,l}|^2) \left< \hat{n}_{d_i}\right>
+ $$
+ Explicitly, for a degenerate ground state, the $\ket{0}$ state can be chosen. As the $\ket{0}$ state has to vanish under the annihilator $d\ket{0} = 0$. 
+This choice substitutes the creator $d$ of the zero energy state with its annihilator $d\leftrightarrow d^{\dag}$. This choice of ground state corresponds to a negative-sign in the expectation value. 
+\begin{equation}\label{bdg:DiffDens}
+ \left<\Delta_{l+N} \hat{n}_i\right> = \vec{W}^T_l \delta_i \vec{W}^*_l \left< \hat{n}_{d_i}\right> = - (|u_{i,l}|^2-|v_{i,l}|^2) \left< \hat{n}_{d_i}\right>
+\end{equation}
+ 
+\subsubsection{Time Evolution, Out-of-time-ordered Propagator}\label{sec:Propagator}
+In the Heisenberg picture, the creation and annihilation operators are time dependent and we can express the Out-of-time-ordered propagator for states with a single quasi particle excitation $\ket{l}=d^{\dag}_l\ket{0}$ as:
+$$
+K(l',l,t) = \bra{0}d_{l'}d^{\dag}_l(-t)\ket{0}
+= \bra{0}d_{l'}\hat{U}(t)d^{\dag}_l\hat{U}(-t)\ket{0} 
+$$
+This expression can be viewed as the overlap of the states $d^{\dag}_l(-t)\ket{0}$ and $d^{\dag}_{l'}\ket{0}$ or using the time evolution operator $\hat{U}(t)$ as beginning at the ground state $\ket{0}$ at $t=0$ and moving backwards in time to $-t$. Then $d_l^{\dag}$ creates a quasi particle. The state is moved forward in time back to $t=0$ and a quasi particle is annihilated by $d_{l'}$. This formulation differs from the typical propagator $\bra{0}d_{l'}\hat{U}(t)d^{\dag}_l\ket{0}$ by the backwards time evolution of the ground state $\hat{U}(-t)$. When the time evolution remains in the ground state $\hat{U}(-t)\ket{0} = exp[\frac{t E_0}{\hbar}] \ket{0}$, then both propagators differ only by a phase. This can occur when the Hamiltonian has no explicit time dependence or adiabatic time evolution of a non-degenerate ground state. This thesis only uses the Out-of-time-ordered Propagator. Thus we henceforth refer to it simply as "Propagator".\\
+\\
+In order to calculate the time dependent creation operator 
+$ d^{\dag}_l(t) = W_l(t)\ket{\vec{\Psi}_c}$, we begin with the Heisenberg equation of $d^{\dag}_l(t)$:
+$$\frac{d}{dt} d^{\dag}_l(t) = \partial_t  d^{\dag}_l(t) + \frac{i}{\hbar} [\hat{H}, d^{\dag}_l(t)]$$
+As neither the $c$ nor $c^{\dag}$'s nor  $\vec{W}_l$ explicitly depend on time, it is $\partial_t  d^{\dag}_l(t) = 0$. We know the commutator from \eqref{math:CommutatorHd+}:
+$$
+\frac{d}{dt} d^{\dag}_l(t) = \frac{i}{\hbar} [\hat{H}, d^{\dag}_l(t)]
+$$
+$$
+\Leftrightarrow 
+\frac{d}{d t} \vec{W}^{\dag}_l(t)
+\ket{\vec{\Psi}_c}
+= \frac{i}{\hbar}
+\vec{W}^{\dag}_l M
+\ket{\vec{\Psi}_c}
+$$
+We observe that the time dependent creation operator has to fulfil a modified Schrodinger equation.
+\begin{dmath} \label{math:OperatorSchroedinger}
+\partial_t  d^{\dag}_l(t) = \frac{i}{\hbar} M  d^{\dag}_l(t)
+\end{dmath}
+
+Given a  solution to this ODE we can express the propagator:
+$$
+K(l',l,t) =
+\bra{0}d_{l'}
+d^{\dag}_l(-t)\ket{0} 
+= 
+\bra{0}d_{l'}\vec{W}^{\dag}_l(-t)\ket{\vec{\Psi}_c}\ket{0} 
+$$
+$$
+= 
+\bra{0}d_{l'}\vec{W}^{\dag}_l(-t)T^{\dag} T \ket{\vec{\Psi}_c}\ket{0} 
+=
+\bra{0}d_{l'}\vec{W}^{\dag}_l(-t)T^{\dag} \ket{\vec{\Psi}_d}\ket{0}
+$$
+$$
+= \sum_j ( \underbrace{\bra{0}d_{l'}d_{j}\ket{0}}_{=0} \vec{W}^{\dag}_l(-t) \vec{V}_j + \underbrace{\bra{0}d_{l'}d^{\dag}_{j}\ket{0}}_{= \delta_{j,l'}\bra{0}\hat{n}_{d_{l'}}\ket{0}}\vec{W}^{\dag}_l(-t) \vec{W}_j) 
+$$
+$$
+= \bra{0}d_{l'}d^{\dag}_{l'}\ket{0} \vec{W}^{\dag}_l(-t) \vec{W}_l'  = (1- \left< \hat{n}_{d_l}\right>)\vec{W}^{\dag}_l(-t) \vec{W}_l' 
+$$
+Thus, for reverse normal ordered operators and zero temperature ($\left< \hat{n}_{d_l}\right>=0$) the propagator is equal to the inner product of the vectors:
+\begin{dmath}\label{BdG:Prop=Scal}
+ K(l',l,t) = \vec{W}^{\dag}_l(-t) \vec{W}_l'
+\end{dmath}
+We define the operator inner product of two first order operators \\ $\hat{\vec{X}} = \vec{X}\ket{\vec{\Psi}_c},\hat{\vec{Y}}= \vec{Y}\ket{\vec{\Psi}_c}$:
+$$\braket{\hat{\vec{X}}}{{\hat{\vec{Y}}}}_{op} = \vec{X}^{\dag}\vec{Y}$$
+The inner product axioms follow as a consequence of the inner product for complex vectors and the distinguishabillity of the $c_k,c_k^{\dag}$ operators given a ground state.
+Any first order operator $\hat{X}$ can be uniquely mapped to a vector $\vec{X} \in \mathbb{C}^{2 N}$ by the correlation functions for $T=0$
+$$
+X_i = \begin{cases}
+\left< c_i \hat{x}^{\dag} \right> & i \leq N\\
+\left< \hat{x} c_i^{\dag}\right> & i > N
+\end{cases}
+$$
+Furthermore, we can express the propagator for states with a general superposition of creators and annihilators:\\ $$\ket{X}=\vec{X}^{\dag}\ket{\vec{\Psi_d}}\ket{0}$$
+The time evolution for $X$ is the same as in \eqref{math:OperatorSchroedinger}:
+$$
+\partial_t  \vec{X}(t) = \frac{i}{\hbar} M  \vec{X}(t)
+$$
+$$
+K(\vec{Y},\vec{X},t) 
+= \braket{Y}{X(-t)}
+=
+\bra{Y}\vec{X}^{\dag}(-t)\ket{\vec{\Psi}_c}\ket{0} 
+$$
+$$
+= 
+\bra{Y}\vec{X}^{\dag}(-t)T^{\dag} T \ket{\vec{\Psi}_c}\ket{0} 
+=
+\bra{Y}\vec{X}^{\dag}(-t)T^{\dag} \ket{\vec{\Psi}_d}\ket{0}
+=\bra{0}\bra{\vec{\Psi}_d}\Vec{Y}\vec{X}^{\dag}(-t)T^{\dag} \ket{\vec{\Psi}_d}\ket{0} 
+$$
+\begin{multline}
+= \sum_{j,k}
+\braket{d_j^{\dag}}{d_k}\vec{Y}_j (T \vec{X}(-t))_k
++\braket{d_j}{d_k}\vec{Y}_{j+N} (T \vec{X}(-t))_k \\
++\braket{d_j^{\dag}}{d_k^{\dag}}\vec{Y}_j (T \vec{X}(-t))_{k+N}
++\braket{d_j}{d_k^{\dag}}\vec{Y}_{j+N} (T \vec{X}(-t))_{k+N}
+\end{multline}
+
+\begin{equation}
+= \sum_{j} \left[
+\left< \hat{n}_{d_l} \right> (\vec{Y}_j (T \vec{X}(-t))_j - \vec{Y}_{j+N} (T \vec{X}(-t))_{j+N} )
++\vec{Y}_{j+N} (T \vec{X}(-t))_{j+N}
+\right]
+\end{equation}
+
+\end{document}
